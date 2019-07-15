@@ -10,7 +10,7 @@ typedef struct {
 	z64_skelanime_t skelanime;
 	uint32_t unk188;
 	uint32_t unk1EE;
-	uint32_t unk254;
+	void *unk254;
 	uint16_t unk268;
 	uint16_t unk26C;
 	uint16_t unk272;
@@ -22,14 +22,20 @@ typedef struct {
 	uint8_t unknown[404];
 } entity_t; /* 02D0 */
 
+/*** external function prototypes ***/
+extern void external_func_80136B30(z64_global_t *gl, z64_skelanime_t *skelanime, uint32_t unk0, uint32_t animation, void *unk1, void *unk2, uint32_t limb_count);
+asm("external_func_80136B30 = 0x80136B30");
 
-/*** function prototypes ***/
+extern void external_func_800E1374(z64_global_t *gl, uint32_t *unk0, z64_actor_t *unk1, const uint32_t *source);
+asm("external_func_800E1374 = 0x800E1374");
+
+/*** internal function prototypes ***/
 void data_80BE9214(void); /* 0 internal, 0 external, 4 lines */
 void data_80BE9380(void); /* 0 internal, 0 external, 23 lines */
 void func_80BE9148(void); /* 0 internal, 0 external, 40 lines */
 void data_80BE9090(entity_t *en, z64_global_t *gl); /* 0 internal, 1 external, 11 lines */
 void data_80BE93D8(entity_t *en, z64_global_t *gl); /* 0 internal, 2 external, 22 lines */
-void func_80BE90BC(void); /* 0 internal, 2 external, 35 lines */
+void func_80BE90BC(int unk0); /* 0 internal, 2 external, 35 lines */
 void func_80BE91DC(entity_t *en, z64_global_t *gl); /* 1 internal, 0 external, 14 lines */
 void data_80BE8F20(entity_t *en, z64_global_t *gl); /* 1 internal, 4 external, 96 lines */
 void data_80BE9224(entity_t *en, z64_global_t *gl); /* 1 internal, 9 external, 92 lines */
@@ -178,7 +184,7 @@ void data_80BE9090(entity_t *en, z64_global_t *gl) /* 0 internal, 1 external, 11
 		"or              $a2,$a0,$zero                          \n"
 		"or              $a3,$a1,$zero                          \n"
 		"or              $a0,$a3,$zero                          \n"
-		"jal             external_func_800E11EC                 \n"
+		"jal             0x800E11EC                 \n"
 		"addiu           $a1,$a2,644                            \n"
 		"lw              $ra,20($sp)                            \n"
 		"addiu           $sp,$sp,24                             \n"
@@ -199,7 +205,7 @@ void data_80BE93D8(entity_t *en, z64_global_t *gl) /* 0 internal, 2 external, 22
 		"sw              $a0,40($sp)                            \n"
 		"sw              $a1,44($sp)                            \n"
 		"lw              $t6,44($sp)                            \n"
-		"jal             external_func_8012C28C                 \n"
+		"jal             0x8012C28C                 \n"
 		"lw              $a0,0($t6)                             \n"
 		"lw              $v0,40($sp)                            \n"
 		"lui             $t7,%hi(data_80BE9380)                 \n"
@@ -210,7 +216,7 @@ void data_80BE93D8(entity_t *en, z64_global_t *gl) /* 0 internal, 2 external, 22
 		"sw              $zero,20($sp)                          \n"
 		"sw              $t7,16($sp)                            \n"
 		"lw              $a0,44($sp)                            \n"
-		"jal             external_func_80133F28                 \n"
+		"jal             0x80133F28                 \n"
 		"sw              $v0,24($sp)                            \n"
 		"lw              $ra,36($sp)                            \n"
 		"addiu           $sp,$sp,40                             \n"
@@ -218,7 +224,7 @@ void data_80BE93D8(entity_t *en, z64_global_t *gl) /* 0 internal, 2 external, 22
 		"nop                                                    \n"
 	);
 }
-void func_80BE90BC(void) /* 0 internal, 2 external, 35 lines */
+void func_80BE90BC(int unk0) /* 0 internal, 2 external, 35 lines */
 {
 	asm(
 		".set noat        \n"
@@ -234,7 +240,7 @@ void func_80BE90BC(void) /* 0 internal, 2 external, 35 lines */
 		"lui             $a0,%hi(data_80BE947C)                 \n"
 		"addu            $a0,$a0,$t7                            \n"
 		"sw              $a1,612($t6)                           \n"
-		"jal             external_func_80134748                 \n"
+		"jal             0x80134748                 \n"
 		"lw              $a0,%lo(data_80BE947C)($a0)            \n"
 		"mtc1            $v0,$f4                                \n"
 		"lw              $t0,40($sp)                            \n"
@@ -255,7 +261,7 @@ void func_80BE90BC(void) /* 0 internal, 2 external, 35 lines */
 		"addiu           $a3,$zero,0                            \n"
 		"addiu           $a0,$t0,324                            \n"
 		"swc1            $f6,24($sp)                            \n"
-		"jal             external_func_801373E8                 \n"
+		"jal             0x801373E8                 \n"
 		"sw              $t9,20($sp)                            \n"
 		"lw              $ra,36($sp)                            \n"
 		"addiu           $sp,$sp,40                             \n"
@@ -266,8 +272,8 @@ void func_80BE90BC(void) /* 0 internal, 2 external, 35 lines */
 void func_80BE91DC(entity_t *en, z64_global_t *gl) /* 1 internal, 0 external, 14 lines */
 {
 	asm(
-		".set noat        \n"
-		".set noreorder   \n"
+		".set at        \n"
+		".set reorder   \n"
 		".Lfunc_80BE91DC: \n"
 	);
 	func_80BE90BC(0);
@@ -277,24 +283,24 @@ void func_80BE91DC(entity_t *en, z64_global_t *gl) /* 1 internal, 0 external, 14
 void data_80BE8F20(entity_t *en, z64_global_t *gl) /* 1 internal, 4 external, 96 lines */
 {
 	asm(
-		".set noat        \n"
-		".set noreorder   \n"
+		".set at        \n"
+		".set reorder   \n"
 		".Ldata_80BE8F20: \n"
 	);
 
     actor_init_shadow(&en->actor.rot_2, 0, &ACTOR_SHADOW_DRAWFUNC_CIRCLE, 25.0f);
-    external_func_80136B30(gl, &en->skelanime, 0x060029C0, ANIM_0, en->unk188, en->unk1EE, LIMB_CT);
+    external_func_80136B30(gl, &en->skelanime, 0x060029C0, ANIM_0, &en->unk188, &en->unk1EE, LIMB_CT);
     en->actor.mass = 0xFF;
-    arg0->unk268 = en->actor.variable;
-    arg0->unk272 = en->actor.speedRot.y;
+    en->unk268 = en->actor.variable;
+    en->unk272 = en->actor.speedRot.y;
     if (en->actor.variable == 0)
     {
         en->unk26C = 1;
-        if ((AVAL(SAVE_CONTEXT, uint8_t, 0x0F37) & 0x80) == 0)
+        if ((AVAL(SAVE_CONTEXT, uint8_t, 0x0F37)) & 0x80 == 0)
         {
-            if ((AVAL(SAVE_CONTEXT, uint8_t, 0x0018) == 3)
+            if ((AVAL(SAVE_CONTEXT, uint8_t, 0x0018)) == 3)
             {
-                if ((AVAL(SAVE_CONTEXT, uint8_t, 0x0010) == 0)
+                if ((AVAL(SAVE_CONTEXT, uint8_t, 0x0010)) == 0)
                 {
                     actor_kill(&en->actor);
                 }
@@ -306,11 +312,11 @@ void data_80BE8F20(entity_t *en, z64_global_t *gl) /* 1 internal, 4 external, 96
         en->unk2C4 = 0x001E;
         en->unk2C6 = 0x003C;
         en->unk2C8 = 0x0000;
-        if ((AVAL(SAVE_CONTEXT, uint8_t, 0x0F37) & 0x80) == 0)
+        if ((AVAL(SAVE_CONTEXT, uint8_t, 0x0F37)) & 0x80 == 0)
         {
-            if ((AVAL(SAVE_CONTEXT, uint8_t, 0x0018) == 3)
+            if ((AVAL(SAVE_CONTEXT, uint8_t, 0x0018)) == 3)
             {
-                if ((AVAL(SAVE_CONTEXT, uint8_t, 0x0010) != 0)
+                if ((AVAL(SAVE_CONTEXT, uint8_t, 0x0010)) != 0)
                 {
                     actor_kill(&en->actor);
                 }
@@ -319,7 +325,7 @@ void data_80BE8F20(entity_t *en, z64_global_t *gl) /* 1 internal, 4 external, 96
     }
     en->actor.unk_02_ = 6;
     en->actor.gravity = -3.0f;
-    external_func_800E1374(gl, &en->unk284, &en->actor, &data_80BE9450);
+    external_func_800E1374(gl, &en->unk284, &en->actor, data_80BE9450);
     en->actor.flags |= 0x08000000;
     func_80BE91DC(en, gl);
 
@@ -337,7 +343,7 @@ void data_80BE9224(entity_t *en, z64_global_t *gl) /* 1 internal, 9 external, 92
 		"or              $s0,$a0,$zero                          \n"
 		"sw              $ra,36($sp)                            \n"
 		"sw              $a1,60($sp)                            \n"
-		"jal             external_func_80136CD0                 \n"
+		"jal             0x80136CD0                 \n"
 		"addiu           $a0,$s0,324                            \n"
 		"lh              $v0,624($s0)                           \n"
 		"beq             $v0,$zero,.L000007                     \n"
@@ -357,7 +363,7 @@ void data_80BE9224(entity_t *en, z64_global_t *gl) /* 1 internal, 9 external, 92
 		"lw              $t0,16($v0)                            \n"
 		"beql            $t0,$zero,.L000009                     \n"
 		"lw              $t9,596($s0)                           \n"
-		"jal             external_func_800B670C                 \n"
+		"jal             0x800B670C                 \n"
 		"or              $a0,$s0,$zero                          \n"
 		"b               .L000010                               \n"
 		"lw              $ra,36($sp)                            \n"
@@ -368,7 +374,7 @@ void data_80BE9224(entity_t *en, z64_global_t *gl) /* 1 internal, 9 external, 92
 		"lw              $a1,60($sp)                            \n"
 		"jalr            $t9                                    \n"
 		"nop                                                    \n"
-		"jal             external_func_800B6A88                 \n"
+		"jal             0x800B6A88                 \n"
 		"or              $a0,$s0,$zero                          \n"
 		"lui             $at,0x41A0                             \n"
 		"mtc1            $at,$f0                                \n"
@@ -380,11 +386,11 @@ void data_80BE9224(entity_t *en, z64_global_t *gl) /* 1 internal, 9 external, 92
 		"sw              $t1,20($sp)                            \n"
 		"lw              $a0,60($sp)                            \n"
 		"or              $a1,$s0,$zero                          \n"
-		"jal             external_func_800B78B8                 \n"
+		"jal             0x800B78B8                 \n"
 		"swc1            $f4,16($sp)                            \n"
 		"lui             $a1,0x3C23                             \n"
 		"ori             $a1,$a1,0xd70a                         \n"
-		"jal             external_func_800B67E0                 \n"
+		"jal             0x800B67E0                 \n"
 		"or              $a0,$s0,$zero                          \n"
 		"lw              $t2,620($s0)                           \n"
 		"beql            $t2,$zero,.L000011                     \n"
@@ -393,30 +399,30 @@ void data_80BE9224(entity_t *en, z64_global_t *gl) /* 1 internal, 9 external, 92
 		"or              $a0,$s0,$zero                          \n"
 		"or              $a0,$s0,$zero                          \n"
 		".L000011:                                              \n"
-		"jal             external_func_800B675C                 \n"
+		"jal             0x800B675C                 \n"
 		"lui             $a1,0x4270                             \n"
 		"lh              $a1,608($s0)                           \n"
 		"sw              $zero,16($sp)                          \n"
 		"addiu           $a0,$s0,602                            \n"
 		"addiu           $a2,$zero,1                            \n"
-		"jal             external_func_800FFEBC                 \n"
+		"jal             0x800FFEBC                 \n"
 		"addiu           $a3,$zero,3000                         \n"
 		"lh              $a1,606($s0)                           \n"
 		"sw              $zero,16($sp)                          \n"
 		"addiu           $a0,$s0,600                            \n"
 		"addiu           $a2,$zero,1                            \n"
-		"jal             external_func_800FFEBC                 \n"
+		"jal             0x800FFEBC                 \n"
 		"addiu           $a3,$zero,1000                         \n"
 		"addiu           $a2,$s0,644                            \n"
 		"or              $a1,$a2,$zero                          \n"
 		"sw              $a2,44($sp)                            \n"
-		"jal             external_func_800E7DF8                 \n"
+		"jal             0x800E7DF8                 \n"
 		"or              $a0,$s0,$zero                          \n"
 		"lw              $a0,60($sp)                            \n"
 		"lui             $at,0x0001                             \n"
 		"ori             $at,$at,0x8884                         \n"
 		"lw              $a2,44($sp)                            \n"
-		"jal             external_func_800E2928                 \n"
+		"jal             0x800E2928                 \n"
 		"addu            $a1,$a0,$at                            \n"
 		"lw              $ra,36($sp)                            \n"
 		".L000010:                                              \n"
@@ -426,6 +432,7 @@ void data_80BE9224(entity_t *en, z64_global_t *gl) /* 1 internal, 9 external, 92
 		"nop                                                    \n"
 	);
 }
+
 const z64_actor_init_t init_vars = {
 	.number = ACT_ID,
 	.type = NPC,
