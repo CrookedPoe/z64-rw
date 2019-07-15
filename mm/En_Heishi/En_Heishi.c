@@ -13,7 +13,8 @@
 
 typedef struct {
 	z64_actor_t actor;
-	z64_skelanime_t skelanime;
+	//z64_skelanime_t skelanime;
+	uint8_t skelanime[0x200];
 	uint32_t unk188;
 	uint32_t unk1EE;
 	void *unk254;
@@ -29,7 +30,7 @@ typedef struct {
 } entity_t; /* 02D0 */
 
 /*** external function prototypes ***/
-extern void external_func_80136B30(z64_global_t *gl, z64_skelanime_t *skelanime, uint32_t unk0, uint32_t animation, void *unk1, void *unk2, uint32_t limb_count);
+extern void external_func_80136B30(z64_global_t *gl, uint8_t *skelanime, uint32_t unk0, uint32_t animation, void *unk1, void *unk2, uint32_t limb_count);
 asm("external_func_80136B30 = 0x80136B30");
 
 extern void external_func_800E1374(z64_global_t *gl, uint32_t *unk0, z64_actor_t *unk1, const uint32_t *source);
@@ -295,7 +296,7 @@ void data_80BE8F20(entity_t *en, z64_global_t *gl) /* 1 internal, 4 external, 96
 	);
 
     actor_init_shadow(&en->actor.rot_2, 0, &ACTOR_SHADOW_DRAWFUNC_CIRCLE, 25.0f);
-    external_func_80136B30(gl, &en->skelanime, 0x060029C0, ANIM_0, &en->unk188, &en->unk1EE, LIMB_CT);
+    external_func_80136B30(gl, en->skelanime, 0x060029C0, ANIM_0, &en->unk188, &en->unk1EE, LIMB_CT);
     en->actor.mass = 0xFF;
     en->unk268 = en->actor.variable;
     en->unk272 = en->actor.speedRot.y;
@@ -308,7 +309,8 @@ void data_80BE8F20(entity_t *en, z64_global_t *gl) /* 1 internal, 4 external, 96
             {
                 if ((AVAL(SAVE_CONTEXT, uint8_t, 0x0010)) == 0)
                 {
-                    actor_kill(&en->actor);
+                    /*actor_kill(&en->actor);*/
+										asm("nop"); /* This is so it can be loaded in any scene. */
                 }
             }
         }
@@ -324,7 +326,8 @@ void data_80BE8F20(entity_t *en, z64_global_t *gl) /* 1 internal, 4 external, 96
             {
                 if ((AVAL(SAVE_CONTEXT, uint8_t, 0x0010)) != 0)
                 {
-                    actor_kill(&en->actor);
+									/*actor_kill(&en->actor);*/
+									asm("nop"); /* This is so it can be loaded in any scene. */
                 }
             }
         }
@@ -369,7 +372,8 @@ void data_80BE9224(entity_t *en, z64_global_t *gl) /* 1 internal, 9 external, 92
 		"lw              $t0,16($v0)                            \n"
 		"beql            $t0,$zero,.L000009                     \n"
 		"lw              $t9,596($s0)                           \n"
-		"jal             0x800B670C                 \n"
+		/*"jal             0x800B670C                 "*/
+		"nop \n"
 		"or              $a0,$s0,$zero                          \n"
 		"b               .L000010                               \n"
 		"lw              $ra,36($sp)                            \n"
