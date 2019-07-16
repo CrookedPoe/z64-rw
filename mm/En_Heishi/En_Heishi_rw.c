@@ -5,6 +5,8 @@
 typedef struct {
 	z64_actor_t actor;
 	uint8_t unknown[404];
+	int16_t unk260;
+	int16_t unk272;
 } entity_t; /* 02D0 */
 
 
@@ -17,7 +19,7 @@ void data_80BE9380(void); /* 0 internal, 0 external, 23 lines */
 int16_t func_80BE9148(entity_t *en, z64_global_t *gl); /* 0 internal, 0 external, 40 lines */
 void dest(entity_t *en, z64_global_t *gl); /* 0 internal, 1 external, 11 lines */
 void data_80BE93D8(void); /* 0 internal, 2 external, 22 lines */
-void func_80BE90BC(void); /* 0 internal, 2 external, 35 lines */
+void func_80BE90BC(entity_t *en, z64_global_t *gl); /* 0 internal, 2 external, 35 lines */
 void func_80BE91DC(void); /* 1 internal, 0 external, 14 lines */
 void data_80BE8F20(void); /* 1 internal, 4 external, 96 lines */
 void data_80BE9224(void); /* 1 internal, 9 external, 92 lines */
@@ -106,42 +108,34 @@ void data_80BE9380(void) /* 0 internal, 0 external, 23 lines */
 
 int16_t func_80BE9148(entity_t *en, z64_global_t *gl) /* 0 internal, 0 external, 40 lines */
 {
+	/* Simplified by <z64.me>*/
 	asm(
 		".set at        \n"
 		".set reorder   \n"
 		".Lfunc_80BE9148: \n"
 	);
 
-		int16_t temp_v0_2;
-    int temp_v0;
-    int phi_v1;
-		int16_t * unk260 = AADDR(en, 0x0260);
+	int16_t temp_v0_2;
+	int16_t temp_v0;
+	int phi_v1;
 
-    temp_v0 = (((AVAL(en, int16_t, 0x0272)) - en->actor.speedRot.y) << 0x10) >> 0x10;
-    phi_v1 = temp_v0;
-    if (temp_v0 < 0)
-    {
-        phi_v1 = 0 - temp_v0;
-    }
-    *unk260 = 0;
-    if (en->actor.dist_from_link_xz < 200.0f)
-    {
-        if (phi_v1 < 0x4E20)
-        {
-            *unk260 = ((AVAL(en, int16_t, 0x0272)) - en->actor.speedRot.y);
-            temp_v0_2 = (AVAL(en, int16_t, 0x0260));
-            if (temp_v0_2 >= 0x2711)
-            {
-                *unk260 = 0x2710;
-                return temp_v0_2;
-            }
-            if (temp_v0_2 < -0x2710)
-            {
-                *unk260 = -0x2710;
-            }
-        }
-    }
-    return (int16_t)temp_v0;
+	temp_v0 = (en->unk272 - en->actor.speedRot.y) & 0xFFFF;
+	phi_v1 = ABS(temp_v0);
+	en->unk260 = 0;
+	if (en->actor.dist_from_link_xz < 200.0f)
+	{
+			if (phi_v1 < 20000)
+			{
+					en->unk260 = (en->unk272 - en->actor.speedRot.y);
+					if (en->unk260 >= 10001)
+					{
+							en->unk260 = 10000;
+							return en->unk260;
+					}
+					en->unk260 = MAX(en->unk260, -10000);
+			}
+	}
+	return temp_v0;
 }
 
 void dest(entity_t *en, z64_global_t *gl) /* 0 internal, 1 external, 11 lines */
@@ -185,13 +179,14 @@ void data_80BE93D8(void) /* 0 internal, 2 external, 22 lines */
 		"nop                                                    \n"
 	);
 }
-void func_80BE90BC(void) /* 0 internal, 2 external, 35 lines */
+void func_80BE90BC(entity_t *en, z64_global_t *gl) /* 0 internal, 2 external, 35 lines */
 {
 	asm(
 		".set noat        \n"
 		".set noreorder   \n"
 		".Lfunc_80BE90BC: \n"
 	);
+	en->unk272 = en->actor.speedRot.y;
 	asm(
 		"addiu           $sp,$sp,-40                            \n"
 		"sw              $ra,36($sp)                            \n"
@@ -287,12 +282,12 @@ void data_80BE8F20(void) /* 1 internal, 4 external, 96 lines */
 		"jal             0x80136B30                 \n"
 		"addiu           $a1,$s0,324                            \n"
 		"lh              $v0,28($s0)                            \n"
-		"lh              $t0,50($s0)                            \n"
+		/*"lh              $t0,50($s0)                            \n"*/
 		"addiu           $t9,$zero,255                          \n"
 		"sb              $t9,182($s0)                           \n"
 		"sw              $v0,616($s0)                           \n"
 		"bne             $v0,$zero,.L000000                     \n"
-		"sh              $t0,626($s0)                           \n"
+		/*"sh              $t0,626($s0)                           \n"*/
 		"lui             $v0,0x801F                             \n"
 		"addiu           $t1,$zero,1                            \n"
 		"addiu           $v0,$v0,-2448                          \n"
