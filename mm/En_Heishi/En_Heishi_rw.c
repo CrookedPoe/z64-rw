@@ -2,13 +2,51 @@
 
 #define OBJ_ID 438
 
+/*** Skeleton ***/
+#define SKL            0x0600D640
+#define LIMB_ROOT      00
+#define LIMB_WAIST     01
+#define LIMB_LTHIGH    02
+#define LIMB_LSHIN     03
+#define LIMB_LFOOT     04
+#define LIMB_RTHIGH    05
+#define LIMB_RSHIN     06
+#define LIMB_RFOOT     07
+#define LIMB_TORSO     08
+#define LIMB_LSHOULDER 09
+#define LIMB_LFOREARM  10
+#define LIMB_LHAND 		 11
+#define LIMB_RSHOULDER 12
+#define LIMB_RFOREARM  13
+#define LIMB_RHAND     14
+#define LIMB_HEAD      15
+
+/*** Animations ***/
+#define ANIM0 0x06000A54 /* Idling, hand over heart */
+#define ANIM1 0x060020D8 /* Sitting, drinking from bottle */
+#define ANIM2 0x06002A84 /* Cheering */
+#define ANIM3 0x06003380 /* Sitting, reaching out */
+#define ANIM4 0x06003BFC /* Sitting, waving */
+#define ANIM5 0x06004770 /* Getting up off of the ground */
+#define ANIM6 0x06004AC0 /* Turning on Mido mode */
+#define ANIM7 0x06005320 /* Wafting away fart */
+#define ANIM8 0x060057BC /* Transition: Impeding your progress */
+#define ANIM9 0x06005D28 /* Idle: Impeding your progress */
+#define ANIMA 0x060064C0 /* Idle: Impeding your progress more */
+#define ANIMB 0x06006C18 /* Idle: Standing with hand on hip */
+#define ANIMC 0x0600DC7C /* Idle: Standing with hand on hip, but looking down */
+
 typedef struct {
-	z64_actor_t actor;
-	uint8_t unknown[404];
-	void *unk254;
-	int16_t unk260;
-	int16_t unk272;
-	uint16_t unk278;
+    z64_actor_t actor;       /* 0x0000, size 0x0144 */
+    PADDING(0x110);          /* 0x0144, size 0x0110 */
+    void *unk254;         	 /* 0x0254, size 0x0004 */
+    PADDING(8);              /* 0x0258, size 0x0008 */
+    int16_t unk260;          /* 0x0260, size 0x0002 */
+    PADDING(16);             /* 0x0262, size 0x0010 */
+    int16_t unk272;          /* 0x0272, size 0x0002 */
+    PADDING(4);              /* 0x0274, size 0x0004 */
+    uint16_t unk278;         /* 0x0278, size 0x0002 */
+    PADDING(0x56);           /* 0x027A, size 0x0056 */
 } entity_t; /* 02D0 */
 
 
@@ -48,14 +86,16 @@ const uint32_t data_80BE9450[] =
 	0x00000000,
 	0x00000000
 };
+
 const uint32_t data_80BE947C[] =
 {
-	0x06006C18,
-	0x06002A84,
-	0x06003BFC,
-	0x06003380,
-	0x06004770
+	ANIMB,
+	ANIM2,
+	ANIM4,
+	ANIM3,
+	ANIM5
 };
+
 const uint32_t data_80BE9490[] =
 {
 	0x00000000,
@@ -259,12 +299,12 @@ void data_80BE8F20(void) /* 1 internal, 4 external, 96 lines */
 		"jal             0x80136B30                 \n"
 		"addiu           $a1,$s0,324                            \n"
 		"lh              $v0,28($s0)                            \n"
-		/*"lh              $t0,50($s0)                            \n"*/
+		"lh              $t0,50($s0)                            \n"
 		"addiu           $t9,$zero,255                          \n"
 		"sb              $t9,182($s0)                           \n"
 		"sw              $v0,616($s0)                           \n"
 		"bne             $v0,$zero,.L000000                     \n"
-		/*"sh              $t0,626($s0)                           \n"*/
+		"sh              $t0,626($s0)                           \n"
 		"lui             $v0,0x801F                             \n"
 		"addiu           $t1,$zero,1                            \n"
 		"addiu           $v0,$v0,-2448                          \n"
