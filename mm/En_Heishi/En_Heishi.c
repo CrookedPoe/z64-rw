@@ -39,11 +39,11 @@
 
 typedef struct {
 	z64_actor_t 	actor;
+	uint8_t 			unknown[404];
 	vec3s_t 			*head_rot;
 	void 					*unk254;
 	z64_capsule_t *collision;
 	uint16_t 			unk278;
-	uint8_t 			unknown[404];
 } entity_t; /* 02D0 */
 
 /*** external function prototypes ***/
@@ -56,15 +56,21 @@ asm("external_func_800E11EC = 0x800E11EC");
 extern void external_func_800E1374(z64_global_t *gl, uint32_t *unk0, z64_actor_t *unk1, const uint32_t *source);
 asm("external_func_800E1374 = 0x800E1374");
 
+extern void external_func_8012C28C(z64_gfx_t *gfx);
+asm("external_func_8012C28C = 0x8012C28C");
+
+extern void external_func_80133F28(z64_global_t *global, u32 limb_index, u32 adt, u32 limb_dlists_count, void *callback0, void *callback1, z64_actor_t *actor);
+asm("external_func_80133F28 = 0x80133F28");
+
 /*** rewritten internal function prototypes ***/
 void data_80BE9214(entity_t *en, z64_global_t *gl); /* 0 internal, 0 external, 4 lines, is this even necessary? */
 int data_80BE9380(int unused0, int limb, int unused2, int unused3, vec3s_t *rot, entity_t *en); /* 0 internal, 0 external, 23 lines */
 void data_80BE9090(entity_t *en, z64_global_t *gl); /* 0 internal, 1 external, 11 lines */
 void func_80BE91DC(entity_t *en, z64_global_t *gl); /* 1 internal, 0 external, 14 lines */
+void data_80BE93D8(entity_t *en, z64_global_t *gl); /* 0 internal, 2 external, 22 lines */
 /*** asm internal function prototypes ***/
 void func_80BE9148(void); /* 0 internal, 0 external, 40 lines */
-void data_80BE93D8(void); /* 0 internal, 2 external, 22 lines */
-void func_80BE90BC(int unk0); /* 0 internal, 2 external, 35 lines */
+void func_80BE90BC(entity_t *en, int unk0); /* 0 internal, 2 external, 35 lines */
 void data_80BE8F20(void); /* 1 internal, 4 external, 96 lines */
 void data_80BE9224(void); /* 1 internal, 9 external, 92 lines */
 
@@ -195,39 +201,28 @@ void data_80BE9090(entity_t *en, z64_global_t *gl) /* 0 internal, 1 external, 11
 	);
 	external_func_800E11EC(gl, en->collision);
 }
-void data_80BE93D8(void) /* 0 internal, 2 external, 22 lines */
+
+void data_80BE93D8(entity_t *en, z64_global_t *gl) /* 0 internal, 2 external, 22 lines */
 {
 	asm(
-		".set noat        \n"
-		".set noreorder   \n"
+		".set at        \n"
+		".set reorder   \n"
 		".Ldata_80BE93D8: \n"
 	);
-	asm(
-		"addiu           $sp,$sp,-40                            \n"
-		"sw              $ra,36($sp)                            \n"
-		"sw              $a0,40($sp)                            \n"
-		"sw              $a1,44($sp)                            \n"
-		"lw              $t6,44($sp)                            \n"
-		"jal             0x8012C28C                 \n"
-		"lw              $a0,0($t6)                             \n"
-		"lw              $v0,40($sp)                            \n"
-		"lui             $t7,%hi(data_80BE9380)                 \n"
-		"addiu           $t7,$t7,%lo(data_80BE9380)             \n"
-		"lw              $a1,328($v0)                           \n"
-		"lw              $a2,356($v0)                           \n"
-		"lbu             $a3,326($v0)                           \n"
-		"sw              $zero,20($sp)                          \n"
-		"sw              $t7,16($sp)                            \n"
-		"lw              $a0,44($sp)                            \n"
-		"jal             0x80133F28                 \n"
-		"sw              $v0,24($sp)                            \n"
-		"lw              $ra,36($sp)                            \n"
-		"addiu           $sp,$sp,40                             \n"
-		"jr              $ra                                    \n"
-		"nop                                                    \n"
-	);
+
+	external_func_8012C28C(gl->common.gfx_ctxt);
+	external_func_80133F28(gl, (AVAL(en, uint32_t, 0x0148)), (AVAL(en, uint32_t, 0x0164)), (AVAL(en, uint32_t, 0x0146)), &data_80BE9380, 0, &en->actor);
+	/*
+	* Global Context
+	* Limb Index in RAM
+	* Something
+	* Limb Count
+	* Callback 0
+	* Callback 1
+	* Actor Instance
+	*/
 }
-void func_80BE90BC(int unk0) /* 0 internal, 2 external, 35 lines */
+void func_80BE90BC(entity_t *en, int unk0) /* 0 internal, 2 external, 35 lines */
 {
 	asm(
 		".set noat        \n"
@@ -281,7 +276,7 @@ void func_80BE91DC(entity_t *en, z64_global_t *gl) /* 1 internal, 0 external, 14
 		".Lfunc_80BE91DC: \n"
 	);
 
-	func_80BE90BC(0);
+	func_80BE90BC(en, 0);
 	en->unk278 = 0;
 	en->unk254 = &data_80BE9214;
 }
