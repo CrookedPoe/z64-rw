@@ -38,19 +38,19 @@
 
 
 typedef struct {
-	z64_actor_t actor;
-	vec3s_t 		*head_rot;
-	void 				*unk254;
-	uint32_t 		*collision;
-	uint16_t 		unk278;
-	uint8_t 		unknown[404];
+	z64_actor_t 	actor;
+	vec3s_t 			*head_rot;
+	void 					*unk254;
+	z64_capsule_t *collision;
+	uint16_t 			unk278;
+	uint8_t 			unknown[404];
 } entity_t; /* 02D0 */
 
 /*** external function prototypes ***/
 extern void external_func_80136B30(z64_global_t *gl, uint8_t *skelanime, uint32_t unk0, uint32_t animation, void *unk1, void *unk2, uint32_t limb_count);
 asm("external_func_80136B30 = 0x80136B30");
 
-extern void external_func_800E11EC(z64_global_t *gl, uint32_t *collision); /* Previously actor_capsule_free */
+extern void external_func_800E11EC(z64_global_t *gl, z64_capsule_t *collision); /* Previously actor_capsule_free */
 asm("external_func_800E11EC = 0x800E11EC");
 
 extern void external_func_800E1374(z64_global_t *gl, uint32_t *unk0, z64_actor_t *unk1, const uint32_t *source);
