@@ -39,9 +39,11 @@
 
 typedef struct {
 	z64_actor_t actor;
-	vec3s_t *head_rot;
-	uint32_t *collision;
-	uint8_t unknown[404];
+	vec3s_t 		*head_rot;
+	void 				*unk254;
+	uint32_t 		*collision;
+	uint16_t 		unk278;
+	uint8_t 		unknown[404];
 } entity_t; /* 02D0 */
 
 /*** external function prototypes ***/
@@ -58,11 +60,11 @@ asm("external_func_800E1374 = 0x800E1374");
 void data_80BE9214(entity_t *en, z64_global_t *gl); /* 0 internal, 0 external, 4 lines */
 int data_80BE9380(int unused0, int limb, int unused2, int unused3, vec3s_t *rot, entity_t *en); /* 0 internal, 0 external, 23 lines */
 void data_80BE9090(entity_t *en, z64_global_t *gl); /* 0 internal, 1 external, 11 lines */
+void func_80BE91DC(entity_t *en, z64_global_t *gl); /* 1 internal, 0 external, 14 lines */
 /*** asm internal function prototypes ***/
 void func_80BE9148(void); /* 0 internal, 0 external, 40 lines */
 void data_80BE93D8(void); /* 0 internal, 2 external, 22 lines */
-void func_80BE90BC(void); /* 0 internal, 2 external, 35 lines */
-void func_80BE91DC(void); /* 1 internal, 0 external, 14 lines */
+void func_80BE90BC(int unk0); /* 0 internal, 2 external, 35 lines */
 void data_80BE8F20(void); /* 1 internal, 4 external, 96 lines */
 void data_80BE9224(void); /* 1 internal, 9 external, 92 lines */
 
@@ -219,7 +221,7 @@ void data_80BE93D8(void) /* 0 internal, 2 external, 22 lines */
 		"nop                                                    \n"
 	);
 }
-void func_80BE90BC(void) /* 0 internal, 2 external, 35 lines */
+void func_80BE90BC(int unk0) /* 0 internal, 2 external, 35 lines */
 {
 	asm(
 		".set noat        \n"
@@ -264,29 +266,18 @@ void func_80BE90BC(void) /* 0 internal, 2 external, 35 lines */
 		"nop                                                    \n"
 	);
 }
-void func_80BE91DC(void) /* 1 internal, 0 external, 14 lines */
+
+void func_80BE91DC(entity_t *en, z64_global_t *gl) /* 1 internal, 0 external, 14 lines */
 {
 	asm(
-		".set noat        \n"
-		".set noreorder   \n"
+		".set at        \n"
+		".set reorder   \n"
 		".Lfunc_80BE91DC: \n"
 	);
-	asm(
-		"addiu           $sp,$sp,-24                            \n"
-		"sw              $ra,20($sp)                            \n"
-		"or              $a1,$zero,$zero                        \n"
-		"jal             func_80BE90BC                          \n"
-		"sw              $a0,24($sp)                            \n"
-		"lw              $a0,24($sp)                            \n"
-		"lui             $t6,%hi(data_80BE9214)                 \n"
-		"addiu           $t6,$t6,%lo(data_80BE9214)             \n"
-		"sh              $zero,632($a0)                         \n"
-		"sw              $t6,596($a0)                           \n"
-		"lw              $ra,20($sp)                            \n"
-		"addiu           $sp,$sp,24                             \n"
-		"jr              $ra                                    \n"
-		"nop                                                    \n"
-	);
+
+	func_80BE90BC(0);
+	en->unk278 = 0;
+	en->unk254 = &data_80BE9214;
 }
 void data_80BE8F20(void) /* 1 internal, 4 external, 96 lines */
 {
