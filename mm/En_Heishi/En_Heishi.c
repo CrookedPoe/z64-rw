@@ -40,16 +40,26 @@
 typedef struct {
 	z64_actor_t actor;
 	vec3s_t *head_rot;
+	uint32_t *collision;
 	uint8_t unknown[404];
 } entity_t; /* 02D0 */
 
+/*** external function prototypes ***/
+extern void external_func_80136B30(z64_global_t *gl, uint8_t *skelanime, uint32_t unk0, uint32_t animation, void *unk1, void *unk2, uint32_t limb_count);
+asm("external_func_80136B30 = 0x80136B30");
 
-/*** rewritten function prototypes ***/
+extern void external_func_800E11EC(z64_global_t *gl, uint32_t *collision); /* Previously actor_capsule_free */
+asm("external_func_800E11EC = 0x800E11EC");
+
+extern void external_func_800E1374(z64_global_t *gl, uint32_t *unk0, z64_actor_t *unk1, const uint32_t *source);
+asm("external_func_800E1374 = 0x800E1374");
+
+/*** rewritten internal function prototypes ***/
 void data_80BE9214(entity_t *en, z64_global_t *gl); /* 0 internal, 0 external, 4 lines */
 int data_80BE9380(int unused0, int limb, int unused2, int unused3, vec3s_t *rot, entity_t *en); /* 0 internal, 0 external, 23 lines */
-/*** asm function prototypes ***/
+void data_80BE9090(entity_t *en, z64_global_t *gl); /* 0 internal, 1 external, 11 lines */
+/*** asm internal function prototypes ***/
 void func_80BE9148(void); /* 0 internal, 0 external, 40 lines */
-void data_80BE9090(void); /* 0 internal, 1 external, 11 lines */
 void data_80BE93D8(void); /* 0 internal, 2 external, 22 lines */
 void func_80BE90BC(void); /* 0 internal, 2 external, 35 lines */
 void func_80BE91DC(void); /* 1 internal, 0 external, 14 lines */
@@ -74,11 +84,11 @@ const uint32_t data_80BE9450[] =
 };
 const uint32_t data_80BE947C[] =
 {
-	0x06006C18,
-	0x06002A84,
-	0x06003BFC,
-	0x06003380,
-	0x06004770
+	ANIMB,
+	ANIM2,
+	ANIM4,
+	ANIM3,
+	ANIM5
 };
 const uint32_t data_80BE9490[] =
 {
@@ -167,26 +177,15 @@ void func_80BE9148(void) /* 0 internal, 0 external, 40 lines */
 		"nop                                                    \n"
 	);
 }
-void data_80BE9090(void) /* 0 internal, 1 external, 11 lines */
+
+void data_80BE9090(entity_t *en, z64_global_t *gl) /* 0 internal, 1 external, 11 lines */
 {
 	asm(
-		".set noat        \n"
-		".set noreorder   \n"
+		".set at        \n"
+		".set reorder   \n"
 		".Ldata_80BE9090: \n"
 	);
-	asm(
-		"addiu           $sp,$sp,-24                            \n"
-		"sw              $ra,20($sp)                            \n"
-		"or              $a2,$a0,$zero                          \n"
-		"or              $a3,$a1,$zero                          \n"
-		"or              $a0,$a3,$zero                          \n"
-		"jal             0x800E11EC                 \n"
-		"addiu           $a1,$a2,644                            \n"
-		"lw              $ra,20($sp)                            \n"
-		"addiu           $sp,$sp,24                             \n"
-		"jr              $ra                                    \n"
-		"nop                                                    \n"
-	);
+	external_func_800E11EC(gl, en->collision);
 }
 void data_80BE93D8(void) /* 0 internal, 2 external, 22 lines */
 {
