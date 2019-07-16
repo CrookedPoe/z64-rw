@@ -14,7 +14,7 @@ asm("external_func_800E11EC = 0x800E11EC");
 /*** function prototypes ***/
 void data_80BE9214(void); /* 0 internal, 0 external, 4 lines */
 void data_80BE9380(void); /* 0 internal, 0 external, 23 lines */
-void func_80BE9148(void); /* 0 internal, 0 external, 40 lines */
+int16_t func_80BE9148(entity_t *en, z64_global_t *gl); /* 0 internal, 0 external, 40 lines */
 void dest(entity_t *en, z64_global_t *gl); /* 0 internal, 1 external, 11 lines */
 void data_80BE93D8(void); /* 0 internal, 2 external, 22 lines */
 void func_80BE90BC(void); /* 0 internal, 2 external, 35 lines */
@@ -103,62 +103,52 @@ void data_80BE9380(void) /* 0 internal, 0 external, 23 lines */
 		"nop                                                    \n"
 	);
 }
-void func_80BE9148(void) /* 0 internal, 0 external, 40 lines */
+
+int16_t func_80BE9148(entity_t *en, z64_global_t *gl) /* 0 internal, 0 external, 40 lines */
 {
 	asm(
-		".set noat        \n"
-		".set noreorder   \n"
+		".set at        \n"
+		".set reorder   \n"
 		".Lfunc_80BE9148: \n"
 	);
-	asm(
-		"lh              $t6,626($a0)                           \n"
-		"lh              $t7,50($a0)                            \n"
-		"lui             $at,0x4348                             \n"
-		"mtc1            $at,$f6                                \n"
-		"subu            $v0,$t6,$t7                            \n"
-		"sll             $v0,$v0,16                             \n"
-		"sra             $v0,$v0,16                             \n"
-		"bgez            $v0,.L000004                           \n"
-		"or              $v1,$v0,$zero                          \n"
-		"b               .L000004                               \n"
-		"subu            $v1,$zero,$v0                          \n"
-		".L000004:                                              \n"
-		"lwc1            $f4,152($a0)                           \n"
-		"sh              $zero,608($a0)                         \n"
-		"slti            $at,$v1,20000                          \n"
-		"c.lt.s          $f4,$f6                                \n"
-		"nop                                                    \n"
-		"bc1f            .L000005                               \n"
-		"nop                                                    \n"
-		"beq             $at,$zero,.L000005                     \n"
-		"nop                                                    \n"
-		"lh              $t8,626($a0)                           \n"
-		"lh              $t9,50($a0)                            \n"
-		"addiu           $t1,$zero,10000                        \n"
-		"subu            $t0,$t8,$t9                            \n"
-		"sh              $t0,608($a0)                           \n"
-		"lh              $v0,608($a0)                           \n"
-		"slti            $at,$v0,10001                          \n"
-		"bnel            $at,$zero,.L000006                     \n"
-		"slti            $at,$v0,-10000                         \n"
-		"jr              $ra                                    \n"
-		"sh              $t1,608($a0)                           \n"
-		"slti            $at,$v0,-10000                         \n"
-		".L000006:                                              \n"
-		"beq             $at,$zero,.L000005                     \n"
-		"addiu           $t2,$zero,-10000                       \n"
-		"sh              $t2,608($a0)                           \n"
-		".L000005:                                              \n"
-		"jr              $ra                                    \n"
-		"nop                                                    \n"
-	);
+
+		int16_t temp_v0_2;
+    int temp_v0;
+    int phi_v1;
+		int16_t * unk260 = AADDR(en, 0x0260);
+
+    temp_v0 = (((AVAL(en, int16_t, 0x0272)) - en->actor.speedRot.y) << 0x10) >> 0x10;
+    phi_v1 = temp_v0;
+    if (temp_v0 < 0)
+    {
+        phi_v1 = 0 - temp_v0;
+    }
+    *unk260 = 0;
+    if (en->actor.dist_from_link_xz < 200.0f)
+    {
+        if (phi_v1 < 0x4E20)
+        {
+            *unk260 = ((AVAL(en, int16_t, 0x0272)) - en->actor.speedRot.y);
+            temp_v0_2 = (AVAL(en, int16_t, 0x0260));
+            if (temp_v0_2 >= 0x2711)
+            {
+                *unk260 = 0x2710;
+                return temp_v0_2;
+            }
+            if (temp_v0_2 < -0x2710)
+            {
+                *unk260 = -0x2710;
+            }
+        }
+    }
+    return (int16_t)temp_v0;
 }
 
 void dest(entity_t *en, z64_global_t *gl) /* 0 internal, 1 external, 11 lines */
 {
 	asm(
-		".set noat        \n"
-		".set noreorder   \n"
+		".set at        \n"
+		".set reorder   \n"
 		".Ldest: \n"
 	);
 	external_func_800E11EC(gl, AADDR(en, 0x0284));
