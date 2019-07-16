@@ -2,16 +2,52 @@
 
 #define OBJ_ID 438
 
+/*** Skeleton ***/
+#define SKL            0x0600D640
+#define LIMB_ROOT      00
+#define LIMB_WAIST     01
+#define LIMB_LTHIGH    02
+#define LIMB_LSHIN     03
+#define LIMB_LFOOT     04
+#define LIMB_RTHIGH    05
+#define LIMB_RSHIN     06
+#define LIMB_RFOOT     07
+#define LIMB_TORSO     08
+#define LIMB_LSHOULDER 09
+#define LIMB_LFOREARM  10
+#define LIMB_LHAND 		 11
+#define LIMB_RSHOULDER 12
+#define LIMB_RFOREARM  13
+#define LIMB_RHAND     14
+#define LIMB_HEAD      15
+
+/*** Animations ***/
+#define ANIM0 0x06000A54 /* Idling, hand over heart */
+#define ANIM1 0x060020D8 /* Sitting, drinking from bottle */
+#define ANIM2 0x06002A84 /* Cheering */
+#define ANIM3 0x06003380 /* Sitting, reaching out */
+#define ANIM4 0x06003BFC /* Sitting, waving */
+#define ANIM5 0x06004770 /* Getting up off of the ground */
+#define ANIM6 0x06004AC0 /* Turning on Mido mode */
+#define ANIM7 0x06005320 /* Wafting away fart */
+#define ANIM8 0x060057BC /* Transition: Impeding your progress */
+#define ANIM9 0x06005D28 /* Idle: Impeding your progress */
+#define ANIMA 0x060064C0 /* Idle: Impeding your progress more */
+#define ANIMB 0x06006C18 /* Idle: Standing with hand on hip */
+#define ANIMC 0x0600DC7C /* Idle: Standing with hand on hip, but looking down */
+
+
 typedef struct {
 	z64_actor_t actor;
+	vec3s_t *head_rot;
 	uint8_t unknown[404];
 } entity_t; /* 02D0 */
 
 
 /*** rewritten function prototypes ***/
 void data_80BE9214(entity_t *en, z64_global_t *gl); /* 0 internal, 0 external, 4 lines */
+int data_80BE9380(int unused0, int limb, int unused2, int unused3, vec3s_t *rot, entity_t *en); /* 0 internal, 0 external, 23 lines */
 /*** asm function prototypes ***/
-void data_80BE9380(void); /* 0 internal, 0 external, 23 lines */
 void func_80BE9148(void); /* 0 internal, 0 external, 40 lines */
 void data_80BE9090(void); /* 0 internal, 1 external, 11 lines */
 void data_80BE93D8(void); /* 0 internal, 2 external, 22 lines */
@@ -62,38 +98,24 @@ void data_80BE9214(entity_t *en, z64_global_t *gl) /* 0 internal, 0 external, 4 
 		".Ldata_80BE9214: \n"
 	);
 }
-void data_80BE9380(void) /* 0 internal, 0 external, 23 lines */
+
+int data_80BE9380(int unk0, int limb, int unk1, int unk2, vec3s_t *rot, entity_t *en) /* 0 internal, 0 external, 23 lines */
 {
+	/* callback_limb_rotate
+	* used for rotating head towards player
+	*/
 	asm(
-		".set noat        \n"
-		".set noreorder   \n"
+		".set at        \n"
+		".set reorder   \n"
 		".Ldata_80BE9380: \n"
 	);
-	asm(
-		"sw              $a0,0($sp)                             \n"
-		"sw              $a2,8($sp)                             \n"
-		"sw              $a3,12($sp)                            \n"
-		"addiu           $at,$zero,16                           \n"
-		"bne             $a1,$at,.L000012                       \n"
-		"lw              $v0,20($sp)                            \n"
-		"lw              $v1,16($sp)                            \n"
-		"lh              $t7,602($v0)                           \n"
-		"lh              $t6,0($v1)                             \n"
-		"lh              $t9,2($v1)                             \n"
-		"lh              $t2,4($v1)                             \n"
-		"addu            $t8,$t6,$t7                            \n"
-		"sh              $t8,0($v1)                             \n"
-		"lh              $t0,600($v0)                           \n"
-		"addu            $t1,$t9,$t0                            \n"
-		"sh              $t1,2($v1)                             \n"
-		"lh              $t3,604($v0)                           \n"
-		"addu            $t4,$t2,$t3                            \n"
-		"sh              $t4,4($v1)                             \n"
-		".L000012:                                              \n"
-		"or              $v0,$zero,$zero                        \n"
-		"jr              $ra                                    \n"
-		"nop                                                    \n"
-	);
+	if (limb == (LIMB_HEAD + 1))
+	{
+			rot->x += en->head_rot->y;
+			rot->y += en->head_rot->x;
+			rot->z += en->head_rot->z;
+	}
+	return 0;
 }
 void func_80BE9148(void) /* 0 internal, 0 external, 40 lines */
 {
