@@ -5,8 +5,10 @@
 typedef struct {
 	z64_actor_t actor;
 	uint8_t unknown[404];
+	void *unk254;
 	int16_t unk260;
 	int16_t unk272;
+	uint16_t unk278;
 } entity_t; /* 02D0 */
 
 
@@ -25,8 +27,8 @@ void data_80BE9380(void); /* 0 internal, 0 external, 23 lines */
 int16_t func_80BE9148(entity_t *en, z64_global_t *gl); /* 0 internal, 0 external, 40 lines */
 void dest(entity_t *en, z64_global_t *gl); /* 0 internal, 1 external, 11 lines */
 void draw(entity_t *en, z64_global_t *gl); /* 0 internal, 2 external, 22 lines */
-void func_80BE90BC(entity_t *en, z64_global_t *gl); /* 0 internal, 2 external, 35 lines */
-void func_80BE91DC(void); /* 1 internal, 0 external, 14 lines */
+void func_80BE90BC(entity_t *en, int unk0); /* 0 internal, 2 external, 35 lines */
+void func_80BE91DC(entity_t *en, z64_global_t *gl); /* 1 internal, 0 external, 14 lines */
 void data_80BE8F20(void); /* 1 internal, 4 external, 96 lines */
 void data_80BE9224(void); /* 1 internal, 9 external, 92 lines */
 
@@ -166,7 +168,7 @@ void draw(entity_t *en, z64_global_t *gl) /* 0 internal, 2 external, 22 lines */
 	external_func_80133F28(gl, AVAL(en, uint32_t, 0x0148), AVAL(en, uint32_t, 0x0164), AVAL(en, uint8_t, 0x0146), data_80BE9380, 0, &en->actor);
 }
 
-void func_80BE90BC(entity_t *en, z64_global_t *gl) /* 0 internal, 2 external, 35 lines */
+void func_80BE90BC(entity_t *en, int unk0) /* 0 internal, 2 external, 35 lines */
 {
 	asm(
 		".set noat        \n"
@@ -212,29 +214,17 @@ void func_80BE90BC(entity_t *en, z64_global_t *gl) /* 0 internal, 2 external, 35
 		"nop                                                    \n"
 	);
 }
-void func_80BE91DC(void) /* 1 internal, 0 external, 14 lines */
+void func_80BE91DC(entity_t *en, z64_global_t *gl) /* 1 internal, 0 external, 14 lines */
 {
 	asm(
-		".set noat        \n"
-		".set noreorder   \n"
+		".set at        \n"
+		".set reorder   \n"
 		".Lfunc_80BE91DC: \n"
 	);
-	asm(
-		"addiu           $sp,$sp,-24                            \n"
-		"sw              $ra,20($sp)                            \n"
-		"or              $a1,$zero,$zero                        \n"
-		"jal             func_80BE90BC                          \n"
-		"sw              $a0,24($sp)                            \n"
-		"lw              $a0,24($sp)                            \n"
-		"lui             $t6,%hi(data_80BE9214)                 \n"
-		"addiu           $t6,$t6,%lo(data_80BE9214)             \n"
-		"sh              $zero,632($a0)                         \n"
-		"sw              $t6,596($a0)                           \n"
-		"lw              $ra,20($sp)                            \n"
-		"addiu           $sp,$sp,24                             \n"
-		"jr              $ra                                    \n"
-		"nop                                                    \n"
-	);
+
+	func_80BE90BC(en, 0);
+  en->unk278 = 0;
+  en->unk254 = data_80BE9214;
 }
 void data_80BE8F20(void) /* 1 internal, 4 external, 96 lines */
 {
