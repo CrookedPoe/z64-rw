@@ -13,12 +13,18 @@ typedef struct {
 extern void external_func_800E11EC(z64_global_t *gl, uint32_t *collision); /* Previously actor_capsule_free */
 asm("external_func_800E11EC = 0x800E11EC");
 
+extern void external_func_8012C28C(z64_gfx_t *gfx);
+asm("external_func_8012C28C = 0x8012C28C");
+
+extern void external_func_80133F28(z64_global_t *global, u32 a, u32 b, u32 c, void *callback0, void *callback1, z64_actor_t *actor);
+asm("external_func_80133F28 = 0x80133F28");
+
 /*** function prototypes ***/
 void data_80BE9214(void); /* 0 internal, 0 external, 4 lines */
 void data_80BE9380(void); /* 0 internal, 0 external, 23 lines */
 int16_t func_80BE9148(entity_t *en, z64_global_t *gl); /* 0 internal, 0 external, 40 lines */
 void dest(entity_t *en, z64_global_t *gl); /* 0 internal, 1 external, 11 lines */
-void data_80BE93D8(void); /* 0 internal, 2 external, 22 lines */
+void draw(entity_t *en, z64_global_t *gl); /* 0 internal, 2 external, 22 lines */
 void func_80BE90BC(entity_t *en, z64_global_t *gl); /* 0 internal, 2 external, 35 lines */
 void func_80BE91DC(void); /* 1 internal, 0 external, 14 lines */
 void data_80BE8F20(void); /* 1 internal, 4 external, 96 lines */
@@ -124,15 +130,15 @@ int16_t func_80BE9148(entity_t *en, z64_global_t *gl) /* 0 internal, 0 external,
 	en->unk260 = 0;
 	if (en->actor.dist_from_link_xz < 200.0f)
 	{
-			if (phi_v1 < 20000)
+			if (phi_v1 < ROT16(110))
 			{
 					en->unk260 = (en->unk272 - en->actor.speedRot.y);
-					if (en->unk260 >= 10001)
+					if (en->unk260 >= ROT16(55))
 					{
-							en->unk260 = 10000;
+							en->unk260 = ROT16(55);
 							return en->unk260;
 					}
-					en->unk260 = MAX(en->unk260, -10000);
+					en->unk260 = MAX(en->unk260, ROT16(-55));
 			}
 	}
 	return temp_v0;
@@ -147,38 +153,19 @@ void dest(entity_t *en, z64_global_t *gl) /* 0 internal, 1 external, 11 lines */
 	);
 	external_func_800E11EC(gl, AADDR(en, 0x0284));
 }
-void data_80BE93D8(void) /* 0 internal, 2 external, 22 lines */
+
+void draw(entity_t *en, z64_global_t *gl) /* 0 internal, 2 external, 22 lines */
 {
 	asm(
-		".set noat        \n"
-		".set noreorder   \n"
-		".Ldata_80BE93D8: \n"
+		".set at        \n"
+		".set reorder   \n"
+		".Ldraw: \n"
 	);
-	asm(
-		"addiu           $sp,$sp,-40                            \n"
-		"sw              $ra,36($sp)                            \n"
-		"sw              $a0,40($sp)                            \n"
-		"sw              $a1,44($sp)                            \n"
-		"lw              $t6,44($sp)                            \n"
-		"jal             0x8012C28C                 \n"
-		"lw              $a0,0($t6)                             \n"
-		"lw              $v0,40($sp)                            \n"
-		"lui             $t7,%hi(data_80BE9380)                 \n"
-		"addiu           $t7,$t7,%lo(data_80BE9380)             \n"
-		"lw              $a1,328($v0)                           \n"
-		"lw              $a2,356($v0)                           \n"
-		"lbu             $a3,326($v0)                           \n"
-		"sw              $zero,20($sp)                          \n"
-		"sw              $t7,16($sp)                            \n"
-		"lw              $a0,44($sp)                            \n"
-		"jal             0x80133F28                 \n"
-		"sw              $v0,24($sp)                            \n"
-		"lw              $ra,36($sp)                            \n"
-		"addiu           $sp,$sp,40                             \n"
-		"jr              $ra                                    \n"
-		"nop                                                    \n"
-	);
+
+	external_func_8012C28C(gl->common.gfx_ctxt);
+	external_func_80133F28(gl, AVAL(en, uint32_t, 0x0148), AVAL(en, uint32_t, 0x0164), AVAL(en, uint8_t, 0x0146), data_80BE9380, 0, &en->actor);
 }
+
 void func_80BE90BC(entity_t *en, z64_global_t *gl) /* 0 internal, 2 external, 35 lines */
 {
 	asm(
@@ -468,5 +455,5 @@ const z64_actor_init_t init_vars = {
 	.init = data_80BE8F20,
 	.dest = dest,
 	.main = data_80BE9224,
-	.draw = data_80BE93D8
+	.draw = draw
 };
