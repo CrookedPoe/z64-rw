@@ -57,7 +57,7 @@ extern void external_func_800E1374(z64_global_t *gl, uint32_t *unk0, z64_actor_t
 asm("external_func_800E1374 = 0x800E1374");
 
 /*** rewritten internal function prototypes ***/
-void data_80BE9214(entity_t *en, z64_global_t *gl); /* 0 internal, 0 external, 4 lines */
+void data_80BE9214(entity_t *en, z64_global_t *gl); /* 0 internal, 0 external, 4 lines, is this even necessary? */
 int data_80BE9380(int unused0, int limb, int unused2, int unused3, vec3s_t *rot, entity_t *en); /* 0 internal, 0 external, 23 lines */
 void data_80BE9090(entity_t *en, z64_global_t *gl); /* 0 internal, 1 external, 11 lines */
 void func_80BE91DC(entity_t *en, z64_global_t *gl); /* 1 internal, 0 external, 14 lines */
@@ -105,9 +105,15 @@ const uint32_t data_80BE9490[] =
 void data_80BE9214(entity_t *en, z64_global_t *gl) /* 0 internal, 0 external, 4 lines */
 {
 	asm(
-		".set at        \n"
-		".set reorder   \n"
+		".set noat        \n"
+		".set noreorder   \n"
 		".Ldata_80BE9214: \n"
+	);
+	asm(
+		"sw              $a0,0($sp)                             \n"
+		"sw              $a1,4($sp)                             \n"
+		"jr              $ra                                    \n"
+		"nop                                                    \n"
 	);
 }
 
@@ -334,7 +340,8 @@ void data_80BE8F20(void) /* 1 internal, 4 external, 96 lines */
 		"bnel            $t5,$zero,.L000001                     \n"
 		"lui             $at,0xC040                             \n"
 		".L000002:                                              \n"
-		"jal             0x800B670C                 \n"
+		/*"jal             0x800B670C                 \n"*/
+		"nop \n"
 		"or              $a0,$s0,$zero                          \n"
 		"b               .L000001                               \n"
 		"lui             $at,0xC040                             \n"
@@ -358,7 +365,8 @@ void data_80BE8F20(void) /* 1 internal, 4 external, 96 lines */
 		"beql            $t1,$zero,.L000001                     \n"
 		"lui             $at,0xC040                             \n"
 		".L000003:                                              \n"
-		"jal             0x800B670C                 \n"
+		/*"jal             0x800B670C                 \n"*/
+		"nop \n"
 		"or              $a0,$s0,$zero                          \n"
 		"lui             $at,0xC040                             \n"
 		".L000001:                                              \n"
@@ -418,7 +426,8 @@ void data_80BE9224(void) /* 1 internal, 9 external, 92 lines */
 		"lw              $t0,16($v0)                            \n"
 		"beql            $t0,$zero,.L000009                     \n"
 		"lw              $t9,596($s0)                           \n"
-		"jal             0x800B670C                 \n"
+		/*"jal             0x800B670C                 \n"*/
+		"nop \n"
 		"or              $a0,$s0,$zero                          \n"
 		"b               .L000010                               \n"
 		"lw              $ra,36($sp)                            \n"
