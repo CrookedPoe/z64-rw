@@ -55,14 +55,15 @@ typedef struct {
 		vec3s_t unk25_;          /* 0x0258, size 0x0006 */
 		int16_t unk25E;          /* 0x025E, size 0x0002 */
     int16_t unk260;          /* 0x0260, size 0x0002 */
-		PADDING(6);              /* 0x0262, size 0x0006 */
+		PADDING(2);              /* 0x0262, size 0x0002 */
+		int unk264;              /* 0x0264, size 0x0004 */
 		int16_t unk268;          /* 0x0268, size 0x0002 */
 		int16_t unk26A;          /* 0x026A, size 0x0002 */
 		int16_t unk26C;          /* 0x026C, size 0x0002 */
     PADDING(0x02);           /* 0x026E, size 0x0002 */
 		int16_t unk270;          /* 0x0270, size 0x0002 */
     int16_t unk272;          /* 0x0272, size 0x0002 */
-    PADDING(4);              /* 0x0274, size 0x0004 */
+    float unk274;            /* 0x0274, size 0x0004 */
     uint16_t unk278;         /* 0x0278, size 0x0002 */
 		PADDING(0x0A);           /* 0x027A, size 0x000A */
 		z64_capsule_t	*unk284;   /* 0x0284, size 0x0004 */
@@ -79,10 +80,15 @@ asm("external_func_8012C28C = 0x8012C28C");
 extern void external_func_80133F28(z64_global_t *global, u32 a, u32 b, u32 c, void *callback0, void *callback1, z64_actor_t *actor);
 asm("external_func_80133F28 = 0x80133F28");
 
+extern uint16_t external_func_80134748(u32 a0);
+asm("external_func_80134748 = 0x80134748");
+
+extern void external_func_801373E8(void *skelanime, u32 animation, f32 playback_speed, f32 unk0, f32 frame_count, u8 unk_1, f32 transition_rate);
+asm("external_func_801373E8 = 0x801373E8");
+
 
 /*** function prototypes ***/
 void data_80BE9214(void); /* 0 internal, 0 external, 4 lines */
-void func_80BE90BC(void); /* 0 internal, 2 external, 35 lines */
 void func_80BE91DC(void); /* 1 internal, 0 external, 14 lines */
 void data_80BE8F20(entity_t *en, z64_global_t *gl); /* 1 internal, 4 external, 96 lines */
 void data_80BE9224(void); /* 1 internal, 9 external, 92 lines */
@@ -92,6 +98,7 @@ void func_80BE9148(entity_t *en, z64_global_t *gl); /* 0 internal, 0 external, 4
 void data_80BE93D8(entity_t *en, z64_global_t *gl); /* 0 internal, 2 external, 22 lines */
 void data_80BE9090(entity_t *en, z64_global_t *gl); /* 0 internal, 1 external, 11 lines */
 int data_80BE9380(int a0, int target_limb, int a2, int a3, vec3s_t *limb_rot, entity_t *en); /* 0 internal, 0 external, 23 lines */
+void func_80BE90BC(entity_t *en, int anim_index); /* 0 internal, 2 external, 35 lines */
 
 
 /*** variables ***/
@@ -154,9 +161,9 @@ int data_80BE9380(int a0, int target_limb, int a2, int a3, vec3s_t *limb_rot, en
 
 	if (target_limb == (LIMB_HEAD + 1))
 	{
-			limb_rot->x += en->unk25_.y;
-			limb_rot->y += en->unk25_.x;
-			limb_rot->z += en->unk25_.z;
+		limb_rot->x += en->unk25_.y;
+		limb_rot->y += en->unk25_.x;
+		limb_rot->z += en->unk25_.z;
 	}
 	return 0;
 }
@@ -212,50 +219,17 @@ void data_80BE93D8(entity_t *en, z64_global_t *gl) /* 0 internal, 2 external, 22
 	external_func_80133F28(gl, en->unk148, en->unk164, en->unk146, data_80BE9380, 0, &en->actor);
 }
 
-void func_80BE90BC(void) /* 0 internal, 2 external, 35 lines */
+void func_80BE90BC(entity_t *en, int anim_index) /* 0 internal, 2 external, 35 lines */
 {
 	asm(
-		".set noat        \n"
-		".set noreorder   \n"
+		".set at        \n"
+		".set reorder   \n"
 		".Lfunc_80BE90BC: \n"
 	);
-	asm(
-		"addiu           $sp,$sp,-40                            \n"
-		"sw              $ra,36($sp)                            \n"
-		"sw              $a0,40($sp)                            \n"
-		"lw              $t6,40($sp)                            \n"
-		"sll             $t7,$a1,2                              \n"
-		"lui             $a0,%hi(data_80BE947C)                 \n"
-		"addu            $a0,$a0,$t7                            \n"
-		"sw              $a1,612($t6)                           \n"
-		"jal             0x80134748                 \n"
-		"lw              $a0,%lo(data_80BE947C)($a0)            \n"
-		"mtc1            $v0,$f4                                \n"
-		"lw              $t0,40($sp)                            \n"
-		"lui             $t9,%hi(data_80BE9490)                 \n"
-		"cvt.s.w         $f0,$f4                                \n"
-		"lw              $v1,612($t0)                           \n"
-		"lui             $at,0xC120                             \n"
-		"mtc1            $at,$f6                                \n"
-		"addu            $t9,$t9,$v1                            \n"
-		"lui             $a1,%hi(data_80BE947C)                 \n"
-		"swc1            $f0,628($t0)                           \n"
-		"lbu             $t9,%lo(data_80BE9490)($t9)            \n"
-		"sll             $t8,$v1,2                              \n"
-		"addu            $a1,$a1,$t8                            \n"
-		"lw              $a1,%lo(data_80BE947C)($a1)            \n"
-		"swc1            $f0,16($sp)                            \n"
-		"lui             $a2,0x3F80                             \n"
-		"addiu           $a3,$zero,0                            \n"
-		"addiu           $a0,$t0,324                            \n"
-		"swc1            $f6,24($sp)                            \n"
-		"jal             0x801373E8                 \n"
-		"sw              $t9,20($sp)                            \n"
-		"lw              $ra,36($sp)                            \n"
-		"addiu           $sp,$sp,40                             \n"
-		"jr              $ra                                    \n"
-		"nop                                                    \n"
-	);
+
+  en->unk264 = anim_index;
+  en->unk274 = (float)external_func_80134748(data_80BE947C[anim_index]);
+  external_func_801373E8(&en->unk144, data_80BE947C[en->unk264], 1.0f, 0, en->unk274, data_80BE9490[en->unk264], -10.0f);
 }
 void func_80BE91DC(void) /* 1 internal, 0 external, 14 lines */
 {
