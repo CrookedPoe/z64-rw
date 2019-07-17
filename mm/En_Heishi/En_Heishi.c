@@ -6,7 +6,27 @@
 
 #include <z64ovl/mm/u10.h>
 
-#define OBJ_ID 438
+#define ACT_ID 0x026D
+#define OBJ_ID 0x01B6
+
+/*** Display Lists ***/
+#define DL_UNK0 		 0x06000630
+#define DL_UNK1 		 0x06000768
+#define DL_TORSO 		 0x06009EB0
+#define DL_HEAD 		 0x0600A1A8
+#define DL_RSHOULDER 0x0600A678
+#define DL_RFOREARM  0x0600A768
+#define DL_RHAND 		 0x0600A9A8 /* Right Hand + Spear */
+#define DL_LSHOULDER 0x0600ADE0
+#define DL_LFOREARM  0x0600AED0
+#define DL_LHAND 		 0x0600B120
+#define DL_WAIST 		 0x0600B438
+#define DL_RTHIGH 	 0x0600B5B0
+#define DL_RSHIN 		 0x0600B698
+#define DL_RFOOT 	   0x0600B988
+#define DL_LTHIGH 	 0x0600BAD0
+#define DL_LSHIN 		 0x0600BBB8
+#define DL_LFOOT 		 0x0600BEB8
 
 /*** Skeleton ***/
 #define SKL            0x0600D640
@@ -43,32 +63,29 @@
 #define ANIMC 0x0600DC7C /* Idle: Standing with hand on hip, but looking down */
 
 typedef struct {
-    z64_actor_t actor;       /* 0x0000, size 0x0144 */
-		uint16_t unk144;         /* 0x0144, size 0x0002 */
-		uint8_t unk146;          /* 0x0146, size 0x0001 */
+    z64_actor_t 		 actor;  /* 0x0000, size 0x0144 */
+		uint16_t 				 unk144; /* 0x0144, size 0x0002 */
+		uint8_t 				 unk146; /* 0x0146, size 0x0001 */
 		PADDING(1);              /* 0x0147, size 0x0001 */
-		uint32_t unk148;         /* 0x0148, size 0x0004 */
+		uint32_t 				 unk148; /* 0x0148, size 0x0004 */
 		PADDING(0x18);           /* 0x014C, size 0x0018 */
-		uint32_t unk164;         /* 0x0164, size 0x0004 */
+		uint32_t 				 unk164; /* 0x0164, size 0x0004 */
     PADDING(0xEC);           /* 0x0168, size 0x00EC */
     z64_actorfunc_t *unk254; /* 0x0254, size 0x0004 */
-		vec3s_t unk25_;          /* 0x0258, size 0x0006 */
-		int16_t unk25E;          /* 0x025E, size 0x0002 */
-    int16_t unk260;          /* 0x0260, size 0x0002 */
-		PADDING(2);              /* 0x0262, size 0x0002 */
-		int unk264;              /* 0x0264, size 0x0004 */
-		int16_t unk268;          /* 0x0268, size 0x0002 */
-		int16_t unk26A;          /* 0x026A, size 0x0002 */
-		int16_t unk26C;          /* 0x026C, size 0x0002 */
+		vec3s_t 				 unk258; /* 0x0258, size 0x0006 */
+		int16_t 				 unk25E; /* 0x025E, size 0x0002 */
+    int 						 unk260; /* 0x0260, size 0x0004 */
+		int 						 unk264; /* 0x0264, size 0x0004 */
+		vec3s_t 				 unk268; /* 0x0268, size 0x0006 */
     PADDING(0x02);           /* 0x026E, size 0x0002 */
-		int16_t unk270;          /* 0x0270, size 0x0002 */
-    int16_t unk272;          /* 0x0272, size 0x0002 */
-    float unk274;            /* 0x0274, size 0x0004 */
-    uint16_t unk278;         /* 0x0278, size 0x0002 */
+		int16_t 				 unk270; /* 0x0270, size 0x0002 */
+    int16_t 				 unk272; /* 0x0272, size 0x0002 */
+    float 					 unk274; /* 0x0274, size 0x0004 */
+    uint16_t 				 unk278; /* 0x0278, size 0x0002 */
 		PADDING(0x0A);           /* 0x027A, size 0x000A */
-		z64_capsule_t	*unk284;   /* 0x0284, size 0x0004 */
+		z64_capsule_t		*unk284; /* 0x0284, size 0x0004 */
 		PADDING(0x48);           /* 0x0288, size 0x0048 */
-} entity_t; /* 02D0 */
+} entity_t; 								 /* 0x02D0 */
 
 /*** external functions ***/
 extern void external_func_800E11EC(z64_global_t *gl, z64_capsule_t *collision); /* Previously actor_capsule_free */
@@ -88,8 +105,7 @@ asm("external_func_801373E8 = 0x801373E8");
 
 
 /*** function prototypes ***/
-void data_80BE9214(void); /* 0 internal, 0 external, 4 lines */
-void func_80BE91DC(void); /* 1 internal, 0 external, 14 lines */
+void data_80BE9214(entity_t *en, z64_global_t *gl); /* 0 internal, 0 external, 4 lines */
 void data_80BE8F20(entity_t *en, z64_global_t *gl); /* 1 internal, 4 external, 96 lines */
 void data_80BE9224(void); /* 1 internal, 9 external, 92 lines */
 
@@ -99,6 +115,7 @@ void data_80BE93D8(entity_t *en, z64_global_t *gl); /* 0 internal, 2 external, 2
 void data_80BE9090(entity_t *en, z64_global_t *gl); /* 0 internal, 1 external, 11 lines */
 int data_80BE9380(int a0, int target_limb, int a2, int a3, vec3s_t *limb_rot, entity_t *en); /* 0 internal, 0 external, 23 lines */
 void func_80BE90BC(entity_t *en, int anim_index); /* 0 internal, 2 external, 35 lines */
+void func_80BE91DC(entity_t *en); /* 1 internal, 0 external, 14 lines */
 
 
 /*** variables ***/
@@ -134,9 +151,8 @@ const uint32_t data_80BE9490[] =
 	0x00000000
 };
 
-
 /*** functions ***/
-void data_80BE9214(void) /* 0 internal, 0 external, 4 lines */
+void data_80BE9214(entity_t *en, z64_global_t *gl) /* 0 internal, 0 external, 4 lines */
 {
 	asm(
 		".set noat        \n"
@@ -161,9 +177,9 @@ int data_80BE9380(int a0, int target_limb, int a2, int a3, vec3s_t *limb_rot, en
 
 	if (target_limb == (LIMB_HEAD + 1))
 	{
-		limb_rot->x += en->unk25_.y;
-		limb_rot->y += en->unk25_.x;
-		limb_rot->z += en->unk25_.z;
+		limb_rot->x += en->unk258.y;
+		limb_rot->y += en->unk258.x;
+		limb_rot->z += en->unk258.z;
 	}
 	return 0;
 }
@@ -231,29 +247,18 @@ void func_80BE90BC(entity_t *en, int anim_index) /* 0 internal, 2 external, 35 l
   en->unk274 = (float)external_func_80134748(data_80BE947C[anim_index]);
   external_func_801373E8(&en->unk144, data_80BE947C[en->unk264], 1.0f, 0, en->unk274, data_80BE9490[en->unk264], -10.0f);
 }
-void func_80BE91DC(void) /* 1 internal, 0 external, 14 lines */
+
+void func_80BE91DC(entity_t *en) /* 1 internal, 0 external, 14 lines */
 {
 	asm(
-		".set noat        \n"
-		".set noreorder   \n"
+		".set at        \n"
+		".set reorder   \n"
 		".Lfunc_80BE91DC: \n"
 	);
-	asm(
-		"addiu           $sp,$sp,-24                            \n"
-		"sw              $ra,20($sp)                            \n"
-		"or              $a1,$zero,$zero                        \n"
-		"jal             func_80BE90BC                          \n"
-		"sw              $a0,24($sp)                            \n"
-		"lw              $a0,24($sp)                            \n"
-		"lui             $t6,%hi(data_80BE9214)                 \n"
-		"addiu           $t6,$t6,%lo(data_80BE9214)             \n"
-		"sh              $zero,632($a0)                         \n"
-		"sw              $t6,596($a0)                           \n"
-		"lw              $ra,20($sp)                            \n"
-		"addiu           $sp,$sp,24                             \n"
-		"jr              $ra                                    \n"
-		"nop                                                    \n"
-	);
+
+	func_80BE90BC(en, 0);
+	en->unk278 = 0;
+	en->unk254 = (z64_actorfunc_t *)data_80BE9214;
 }
 void data_80BE8F20(entity_t *en, z64_global_t *gl) /* 1 internal, 4 external, 96 lines */
 {
@@ -467,8 +472,8 @@ void data_80BE9224(void) /* 1 internal, 9 external, 92 lines */
 	);
 }
 const z64_actor_init_t init_vars = {
-	.number = 0x026D,
-	.type = 0x04,
+	.number = ACT_ID,
+	.type = NPC,
 	.room = 0x00,
 	.flags = 0x00000009,
 	.object = OBJ_ID,
