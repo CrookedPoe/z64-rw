@@ -38,7 +38,7 @@
 
 typedef struct {
     z64_actor_t actor;       /* 0x0000, size 0x0144 */
-		uint16_t *unk144;        /* 0x0144, size 0x0002 */
+		uint16_t unk144;         /* 0x0144, size 0x0002 */
 		uint8_t unk146;          /* 0x0146, size 0x0001 */
 		PADDING(1);              /* 0x0147, size 0x0001 */
 		uint32_t unk148;         /* 0x0148, size 0x0004 */
@@ -61,12 +61,11 @@ typedef struct {
     PADDING(4);              /* 0x0274, size 0x0004 */
     uint16_t unk278;         /* 0x0278, size 0x0002 */
 		PADDING(0x0A);           /* 0x027A, size 0x000A */
-		void *unk284;         	 /* 0x0284, size 0x0004 */
-    PADDING(0x48);           /* 0x0288, size 0x0048 */
+		z64_capsule_t	*unk284;   /* 0x0284, size 0x004C */
 } entity_t; /* 02D0 */
 
 
-extern void external_func_800E11EC(z64_global_t *gl, uint32_t *collision); /* Previously actor_capsule_free */
+extern void external_func_800E11EC(z64_global_t *gl, z64_capsule_t *collision); /* Previously actor_capsule_free */
 asm("external_func_800E11EC = 0x800E11EC");
 
 extern void external_func_8012C28C(z64_gfx_t *gfx);
@@ -94,9 +93,9 @@ extern int32_t external_func_800FFEBC(int16_t *rot, int16_t unk0, int16_t unk1, 
 asm("external_func_800FFEBC = 0x800FFEBC");
 
 extern void external_func_800E7DF8(z64_actor_t *actor, void *collision);
-asm("external_func_800E7DF8 = 0x800FFEBC");
+asm("external_func_800E7DF8 = 0x800E7DF8");
 
-extern void external_func_800E2928(z64_global_t *global, void *simple_body_groups, z64_capsule_t *collision);
+extern void external_func_800E2928(z64_global_t *global, void *simple_body_groups, void *collision);
 asm("external_func_800E2928 = 0x800E2928");
 
 extern void external_func_80136CD0(void *skelanime);
@@ -110,7 +109,7 @@ void dest(entity_t *en, z64_global_t *gl); /* 0 internal, 1 external, 11 lines *
 void draw(entity_t *en, z64_global_t *gl); /* 0 internal, 2 external, 22 lines */
 void func_80BE90BC(entity_t *en, int unk0); /* 0 internal, 2 external, 35 lines */
 void func_80BE91DC(entity_t *en); /* 1 internal, 0 external, 14 lines */
-void data_80BE8F20(void); /* 1 internal, 4 external, 96 lines */
+void init(entity_t *en, z64_global_t *gl); /* 1 internal, 4 external, 96 lines */
 void play(entity_t *en, z64_global_t *gl); /* 1 internal, 9 external, 92 lines */
 
 
@@ -203,7 +202,7 @@ int16_t func_80BE9148(entity_t *en, z64_global_t *gl) /* 0 internal, 0 external,
 	asm(
 		".set at        \n"
 		".set reorder   \n"
-		/*".Lfunc_80BE9148: \n"*/
+		".Lfunc_80BE9148: \n"
 	);
 
 	int16_t temp_v0_2;
@@ -236,7 +235,7 @@ void dest(entity_t *en, z64_global_t *gl) /* 0 internal, 1 external, 11 lines */
 		".set reorder   \n"
 		".Ldest: \n"
 	);
-	external_func_800E11EC(gl, AADDR(en, 0x0284));
+	external_func_800E11EC(gl, en->unk284);
 }
 
 void draw(entity_t *en, z64_global_t *gl) /* 0 internal, 2 external, 22 lines */
@@ -299,21 +298,34 @@ void func_80BE90BC(entity_t *en, int unk0) /* 0 internal, 2 external, 35 lines *
 
 void func_80BE91DC(entity_t *en) /* 1 internal, 0 external, 14 lines */
 {
-    asm(
-        ".set at        \n"
-        ".set reorder   \n"
-        ".Lfunc_80BE91DC: \n"
-    );
-    func_80BE90BC(en, 0);
-    en->unk278 = 0;
-    en->unk254 = (z64_actorfunc_t*)data_80BE9214;
+	asm(
+		".set noat        \n"
+		".set noreorder   \n"
+		".Lfunc_80BE91DC: \n"
+	);
+	asm(
+		"addiu           $sp,$sp,-24                            \n"
+		"sw              $ra,20($sp)                            \n"
+		"or              $a1,$zero,$zero                        \n"
+		"jal             func_80BE90BC                          \n"
+		"sw              $a0,24($sp)                            \n"
+		"lw              $a0,24($sp)                            \n"
+		"lui             $t6,%hi(data_80BE9214)                 \n"
+		"addiu           $t6,$t6,%lo(data_80BE9214)             \n"
+		"sh              $zero,632($a0)                         \n"
+		"sw              $t6,596($a0)                           \n"
+		"lw              $ra,20($sp)                            \n"
+		"addiu           $sp,$sp,24                             \n"
+		"jr              $ra                                    \n"
+		"nop                                                    \n"
+	);
 }
-void data_80BE8F20(void) /* 1 internal, 4 external, 96 lines */
+void init(entity_t *en, z64_global_t *gl) /* 1 internal, 4 external, 96 lines */
 {
 	asm(
 		".set noat        \n"
 		".set noreorder   \n"
-		".Ldata_80BE8F20: \n"
+		".Linit: \n"
 	);
 	asm(
 		"addiu           $sp,$sp,-48                            \n"
@@ -414,54 +426,119 @@ void data_80BE8F20(void) /* 1 internal, 4 external, 96 lines */
 		"nop                                                    \n"
 	);
 }
+
 void play(entity_t *en, z64_global_t *gl) /* 1 internal, 9 external, 92 lines */
 {
 	asm(
-		".set at        \n"
-		".set reorder   \n"
-		".Lplay: \n"
+		".set noat        \n"
+		".set noreorder   \n"
+		".Ldata_80BE9224: \n"
 	);
-    external_func_80136CD0(&en->unk144); /* anime_update_frame */
-    if (en->unk270 != 0)
-    {
-        en->unk270 -= 1;
-    }
-    en->actor.rot_2.y = en->actor.speedRot.y;
-    if (en->unk268 != 0)
-    {
-        if ((AVAL(SAVE_CONTEXT, uint8_t, 0x0018)) == 3)
-        {
-            if ((AVAL(SAVE_CONTEXT, uint8_t, 0x0010)) != 0)
-            {
-                external_func_800B670C(&en->actor); /* actor_kill */
-                return;
-            }
-        }
-    }
-		z64_actorfunc_t *playfunc = en->unk254;
-    playfunc(en, gl);
-    external_func_800B6A88(&en->actor); /* Function to move in direction (0x32) at set velocity (0x68) */
-    external_func_800B78B8(gl, &en->actor, 20.0f, 20.0f, 50.0f, 0x1D); /* possibly primary actor collision call */
-    external_func_800B67E0(&en->actor, 0.01f); /* actor_set_scale */
-    if (en->unk26C != 0)
-    {
-        func_80BE9148(en, gl);
-    }
-    external_func_800B675C(&en->actor, 60.0f); /* actor_set_height */
-    external_func_800FFEBC(&en->unk25A, en->unk260, 1, 0x0BB8, 0);
-    external_func_800FFEBC(&en->unk258, en->unk25E, 1, 0x03E8, 0);
-    external_func_800E7DF8(&en->actor, en->unk284); /* actor_capsule_update */
-    external_func_800E2928(gl, AADDR(gl, 0x18884), en->unk284); /* Set to collision pool OT*/
+	asm(
+		"addiu           $sp,$sp,-56                            \n"
+		"sw              $s0,32($sp)                            \n"
+		"or              $s0,$a0,$zero                          \n"
+		"sw              $ra,36($sp)                            \n"
+		"sw              $a1,60($sp)                            \n"
+		"jal             0x80136CD0                 \n"
+		"addiu           $a0,$s0,324                            \n"
+		"lh              $v0,624($s0)                           \n"
+		"beq             $v0,$zero,.L000007                     \n"
+		"addiu           $t6,$v0,-1                             \n"
+		"sh              $t6,624($s0)                           \n"
+		".L000007:                                              \n"
+		"lw              $t8,616($s0)                           \n"
+		"lh              $t7,50($s0)                            \n"
+		"lui             $v0,0x801F                             \n"
+		"beq             $t8,$zero,.L000008                     \n"
+		"sh              $t7,190($s0)                           \n"
+		"addiu           $v0,$v0,-2448                          \n"
+		"lw              $t9,24($v0)                            \n"
+		"addiu           $at,$zero,3                            \n"
+		"bnel            $t9,$at,.L000009                       \n"
+		"lw              $t9,596($s0)                           \n"
+		"lw              $t0,16($v0)                            \n"
+		"beql            $t0,$zero,.L000009                     \n"
+		"lw              $t9,596($s0)                           \n"
+		"jal             0x800B670C                 \n"
+		"or              $a0,$s0,$zero                          \n"
+		"b               .L000010                               \n"
+		"lw              $ra,36($sp)                            \n"
+		".L000008:                                              \n"
+		"lw              $t9,596($s0)                           \n"
+		".L000009:                                              \n"
+		"or              $a0,$s0,$zero                          \n"
+		"lw              $a1,60($sp)                            \n"
+		"jalr            $t9                                    \n"
+		"nop                                                    \n"
+		"jal             0x800B6A88                 \n"
+		"or              $a0,$s0,$zero                          \n"
+		"lui             $at,0x41A0                             \n"
+		"mtc1            $at,$f0                                \n"
+		"lui             $at,0x4248                             \n"
+		"mtc1            $at,$f4                                \n"
+		"addiu           $t1,$zero,29                           \n"
+		"mfc1            $a2,$f0                                \n"
+		"mfc1            $a3,$f0                                \n"
+		"sw              $t1,20($sp)                            \n"
+		"lw              $a0,60($sp)                            \n"
+		"or              $a1,$s0,$zero                          \n"
+		"jal             0x800B78B8                 \n"
+		"swc1            $f4,16($sp)                            \n"
+		"lui             $a1,0x3C23                             \n"
+		"ori             $a1,$a1,0xd70a                         \n"
+		"jal             0x800B67E0                 \n"
+		"or              $a0,$s0,$zero                          \n"
+		"lw              $t2,620($s0)                           \n"
+		"beql            $t2,$zero,.L000011                     \n"
+		"or              $a0,$s0,$zero                          \n"
+		"jal             func_80BE9148                          \n"
+		"or              $a0,$s0,$zero                          \n"
+		"or              $a0,$s0,$zero                          \n"
+		".L000011:                                              \n"
+		"jal             0x800B675C                 \n"
+		"lui             $a1,0x4270                             \n"
+		"lh              $a1,608($s0)                           \n"
+		"sw              $zero,16($sp)                          \n"
+		"addiu           $a0,$s0,602                            \n"
+		"addiu           $a2,$zero,1                            \n"
+		"jal             0x800FFEBC                 \n"
+		"addiu           $a3,$zero,3000                         \n"
+		"lh              $a1,606($s0)                           \n"
+		"sw              $zero,16($sp)                          \n"
+		"addiu           $a0,$s0,600                            \n"
+		"addiu           $a2,$zero,1                            \n"
+		"jal             0x800FFEBC                 \n"
+		"addiu           $a3,$zero,1000                         \n"
+		"addiu           $a2,$s0,644                            \n"
+		"or              $a1,$a2,$zero                          \n"
+		"sw              $a2,44($sp)                            \n"
+		"jal             0x800E7DF8                 \n"
+		"or              $a0,$s0,$zero                          \n"
+		"lw              $a0,60($sp)                            \n"
+		"lui             $at,0x0001                             \n"
+		"ori             $at,$at,0x8884                         \n"
+		"lw              $a2,44($sp)                            \n"
+		"jal             0x800E2928                 \n"
+		"addu            $a1,$a0,$at                            \n"
+		"lw              $ra,36($sp)                            \n"
+		".L000010:                                              \n"
+		"lw              $s0,32($sp)                            \n"
+		"addiu           $sp,$sp,56                             \n"
+		"jr              $ra                                    \n"
+		"nop                                                    \n"
+	);
 }
+
 const z64_actor_init_t init_vars = {
 	.number = 0x026D,
-	.type = 0x04,
+	.type = NPC,
 	.room = 0x00,
 	.flags = 0x00000009,
 	.object = OBJ_ID,
 	.padding = 0x0000,
 	.instance_size = sizeof(entity_t),
-	.init = data_80BE8F20,
+	.init = init,
 	.dest = dest,
 	.main = play,
 	.draw = draw

@@ -1,8 +1,4 @@
-/***
-* En_Heishi Rewrite by CrookedPoe
-* MMU10 DMA Entry: 	 0x0001C940
-* MMU10 Actor Entry: 0x00C4A2B0
-***/
+
 
 #include <z64ovl/mm/u10.h>
 
