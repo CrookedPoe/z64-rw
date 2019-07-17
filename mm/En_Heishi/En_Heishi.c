@@ -64,13 +64,18 @@
 
 typedef struct {
     z64_actor_t 		 actor;  /* 0x0000, size 0x0144 */
-		uint16_t 				 unk144; /* 0x0144, size 0x0002 */
-		uint8_t 				 unk146; /* 0x0146, size 0x0001 */
-		PADDING(1);              /* 0x0147, size 0x0001 */
-		uint32_t 				 unk148; /* 0x0148, size 0x0004 */
-		PADDING(0x18);           /* 0x014C, size 0x0018 */
-		uint32_t 				 unk164; /* 0x0164, size 0x0004 */
-    PADDING(0xEC);           /* 0x0168, size 0x00EC */
+		z64_skelanime_t  unk144; /* 0x0144, size 0x0040 */
+		//uint8_t 				 unk146; /* 0x0146, size 0x0001 */
+		//PADDING(0x01);           /* 0x0147, size 0x0001 */
+		//uint32_t 				 unk148; /* 0x0148, size 0x0004 */
+		//PADDING(0x18);           /* 0x014C, size 0x0018 */
+		//uint32_t 				 unk164; /* 0x0164, size 0x0004 */
+    //PADDING(0x20);           /* 0x0168, size 0x0020 */
+		uint32_t         unk184; /* 0x0184, size 0x0004 */
+		uint32_t         unk188; /* 0x0188, size 0x0004 */
+		PADDING(0x62);           /* 0x018C, size 0x0062 */
+		uint32_t         unk1EE; /* 0x01EE, size 0x0004 */
+		PADDING(0x62);           /* 0x01F2, size 0x0062 */
     z64_actorfunc_t *unk254; /* 0x0254, size 0x0004 */
 		vec3s_t 				 unk258; /* 0x0258, size 0x0006 */
 		int16_t 				 unk25E; /* 0x025E, size 0x0002 */
@@ -84,29 +89,21 @@ typedef struct {
     uint16_t 				 unk278; /* 0x0278, size 0x0002 */
 		PADDING(0x0A);           /* 0x027A, size 0x000A */
 		z64_capsule_t		*unk284; /* 0x0284, size 0x0004 */
-		PADDING(0x48);           /* 0x0288, size 0x0048 */
+		PADDING(0x3C);           /* 0x0288, size 0x003C */
+		vec3s_t          unk2C4; /* 0x02C4, size 0x0006 */
+		PADDING(0x06);           /* 0x02CA, size 0x0006 */
 } entity_t; 								 /* 0x02D0 */
 
 /*** external functions ***/
-extern void external_func_800E11EC(z64_global_t *gl, z64_capsule_t *collision); /* Previously actor_capsule_free */
-asm("external_func_800E11EC = 0x800E11EC");
-
 extern void external_func_8012C28C(z64_gfx_t *gfx);
 asm("external_func_8012C28C = 0x8012C28C");
-
-extern void external_func_80133F28(z64_global_t *global, u32 a, u32 b, u32 c, void *callback0, void *callback1, z64_actor_t *actor);
-asm("external_func_80133F28 = 0x80133F28");
 
 extern uint16_t external_func_80134748(u32 a0);
 asm("external_func_80134748 = 0x80134748");
 
-extern void external_func_801373E8(void *skelanime, u32 animation, f32 playback_speed, f32 unk0, f32 frame_count, u8 unk_1, f32 transition_rate);
-asm("external_func_801373E8 = 0x801373E8");
-
 
 /*** function prototypes ***/
 void data_80BE9214(entity_t *en, z64_global_t *gl); /* 0 internal, 0 external, 4 lines */
-void data_80BE8F20(entity_t *en, z64_global_t *gl); /* 1 internal, 4 external, 96 lines */
 void data_80BE9224(void); /* 1 internal, 9 external, 92 lines */
 
 /* rewritten */
@@ -116,22 +113,32 @@ void data_80BE9090(entity_t *en, z64_global_t *gl); /* 0 internal, 1 external, 1
 int data_80BE9380(int a0, int target_limb, int a2, int a3, vec3s_t *limb_rot, entity_t *en); /* 0 internal, 0 external, 23 lines */
 void func_80BE90BC(entity_t *en, int anim_index); /* 0 internal, 2 external, 35 lines */
 void func_80BE91DC(entity_t *en); /* 1 internal, 0 external, 14 lines */
+void data_80BE8F20(entity_t *en, z64_global_t *gl); /* 1 internal, 4 external, 96 lines */
 
 
 /*** variables ***/
-const uint32_t data_80BE9450[] =
+const z64_capsule_init_t data_80BE9450 =
 {
-	0x0A000009,
-	0x20010000,
-	0x00000000,
-	0x00000000,
-	0x00000000,
-	0xF7CFFFFF,
-	0x00000000,
-	0x00000100,
-	0x0014003C,
-	0x00000000,
-	0x00000000
+	.cso_0x00 = 0x0A,
+	.cso_0x01 = 0x00,
+	.cso_0x01_02 = 0x00,
+	.unk_0x12 = 0x09,
+	.unk_0x12_2 = 0x20,
+	.cso_0x05 = 0x01,
+	.cso_0x08 = 0x00,
+	.cso_0x0C = 0x00000000,
+	.damage_type = 0x00,
+	.damage_amount = 0x00,
+	.cso_0x14 = 0xF7CFFFFF,
+	.cso_0x18 = 0x00,
+	.cso_0x19 = 0x00,
+	.cso_0x1C = 0x00,
+	.cso_0x1D = 0x01,
+	.cso_0x1E = 0x00,
+	.radius = 0x0014,
+	.height = 0x003C,
+	.cso_0x24 = 0x0000,
+	.pos = {0, 0, 0}
 };
 
 const uint32_t data_80BE947C[] =
@@ -220,7 +227,7 @@ void data_80BE9090(entity_t *en, z64_global_t *gl) /* 0 internal, 1 external, 11
 		".set reorder   \n"
 		".Ldata_80BE9090: \n"
 	);
-	external_func_800E11EC(gl, en->unk284);
+	actor_capsule_free(gl, en->unk284);
 }
 
 void data_80BE93D8(entity_t *en, z64_global_t *gl) /* 0 internal, 2 external, 22 lines */
@@ -232,7 +239,7 @@ void data_80BE93D8(entity_t *en, z64_global_t *gl) /* 0 internal, 2 external, 22
 	);
 
 	external_func_8012C28C(gl->common.gfx_ctxt);
-	external_func_80133F28(gl, en->unk148, en->unk164, en->unk146, data_80BE9380, 0, &en->actor);
+	skelanime_draw_mtx(gl, en->unk144.limb_index, en->unk144.unk5, en->unk144.dlist_count, data_80BE9380, 0, &en->actor);
 }
 
 void func_80BE90BC(entity_t *en, int anim_index) /* 0 internal, 2 external, 35 lines */
@@ -245,7 +252,7 @@ void func_80BE90BC(entity_t *en, int anim_index) /* 0 internal, 2 external, 35 l
 
   en->unk264 = anim_index;
   en->unk274 = (float)external_func_80134748(data_80BE947C[anim_index]);
-  external_func_801373E8(&en->unk144, data_80BE947C[en->unk264], 1.0f, 0, en->unk274, data_80BE9490[en->unk264], -10.0f);
+  actor_anime_change(&en->unk144, data_80BE947C[en->unk264], 1.0f, 0, en->unk274, data_80BE9490[en->unk264], -10.0f);
 }
 
 void func_80BE91DC(entity_t *en) /* 1 internal, 0 external, 14 lines */
@@ -253,7 +260,7 @@ void func_80BE91DC(entity_t *en) /* 1 internal, 0 external, 14 lines */
 	asm(
 		".set at        \n"
 		".set reorder   \n"
-		".Lfunc_80BE91DC: \n"
+		/*".Lfunc_80BE91DC: \n"*/
 	);
 
 	func_80BE90BC(en, 0);
@@ -263,111 +270,103 @@ void func_80BE91DC(entity_t *en) /* 1 internal, 0 external, 14 lines */
 void data_80BE8F20(entity_t *en, z64_global_t *gl) /* 1 internal, 4 external, 96 lines */
 {
 	asm(
-		".set noat        \n"
-		".set noreorder   \n"
+		".set at        \n"
+		".set reorder   \n"
 		".Ldata_80BE8F20: \n"
 	);
-	/* Debug Instance Address */
-  uint32_t * _inst = (uint32_t *)0x80702050;
-  *_inst = (uint32_t)en;
-	asm(
-		"addiu           $sp,$sp,-48                            \n"
-		"sw              $s0,40($sp)                            \n"
-		"or              $s0,$a0,$zero                          \n"
-		"sw              $ra,44($sp)                            \n"
-		"sw              $a1,52($sp)                            \n"
-		"lui             $a2,0x800B                             \n"
-		"addiu           $a2,$a2,16320                          \n"
-		"addiu           $a0,$s0,188                            \n"
-		"addiu           $a1,$zero,0                            \n"
-		"jal             0x800B3BA4                 \n"
-		"lui             $a3,0x41C8                             \n"
-		"lui             $a2,0x0601                             \n"
-		"lui             $a3,0x0600                             \n"
-		"addiu           $t6,$s0,392                            \n"
-		"addiu           $t7,$s0,494                            \n"
-		"addiu           $t8,$zero,17                           \n"
-		"sw              $t8,24($sp)                            \n"
-		"sw              $t7,20($sp)                            \n"
-		"sw              $t6,16($sp)                            \n"
-		"addiu           $a3,$a3,15356                          \n"
-		"addiu           $a2,$a2,-10688                         \n"
-		"lw              $a0,52($sp)                            \n"
-		"jal             0x80136B30                 \n"
-		"addiu           $a1,$s0,324                            \n"
-		"lh              $v0,28($s0)                            \n"
-		"lh              $t0,50($s0)                            \n"
-		"addiu           $t9,$zero,255                          \n"
-		"sb              $t9,182($s0)                           \n"
-		"sw              $v0,616($s0)                           \n"
-		"bne             $v0,$zero,.L000000                     \n"
-		"sh              $t0,626($s0)                           \n"
-		"lui             $v0,0x801F                             \n"
-		"addiu           $t1,$zero,1                            \n"
-		"addiu           $v0,$v0,-2448                          \n"
-		"sw              $t1,620($s0)                           \n"
-		"lbu             $t2,3895($v0)                          \n"
-		"andi            $t3,$t2,0x80                           \n"
-		"bnel            $t3,$zero,.L000001                     \n"
-		"lui             $at,0xC040                             \n"
-		"lw              $t4,24($v0)                            \n"
-		"addiu           $at,$zero,3                            \n"
-		"bne             $t4,$at,.L000002                       \n"
-		"nop                                                    \n"
-		"lw              $t5,16($v0)                            \n"
-		"bnel            $t5,$zero,.L000001                     \n"
-		"lui             $at,0xC040                             \n"
-		".L000002:                                              \n"
-		"jal             0x800B670C                 \n"
-		"or              $a0,$s0,$zero                          \n"
-		"b               .L000001                               \n"
-		"lui             $at,0xC040                             \n"
-		".L000000:                                              \n"
-		"lui             $v0,0x801F                             \n"
-		"addiu           $t6,$zero,30                           \n"
-		"addiu           $t7,$zero,60                           \n"
-		"addiu           $v0,$v0,-2448                          \n"
-		"sh              $t6,708($s0)                           \n"
-		"sh              $t7,710($s0)                           \n"
-		"sh              $zero,712($s0)                         \n"
-		"lbu             $t8,3895($v0)                          \n"
-		"andi            $t9,$t8,0x80                           \n"
-		"bne             $t9,$zero,.L000003                     \n"
-		"nop                                                    \n"
-		"lw              $t0,24($v0)                            \n"
-		"addiu           $at,$zero,3                            \n"
-		"bnel            $t0,$at,.L000001                       \n"
-		"lui             $at,0xC040                             \n"
-		"lw              $t1,16($v0)                            \n"
-		"beql            $t1,$zero,.L000001                     \n"
-		"lui             $at,0xC040                             \n"
-		".L000003:                                              \n"
-		"jal             0x800B670C                 \n"
-		"or              $a0,$s0,$zero                          \n"
-		"lui             $at,0xC040                             \n"
-		".L000001:                                              \n"
-		"mtc1            $at,$f4                                \n"
-		"addiu           $t2,$zero,6                            \n"
-		"sb              $t2,31($s0)                            \n"
-		"lui             $a3,%hi(data_80BE9450)                 \n"
-		"swc1            $f4,116($s0)                           \n"
-		"lw              $a0,52($sp)                            \n"
-		"addiu           $a3,$a3,%lo(data_80BE9450)             \n"
-		"addiu           $a1,$s0,644                            \n"
-		"jal             0x800E1374                 \n"
-		"or              $a2,$s0,$zero                          \n"
-		"lw              $t3,4($s0)                             \n"
-		"lui             $at,0x0800                             \n"
-		"or              $a0,$s0,$zero                          \n"
-		"or              $t4,$t3,$at                            \n"
-		"jal             func_80BE91DC                          \n"
-		"sw              $t4,4($s0)                             \n"
-		"lw              $ra,44($sp)                            \n"
-		"lw              $s0,40($sp)                            \n"
-		"addiu           $sp,$sp,48                             \n"
-		"jr              $ra                                    \n"
-		"nop                                                    \n"
-	);
+
+	en->actor.mass = 0xFF;
+  en->unk268.x = en->actor.variable;
+  en->unk272 = en->actor.speedRot.y;
+  en->actor.unk_02_ = 6;
+  en->actor.gravity = -3.0f;
+  en->actor.flags |= 0x08000000;
+  func_80BE91DC(en);
+ 	actor_init_shadow(&en->actor.rot_2, 0, &ACTOR_SHADOW_DRAWFUNC_CIRCLE, 25.0f);
+ 	skelanime_init_mtx(gl, &en->unk144, SKL, ANIM4, (uint8_t)en->unk188, (uint8_t)en->unk1EE, 0x11);
+	actor_capsule_init(gl, en->unk284, &en->actor, &data_80BE9450);
+
+	if (!en->actor.variable)
+	{
+		en->unk2C4.x = 0x001E;
+		en->unk2C4.y = 0x003C;
+		en->unk2C4.z = 0x0000;
+	}
+	else
+		en->unk268.z = 1;
+
+	if (((AVAL(SAVE_CONTEXT, uint32_t, 0x0F37)) & 0x80) == 0)
+	{
+			if ((AVAL(SAVE_CONTEXT, uint32_t, 0x0018)) == 3)
+			{
+					if (!en->actor.variable)
+					{
+						if ((AVAL(SAVE_CONTEXT, uint32_t, 0x0010)) != 0)
+						{
+								actor_kill(&en->actor);
+						}
+					}
+					else
+					{
+						if ((AVAL(SAVE_CONTEXT, uint32_t, 0x0010)) == 0)
+						{
+								actor_kill(&en->actor);
+						}
+					}
+			}
+	}
+
+	/*if (arg0->unk1C == 0)
+{
+		temp_v0 = 0x801f0000 - 0x990;
+		arg0->unk26C = 1;
+		if ((temp_v0->unkF37 & 0x80) == 0)
+		{
+				if (temp_v0->unk18 == 3)
+				{
+						if (temp_v0->unk10 == 0)
+						{
+block_4:
+								external_func_800B670C(arg0);
+						}
+						else
+						{
+block_9:
+						}
+				}
+				else
+				{
+						goto block_4;
+				}
+		}
+		else
+		{
+				goto block_9;
+		}
+}
+else
+{
+		temp_v0_2 = 0x801f0000 - 0x990;
+		arg0->unk2C4 = (u16)0x1e;
+		arg0->unk2C6 = (u16)0x3c;
+		arg0->unk2C8 = (u16)0;
+		if ((temp_v0_2->unkF37 & 0x80) == 0)
+		{
+				if (temp_v0_2->unk18 == 3)
+				{
+						if (temp_v0_2->unk10 != 0)
+						{
+block_8:
+								external_func_800B670C(arg0);
+						}
+				}
+		}
+		else
+		{
+				goto block_8;
+		}
+		goto block_9;
+}*/
 }
 void data_80BE9224(void) /* 1 internal, 9 external, 92 lines */
 {
