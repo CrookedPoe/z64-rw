@@ -73,8 +73,10 @@ typedef struct {
     z64_actorfunc_t *unk254; 		/* 0x0254, size 0x0004 */
 		vec3s_t 				 head_rot; 	/* 0x0258, size 0x0006 */
 		int16_t 				 unk25E; 		/* 0x025E, size 0x0002 */
-    int 						 unk260; 		/* 0x0260, size 0x0004 */
-		int 						 unk264; 		/* 0x0264, size 0x0004 */
+    int16_t 				 unk260; 		/* 0x0260, size 0x0002 */
+		int16_t 				 unk262; 		/* 0x0262, size 0x0002 */
+		int16_t 				 unk264; 		/* 0x0264, size 0x0002 */
+		int16_t 				 unk266; 		/* 0x0266, size 0x0002 */
 		vec3s_t 				 unk268; 		/* 0x0268, size 0x0006 */
     PADDING(0x02);           		/* 0x026E, size 0x0002 */
 		int16_t 				 unk270; 		/* 0x0270, size 0x0002 */
@@ -86,6 +88,15 @@ typedef struct {
 } entity_t; 								 		/* 0x02D0 */
 
 /*** external functions ***/
+extern void external_func_800B6A88(z64_actor_t *actor);
+asm("external_func_800B6A88 = 0x800B6A88");
+
+extern void external_func_800B78B8(z64_global_t *global, z64_actor_t *actor, f32 below, f32 radius, f32 above, u32 flags);
+asm("external_func_800B78B8 = 0x800B78B8");
+
+extern int32_t external_func_800FFEBC(int16_t rot, int32_t unk0, int16_t unk1, int32_t unk2, int unk3);
+asm("external_func_800FFEBC = 0x800FFEBC");
+
 extern void external_func_8012C28C(z64_gfx_t *gfx);
 asm("external_func_8012C28C = 0x8012C28C");
 
@@ -98,7 +109,7 @@ void data_80BE9214(entity_t *en, z64_global_t *gl); /* 0 internal, 0 external, 4
 void play(entity_t *en, z64_global_t *gl); /* 1 internal, 9 external, 92 lines */
 
 /* rewritten */
-void heishi_limit_rotation(entity_t *en, z64_global_t *gl); /* 0 internal, 0 external, 40 lines */
+void heishi_limit_rotation(entity_t *en); /* 0 internal, 0 external, 40 lines */
 void draw(entity_t *en, z64_global_t *gl); /* 0 internal, 2 external, 22 lines */
 void dest(entity_t *en, z64_global_t *gl); /* 0 internal, 1 external, 11 lines */
 int heishi_callback_limb_rotation(int a0, int target_limb, int a2, int a3, vec3s_t *limb_rot, entity_t *en); /* 0 internal, 0 external, 23 lines */
@@ -182,13 +193,13 @@ int heishi_callback_limb_rotation(int a0, int target_limb, int a2, int a3, vec3s
 	return 0;
 }
 
-void heishi_limit_rotation(entity_t *en, z64_global_t *gl) /* 0 internal, 0 external, 40 lines */
+void heishi_limit_rotation(entity_t *en) /* 0 internal, 0 external, 40 lines */
 {
     /* Simplified by <z64.me> */
     asm(
         ".set at        \n"
         ".set reorder   \n"
-        ".Lheishi_limit_rotation: \n"
+        /*".Lheishi_limit_rotation: \n"*/
     );
 
     en->unk260 = 0;
@@ -301,108 +312,50 @@ void init(entity_t *en, z64_global_t *gl)
   func_80BE91DC(en);
 }
 
-void play(entity_t *en, z64_global_t *gl) /* 1 internal, 9 external, 92 lines */
+void play(entity_t *en, z64_global_t *gl)
 {
-	asm(
-		".set noat        \n"
-		".set noreorder   \n"
-		".Lplay: \n"
-	);
-	asm(
-		"addiu           $sp,$sp,-56                            \n"
-		"sw              $s0,32($sp)                            \n"
-		"or              $s0,$a0,$zero                          \n"
-		"sw              $ra,36($sp)                            \n"
-		"sw              $a1,60($sp)                            \n"
-		"jal             0x80136CD0                 \n"
-		"addiu           $a0,$s0,324                            \n"
-		"lh              $v0,624($s0)                           \n"
-		"beq             $v0,$zero,.L000007                     \n"
-		"addiu           $t6,$v0,-1                             \n"
-		"sh              $t6,624($s0)                           \n"
-		".L000007:                                              \n"
-		"lw              $t8,616($s0)                           \n"
-		"lh              $t7,50($s0)                            \n"
-		"lui             $v0,0x801F                             \n"
-		"beq             $t8,$zero,.L000008                     \n"
-		"sh              $t7,190($s0)                           \n"
-		"addiu           $v0,$v0,-2448                          \n"
-		"lw              $t9,24($v0)                            \n"
-		"addiu           $at,$zero,3                            \n"
-		"bnel            $t9,$at,.L000009                       \n"
-		"lw              $t9,596($s0)                           \n"
-		"lw              $t0,16($v0)                            \n"
-		"beql            $t0,$zero,.L000009                     \n"
-		"lw              $t9,596($s0)                           \n"
-		"jal             0x800B670C                 \n"
-		"or              $a0,$s0,$zero                          \n"
-		"b               .L000010                               \n"
-		"lw              $ra,36($sp)                            \n"
-		".L000008:                                              \n"
-		"lw              $t9,596($s0)                           \n"
-		".L000009:                                              \n"
-		"or              $a0,$s0,$zero                          \n"
-		"lw              $a1,60($sp)                            \n"
-		"jalr            $t9                                    \n"
-		"nop                                                    \n"
-		"jal             0x800B6A88                 \n"
-		"or              $a0,$s0,$zero                          \n"
-		"lui             $at,0x41A0                             \n"
-		"mtc1            $at,$f0                                \n"
-		"lui             $at,0x4248                             \n"
-		"mtc1            $at,$f4                                \n"
-		"addiu           $t1,$zero,29                           \n"
-		"mfc1            $a2,$f0                                \n"
-		"mfc1            $a3,$f0                                \n"
-		"sw              $t1,20($sp)                            \n"
-		"lw              $a0,60($sp)                            \n"
-		"or              $a1,$s0,$zero                          \n"
-		"jal             0x800B78B8                 \n"
-		"swc1            $f4,16($sp)                            \n"
-		"lui             $a1,0x3C23                             \n"
-		"ori             $a1,$a1,0xd70a                         \n"
-		"jal             0x800B67E0                 \n"
-		"or              $a0,$s0,$zero                          \n"
-		"lw              $t2,620($s0)                           \n"
-		"beql            $t2,$zero,.L000011                     \n"
-		"or              $a0,$s0,$zero                          \n"
-		"jal             heishi_limit_rotation                          \n"
-		"or              $a0,$s0,$zero                          \n"
-		"or              $a0,$s0,$zero                          \n"
-		".L000011:                                              \n"
-		"jal             0x800B675C                 \n"
-		"lui             $a1,0x4270                             \n"
-		"lh              $a1,608($s0)                           \n"
-		"sw              $zero,16($sp)                          \n"
-		"addiu           $a0,$s0,602                            \n"
-		"addiu           $a2,$zero,1                            \n"
-		"jal             0x800FFEBC                 \n"
-		"addiu           $a3,$zero,3000                         \n"
-		"lh              $a1,606($s0)                           \n"
-		"sw              $zero,16($sp)                          \n"
-		"addiu           $a0,$s0,600                            \n"
-		"addiu           $a2,$zero,1                            \n"
-		"jal             0x800FFEBC                 \n"
-		"addiu           $a3,$zero,1000                         \n"
-		"addiu           $a2,$s0,644                            \n"
-		"or              $a1,$a2,$zero                          \n"
-		"sw              $a2,44($sp)                            \n"
-		"jal             0x800E7DF8                 \n"
-		"or              $a0,$s0,$zero                          \n"
-		"lw              $a0,60($sp)                            \n"
-		"lui             $at,0x0001                             \n"
-		"ori             $at,$at,0x8884                         \n"
-		"lw              $a2,44($sp)                            \n"
-		"jal             0x800E2928                 \n"
-		"addu            $a1,$a0,$at                            \n"
-		"lw              $ra,36($sp)                            \n"
-		".L000010:                                              \n"
-		"lw              $s0,32($sp)                            \n"
-		"addiu           $sp,$sp,56                             \n"
-		"jr              $ra                                    \n"
-		"nop                                                    \n"
-	);
+    asm(
+      ".set at        \n"
+      ".set reorder   \n"
+      ".Lplay: \n"
+    );
+
+    actor_anime_frame_update_mtx(&en->skelanime);
+    if (en->unk270 != 0)
+    {
+        en->unk270 -= 1;
+    }
+    en->actor.rot_2.y = en->actor.speedRot.y;
+    if (en->unk268.x != 0)
+    {
+        uint32_t _t1 = AVAL(SAVE_CONTEXT, uint32_t, 0x0018);
+        uint32_t _t2 = AVAL(SAVE_CONTEXT, uint32_t, 0x0010);
+
+        if (_t1 == 3)
+        {
+            if (_t2 != 0)
+            {
+                actor_kill(&en->actor);
+                return;
+            }
+        }
+    }
+		z64_actorfunc_t *playfunc = en->unk254;
+    playfunc(en, gl);
+    external_func_800B6A88(&en->actor);
+    external_func_800B78B8(gl, &en->actor, 20.0f, 20.0f, 50.0f, 0x1D);
+    actor_set_scale(&en->actor, 0.01f);
+    if (en->unk268.z != 0)
+    {
+        heishi_limit_rotation(en);
+    }
+    actor_set_height(&en->actor, 60.0f);
+    external_func_800FFEBC(en->head_rot.y, en->unk260, 1, 3000, 0);
+    external_func_800FFEBC(en->head_rot.x, en->unk25E, 1, 1000, 0);
+    actor_capsule_update(&en->actor, &en->collision);
+    actor_collision_check_set_ot(gl, AADDR(gl, 0x18884), &en->collision);
 }
+
 const z64_actor_init_t init_vars = {
 	.number = ACT_ID,
 	.type = NPC,
