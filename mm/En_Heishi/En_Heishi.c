@@ -68,20 +68,19 @@ typedef struct {
 	z64_capsule_t    collision;
 	vec3s_t          head_rot;
 	
-	int16_t          track_x;
-	int16_t          track_y;       /* x and y factors for head rotation.
+	vec2s_t          track;         /* x and y factors for head rotation.
 	                                 * note that x is always 0, but could be
 	                                 * expanded upon for vertical head tracking
-	                                */
+	                                 */
 	
 	int16_t          initial_rot_y; /* initial actor rotation; factored into
 	                                 * current actor rotation when determining
 	                                 * head tracking values
-	                                */
+	                                 */
 
 	uint8_t          focus_on_link; /* used to conditionally enable/disable
 	                                 * looking in Link's direction
-	                                */
+	                                 */
 } entity_t;
 
 
@@ -154,7 +153,7 @@ static int heishi_callback_limb_rotation(int a0, int target_limb, int a2, int a3
 static void heishi_look_at_link(entity_t *en) /* 0 internal, 0 external, 40 lines */
 {
     /* Simplified by <z64.me> */
-    en->track_y = 0;
+    en->track.y = 0;
     if (en->actor.dist_from_link_xz < 200.0f)
     {
         int16_t temp_v0;
@@ -163,13 +162,13 @@ static void heishi_look_at_link(entity_t *en) /* 0 internal, 0 external, 40 line
 
         if (ABS(temp_v0) < ROT16(110))
         {
-            en->track_y = (en->initial_rot_y - en->actor.speedRot.y);
-            if (en->track_y >= ROT16(55))
+            en->track.y = (en->initial_rot_y - en->actor.speedRot.y);
+            if (en->track.y >= ROT16(55))
             {
-                en->track_y = ROT16(55);
+                en->track.y = ROT16(55);
                 return;
             }
-            en->track_y = MAX(en->track_y, ROT16(-55));
+            en->track.y = MAX(en->track.y, ROT16(-55));
         }
     }
 }
@@ -253,8 +252,8 @@ static void play(entity_t *en, z64_global_t *gl)
         heishi_look_at_link(en);
     }
     actor_set_height(&en->actor, 60.0f);
-    external_func_8007869C(&en->head_rot.y, en->track_y, 1, 3000, 0, 0);
-    external_func_8007869C(&en->head_rot.x, en->track_x, 1, 1000, 0, 0);
+    external_func_8007869C(&en->head_rot.y, en->track.y, 1, 3000, 0, 0);
+    external_func_8007869C(&en->head_rot.x, en->track.x, 1, 1000, 0, 0);
     actor_capsule_update(&en->actor, &en->collision);
     actor_collision_check_set_ot(gl, AADDR(gl, 0x18884), &en->collision);
 }
