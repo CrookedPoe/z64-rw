@@ -65,27 +65,28 @@
 typedef struct {
 	z64_actor_t      actor;
 	z64_skelanime_t  skelanime;
-	uint32_t         unk184;
-	uint8_t          unk188;
-	uint8_t          unk1EE;
-	vec3s_t          head_rot;
-	int16_t          unk25E;
-	int16_t          unk260;
-	int16_t          unk262;
-	int16_t          unk264;
-	int16_t          unk266;
-	int16_t          unk268;
-	int16_t          unk26A;
-	int16_t          unk26C;
-	int16_t          unk270;
-	int16_t          unk272;
-	uint16_t         unk278;
 	z64_capsule_t    collision;
+	vec3s_t          head_rot;
+	
+	int16_t          track_x;
+	int16_t          track_y;       /* x and y factors for head rotation.
+	                                 * note that x is always 0, but could be
+	                                 * expanded upon for vertical head tracking
+	                                */
+	
+	int16_t          initial_rot_y; /* initial actor rotation; factored into
+	                                 * current actor rotation when determining
+	                                 * head tracking values
+	                                */
+
+	uint8_t          focus_on_link; /* used to conditionally enable/disable
+	                                 * looking in Link's direction
+	                                */
 } entity_t;
 
 
 /*** function prototypes ***/
-static void heishi_limit_rotation(entity_t *en); /* 0 internal, 0 external, 40 lines */
+static void heishi_look_at_link(entity_t *en); /* 0 internal, 0 external, 40 lines */
 static void draw(entity_t *en, z64_global_t *gl); /* 0 internal, 2 external, 22 lines */
 static void dest(entity_t *en, z64_global_t *gl); /* 0 internal, 1 external, 11 lines */
 static int heishi_callback_limb_rotation(int a0, int target_limb, int a2, int a3, vec3s_t *limb_rot, entity_t *en); /* 0 internal, 0 external, 23 lines */
@@ -150,25 +151,25 @@ static int heishi_callback_limb_rotation(int a0, int target_limb, int a2, int a3
 	return 0;
 }
 
-static void heishi_limit_rotation(entity_t *en) /* 0 internal, 0 external, 40 lines */
+static void heishi_look_at_link(entity_t *en) /* 0 internal, 0 external, 40 lines */
 {
     /* Simplified by <z64.me> */
-    en->unk260 = 0;
+    en->track_y = 0;
     if (en->actor.dist_from_link_xz < 200.0f)
     {
         int16_t temp_v0;
 
-        temp_v0 = (en->unk272 - en->actor.speedRot.y) & 0xFFFF;
+        temp_v0 = (en->initial_rot_y - en->actor.speedRot.y) & 0xFFFF;
 
         if (ABS(temp_v0) < ROT16(110))
         {
-            en->unk260 = (en->unk272 - en->actor.speedRot.y);
-            if (en->unk260 >= ROT16(55))
+            en->track_y = (en->initial_rot_y - en->actor.speedRot.y);
+            if (en->track_y >= ROT16(55))
             {
-                en->unk260 = ROT16(55);
+                en->track_y = ROT16(55);
                 return;
             }
-            en->unk260 = MAX(en->unk260, ROT16(-55));
+            en->track_y = MAX(en->track_y, ROT16(-55));
         }
     }
 }
@@ -186,28 +187,26 @@ static void draw(entity_t *en, z64_global_t *gl)
 
 static void heishi_change_animation(entity_t *en, int anim_index)
 {
-  en->unk264 = anim_index;
-  float frames = anime_get_framecount(animations[anim_index]);
-  actor_anime_change(&en->skelanime, animations[en->unk264], 1.0f, 0, frames, data_80BE9490[en->unk264], -10.0f);
+	float frames = anime_get_framecount(animations[anim_index]);
+	actor_anime_change(&en->skelanime, animations[anim_index], 1.0f, 0, frames, data_80BE9490[anim_index], -10.0f);
 }
 
 static void func_80BE91DC(entity_t *en)
 {
 	heishi_change_animation(en, 0);
-	en->unk278 = 0;
 }
 
 static void init(entity_t *en, z64_global_t *gl)
 {
   actor_init_shadow(&en->actor.rot_2, 0, &ACTOR_SHADOW_DRAWFUNC_CIRCLE, 25.0f);
-  skelanime_init_mtx(gl, &en->skelanime, SKL, ANIM4, en->unk188, en->unk1EE, 0x11);
+  skelanime_init_mtx(gl, &en->skelanime, SKL, ANIM4, 0, 0, 0x11);
   en->actor.mass = 0xFF;
-  en->unk268 = en->actor.variable;
-  en->unk272 = en->actor.speedRot.y;
+  en->initial_rot_y = en->actor.speedRot.y;
 
   if (en->actor.variable == 0)
   {
-    en->unk26C = 1;
+    /* enable looking in Link's direction in this scenario */
+    en->focus_on_link = 1;
 
     if ((((AVAL(SAVE_CONTEXT, uint8_t, 0x0F37)) & 0x80) == 0) && (((AVAL(SAVE_CONTEXT, uint32_t, 0x0018)) != 3) || ((AVAL(SAVE_CONTEXT, uint32_t, 0x0010)) == 0)))
           actor_kill(&en->actor);
@@ -232,12 +231,8 @@ static void init(entity_t *en, z64_global_t *gl)
 static void play(entity_t *en, z64_global_t *gl)
 {
     actor_anime_frame_update_mtx(&en->skelanime);
-    if (en->unk270 != 0)
-    {
-        en->unk270 -= 1;
-    }
     en->actor.rot_2.y = en->actor.speedRot.y;
-    if (en->unk268 != 0)
+    if (en->actor.variable != 0)
     {
         if ((AVAL(SAVE_CONTEXT, uint32_t, 0x0018)) == 3)
         {
@@ -251,13 +246,15 @@ static void play(entity_t *en, z64_global_t *gl)
     external_func_8002D8E0(&en->actor);
     external_func_8002E4B4(gl, &en->actor, 20.0f, 20.0f, 50.0f, 0x1D);
     actor_set_scale(&en->actor, 0.01f);
-    if (en->unk26C != 0)
+    
+    /* look in Link's direction if this setting is enabled */
+    if (en->focus_on_link)
     {
-        heishi_limit_rotation(en);
+        heishi_look_at_link(en);
     }
     actor_set_height(&en->actor, 60.0f);
-    external_func_8007869C(&en->head_rot.y, en->unk260, 1, 3000, 0, 0);
-    external_func_8007869C(&en->head_rot.x, en->unk25E, 1, 1000, 0, 0);
+    external_func_8007869C(&en->head_rot.y, en->track_y, 1, 3000, 0, 0);
+    external_func_8007869C(&en->head_rot.x, en->track_x, 1, 1000, 0, 0);
     actor_capsule_update(&en->actor, &en->collision);
     actor_collision_check_set_ot(gl, AADDR(gl, 0x18884), &en->collision);
 }
