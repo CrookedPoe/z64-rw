@@ -1,6 +1,6 @@
 /***
 * En_Heishi Rewrite by CrookedPoe <nickjs.site> and Dr. Disco <z64.me>
-* MMU10 DMA Entry: 	 0x0001C940
+* MMU10 DMA Entry:   0x0001C940
 * MMU10 Actor Entry: 0x00C4A2B0
 ***/
 
@@ -63,27 +63,23 @@
 #define ANIMC 0x0600DC7C /* Idle: Standing with hand on hip, but looking down */
 
 typedef struct {
-  z64_actor_t      actor;
+	z64_actor_t      actor;
 	z64_skelanime_t  skelanime;
 	uint32_t         unk184;
 	uint8_t          unk188;
-	PADDING(0x65);
 	uint8_t          unk1EE;
-	PADDING(0x65);
 	vec3s_t          head_rot;
 	int16_t          unk25E;
-  int16_t          unk260;
+	int16_t          unk260;
 	int16_t          unk262;
 	int16_t          unk264;
 	int16_t          unk266;
 	int16_t          unk268;
-  int16_t          unk26A;
-  int16_t          unk26C;
-  PADDING(0x02);
+	int16_t          unk26A;
+	int16_t          unk26C;
 	int16_t          unk270;
-  int16_t          unk272;
-  uint16_t         unk278;
-	PADDING(0x0A);
+	int16_t          unk272;
+	uint16_t         unk278;
 	z64_capsule_t    collision;
 } entity_t;
 
