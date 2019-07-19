@@ -1,5 +1,5 @@
 PROGRAM = En_Heishi
-OVLOUT = $(PROGRAM)_rw.zovl
+OVLOUT = $(PROGRAM).zovl
 ADDRESS = 0x80800000
 PARTS = $(PROGRAM).o
 
