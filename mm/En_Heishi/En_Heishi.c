@@ -82,15 +82,10 @@ typedef struct {
   PADDING(0x02);
 	int16_t          unk270;
   int16_t          unk272;
-  float            unk274;
   uint16_t         unk278;
 	PADDING(0x0A);
 	z64_capsule_t    collision;
 } entity_t;
-
-/*** external functions ***/
-extern uint16_t anime_get_framecount_mm(u32 a0);
-asm("anime_get_framecount_mm = 0x80134748");
 
 
 /*** function prototypes ***/
@@ -196,8 +191,8 @@ static void draw(entity_t *en, z64_global_t *gl)
 static void heishi_change_animation(entity_t *en, int anim_index)
 {
   en->unk264 = anim_index;
-  en->unk274 = (float)anime_get_framecount_mm(animations[anim_index]);
-  actor_anime_change(&en->skelanime, animations[en->unk264], 1.0f, 0, en->unk274, data_80BE9490[en->unk264], -10.0f);
+  float frames = anime_get_framecount(animations[anim_index]);
+  actor_anime_change(&en->skelanime, animations[en->unk264], 1.0f, 0, frames, data_80BE9490[en->unk264], -10.0f);
 }
 
 static void func_80BE91DC(entity_t *en)
