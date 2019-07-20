@@ -6,7 +6,6 @@
 
 #include <z64ovl/mm/u10.h>
 
-//#define ASMPRE
 #define ACT_ID 0x01B9
 #define OBJ_ID 0x01A5
 /* object */
@@ -14,17 +13,14 @@
 #define DP_COLLIDE 0x06000A20
 
 typedef struct {
-	z64_actor_t      actor;     /* 0x0000, size 0x0144 */
-	uint32_t         dynap_id;  /* 0x0144, size 0x0004 */
-	PADDING(0x14);              /* 0x0148, size 0x0014 */
-	z64_actorfunc_t *playfunc;  /* 0x015C, size 0x0004 */
-	float            unk160;    /* 0x0160, size 0x0004 */
-	uint8_t          unk164;    /* 0x0164, size 0x0001 */
-	uint8_t          unk165;    /* 0x0165, size 0x0001 */
-	int16_t          unk166;    /* 0x0166, size 0x0002 */
-	int16_t          unk168;    /* 0x0168, size 0x0002 */
-	uint16_t         unk16A;    /* 0x016A, size 0x0002 */
-} entity_t;                   /* 0x016C */
+	z64_actor_t      actor;
+	uint32_t         dynap_id;
+	z64_actorfunc_t *playfunc;
+	float            unk160;
+	uint8_t          unk164;
+	int16_t          unk166;
+	int16_t          unk168;
+} entity_t;
 
 /*** external functions ***/
 extern int external_func_80086FA0(void);
@@ -52,11 +48,11 @@ asm("external_func_801794EC = 0x801794EC");
 static void dest(entity_t *en, z64_global_t *gl); /* Confirmed */
 static void draw(entity_t *en, z64_global_t *gl); /* Confirmed */
 static void play(entity_t *en, z64_global_t *gl); /* Confirmed */
-static void func_80AD6830(entity_t *en); /* Confirmed */
+static void lotus_surface_disturbed(entity_t *en); /* Confirmed */
 static void data_80AD6B68(entity_t *en, z64_global_t *gl); /* Confirmed */
 static void init(entity_t *en, z64_global_t *gl); /* Confirmed */
-static void data_80AD6A88(entity_t *en, z64_global_t *gl); /* Confirmed */
-static void data_80AD68DC(entity_t *en, z64_global_t *gl); /* 1 internal, 6 external, 115 lines */
+static void lotus_destoryed_shrink(entity_t *en, z64_global_t *gl); /* Confirmed */
+static void lotus_interact(entity_t *en, z64_global_t *gl); /* Confirmed */
 
 
 /*** variables ***/
@@ -86,7 +82,7 @@ static void play(entity_t *en, z64_global_t *gl)
 	playfunc(en, gl);
 }
 
-static void func_80AD6830(entity_t *en)
+static void lotus_surface_disturbed(entity_t *en)
 {
 	if (en->actor.variable == 0)
 	{
@@ -111,7 +107,7 @@ static void data_80AD6B68(entity_t *en, z64_global_t *gl)
 				en->actor.pos_2.y = en->unk160;
 			en->actor.flags &= 0xFFFFFFEF;
 			en->unk168 = 96;
-			en->playfunc = (z64_actorfunc_t *)data_80AD68DC;
+			en->playfunc = (z64_actorfunc_t *)lotus_interact;
 			en->actor.pos_2.x = en->actor.pos_1.x;
 			en->actor.pos_2.z = en->actor.pos_1.z;
 		}
@@ -128,11 +124,11 @@ static void init(entity_t *en, z64_global_t *gl)
 	external_func_800CAE34(gl, &en->actor, DP_COLLIDE);
 	en->actor.floor_height = external_func_800C411C((uint32_t)AADDR(gl, 0x0830), &en->actor.floor_poly, &unknown, &en->actor, &en->actor.pos_2);
 	en->unk168 = 96;
-	en->actor.speedRot.y = (int16_t)(external_func_80086FA0() >> 0x10);
-	en->playfunc = (z64_actorfunc_t*)data_80AD68DC;
+	en->actor.speedRot.y = (external_func_80086FA0() >> 0x12);
+	en->playfunc = (z64_actorfunc_t*)lotus_interact;
 }
 
-static void data_80AD6A88(entity_t *en, z64_global_t *gl)
+static void lotus_destoryed_shrink(entity_t *en, z64_global_t *gl)
 {
 	if (en->unk160 < en->actor.pos_2.y)
 	{
@@ -147,7 +143,7 @@ static void data_80AD6A88(entity_t *en, z64_global_t *gl)
 	if (en->unk166 > 0)
 	{
 		en->unk166 -= 1;
-		func_80AD6830(en);
+		lotus_surface_disturbed(en);
 		return;
 	}
 	if ((math_approxf(&en->actor.scale.x, 0, 0.005f)) != 0)
@@ -160,18 +156,19 @@ static void data_80AD6A88(entity_t *en, z64_global_t *gl)
 	en->actor.scale.z = en->actor.scale.x;
 }
 
-static void data_80AD68DC(entity_t *en, z64_global_t *gl)
+static void lotus_interact(entity_t *en, z64_global_t *gl)
 {
+	float _sp34;
 	en->unk168 -= 1;
-  float _sp34 = external_func_801794EC(en->unk168 * 0.0654f) * 6.0f;
+  _sp34 = external_func_801794EC(en->unk168 * 0.0654f) * 6.0f;
   if (en->actor.variable == 0)
   {
-      en->actor.pos_2.x = (math_sins(en->actor.speedRot.y) * _sp34) + en->actor.pos_1.x;
-      en->actor.pos_2.z = (math_coss(en->actor.speedRot.y) * _sp34) + en->actor.pos_1.z;
+      en->actor.pos_2.x = ((math_sins(en->actor.speedRot.y)) * _sp34) + en->actor.pos_1.x;
+      en->actor.pos_2.z = ((math_coss(en->actor.speedRot.y)) * _sp34) + en->actor.pos_1.z;
       if (en->unk168 == 0)
       {
           en->unk168 = 96;
-          en->actor.speedRot.y += (int16_t)(external_func_80086FA0() >> 0x12);
+          en->actor.speedRot.y += (external_func_80086FA0() >> 0x12);
       }
   }
 	if (en->unk160 < en->actor.floor_height)
@@ -193,7 +190,7 @@ static void data_80AD68DC(entity_t *en, z64_global_t *gl)
 	    {
 	        en->unk166 = 40;
 	        en->actor.flags |= 0x10;
-	        en->playfunc = (z64_actorfunc_t *)data_80AD6A88;
+	        en->playfunc = (z64_actorfunc_t *)lotus_destoryed_shrink;
 	        return;
 	    }
 	    en->unk164 = 1;
@@ -207,7 +204,7 @@ static void data_80AD68DC(entity_t *en, z64_global_t *gl)
 	{
 		en->unk166 -= 1;
 	}
-	func_80AD6830(en);
+	lotus_surface_disturbed(en);
 }
 
 const z64_actor_init_t init_vars = {
