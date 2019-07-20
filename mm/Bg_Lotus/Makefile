@@ -1,4 +1,4 @@
-PROGRAM = Bg_Lotus
+PROGRAM = Bg_Lotus_ghidra
 OVLOUT = $(PROGRAM).zovl
 ADDRESS = 0x80800000
 PARTS = $(PROGRAM).o
