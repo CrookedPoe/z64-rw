@@ -19,10 +19,10 @@ typedef struct {
 	PADDING(0x14);              /* 0x0148, size 0x0014 */
 	z64_actorfunc_t *playfunc;  /* 0x015C, size 0x0004 */
 	float            unk160;    /* 0x0160, size 0x0004 */
-	uint8_t          unk164;    /* 0x0164, size 0x0001 */
-	uint8_t          unk165;    /* 0x0165, size 0x0001 */
-	uint16_t         unk166;    /* 0x0166, size 0x0002 */
-	uint16_t         unk168;    /* 0x0168, size 0x0002 */
+	char             unk164;    /* 0x0164, size 0x0001 */
+	char             unk165;    /* 0x0165, size 0x0001 */
+	int16_t          unk166;    /* 0x0166, size 0x0002 */
+	int16_t          unk168;    /* 0x0168, size 0x0002 */
 	uint16_t         unk16A;    /* 0x016A, size 0x0002 */
 } entity_t;                   /* 0x016C */
 
@@ -171,12 +171,12 @@ static void data_80AD68DC(entity_t *en, z64_global_t *gl)
   float _sp34 = external_func_801794EC(en->unk168 * 0.0654f) * 6.0f;
   if (en->actor.variable == 0)
   {
-      en->actor.pos_2.x = (math_sins(en->actor.speedRot.y) * _sp34) + en->actor.pos_1.x;
-      en->actor.pos_2.z = (math_coss(en->actor.speedRot.y) * _sp34) + en->actor.pos_1.z;
+      en->actor.pos_2.x = (float)((math_sins(en->actor.speedRot.y) * _sp34) + en->actor.pos_1.x);
+      en->actor.pos_2.z = (float)((math_coss(en->actor.speedRot.y) * _sp34) + en->actor.pos_1.z);
       if (en->unk168 == 0)
       {
           en->unk168 = 96;
-          en->actor.speedRot.y += (external_func_80086FA0() >> 0x12);
+          en->actor.speedRot.y += (int16_t)(external_func_80086FA0() >> 0x12);
       }
   }
 	if (en->unk160 < en->actor.floor_height)
@@ -190,19 +190,11 @@ static void data_80AD68DC(entity_t *en, z64_global_t *gl)
     {
 	    if (en->unk164 == 0)
 	    {
-					/* This feels kind of gross. */
-					uint32_t _sp;
-					register unsigned sp asm("29");
-					asm("" : "=r" (_sp));
-					/* But it seems like it's necessary. */
-
-					uint32_t * _sp2C = AADDR(_sp, 0x002C);
-					_sp2C = (uint32_t *)&en->actor.pos_2;
 	        effect_spawn_water_ripple(gl, &en->actor.pos_2, 1000, 0x0578, 0);
 	        effect_spawn_water_ripple(gl, &en->actor.pos_2, 1000, 0x0578, 8);
 	        en->unk166 = 40;
 	    }
-	    if ((AVAL(SAVE_CONTEXT, uint32_t, 0x0020)) != 3)
+	    if ((AVAL(SAVE_CONTEXT, char, 0x0020)) != 3)
 	    {
 	        en->unk166 = 40;
 	        en->actor.flags |= 0x10;
