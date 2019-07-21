@@ -40,9 +40,6 @@ asm("external_func_800C6314 = 0x800C6314");
 extern void external_func_800CA1E8(z64_global_t *gl, void *gl830, float a, float b, float *c, void *unk);
 asm("external_func_800CA1E8 = 0x800CA1E8");
 
-extern void external_func_800CAE34(z64_global_t *gl, z64_actor_t *actor, uint32_t collision);
-asm("external_func_800CAE34 = 0x800CAE34");
-
 extern int external_func_800CAF70(z64_actor_t *actor);
 asm("external_func_800CAF70 = 0x800CAF70");
 
@@ -74,7 +71,7 @@ static void init(entity_t *en, z64_global_t *gl)
 
    actor_init_dynapoly(&en->actor, data_80AD6D10);
    actor_dynapoly_set_move(&en->actor, DPM_PLAYER);
-   external_func_800CAE34(gl, &en->actor, DP_COLLIDE);
+   actor_dynapoly_new(gl, &en->actor, DP_COLLIDE);
    en->actor.floor_height =
       external_func_800C411C(
            AADDR(gl, 0x0830)
