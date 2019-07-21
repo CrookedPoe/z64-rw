@@ -14,13 +14,18 @@
 
 typedef struct {
    z64_actor_t      actor;
-   uint32_t         dynap_id;
+   struct
+   {
+       uint32_t id;
+       PADDING(0x14);
+   } dynap;
    z64_actorfunc_t *playfunc;
    float            unk160;
    uint8_t          unk164;
    int16_t          unk166;
    int16_t          unk168;
 } entity_t;
+
 
 /*** external functions ***/
 extern int32_t external_func_80086FA0(void);
