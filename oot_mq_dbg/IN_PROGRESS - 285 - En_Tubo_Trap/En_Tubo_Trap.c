@@ -8,6 +8,7 @@
 
 /*** sounds ***/
 #define	NA_SE_EV_POT_MOVE_START 0x28C4
+#define NA_SE_EN_TUBOOCK_FLY    0x3037
 
 typedef struct {
 	z64_actor_t actor; 				 /* 0x0000, 0x013C */
@@ -23,14 +24,14 @@ typedef struct {
 void draw(entity_t *en, z64_global_t *gl); /* Confirmed */
 void dest(entity_t *en, z64_global_t *gl); /* Confirmed */
 void func_80B259B8(void); /* 0 internal, 1 external, 25 lines */
-void data_80B2629C(void); /* 0 internal, 1 external, 36 lines */
+void tubo_trap_initialize_attack(entity_t *en); /* 0 internal, 1 external, 36 lines */
 void tubo_trap_test_levitate(entity_t *en, z64_global_t *gl); /* 0 internal, 3 external, 95 lines */
 void init(entity_t *en, z64_global_t *gl); /* Confirmed */
 void func_80B25A18(void); /* 0 internal, 5 external, 160 lines */
 void func_80B25C8C(void); /* 0 internal, 5 external, 161 lines */
 void play(entity_t *en, z64_global_t *gl); /* Confirmed */
-void data_80B26328(void); /* 1 internal, 2 external, 52 lines */
-void func_80B25F08(void); /* 3 internal, 2 external, 144 lines */
+void tubo_trap_fly(entity_t *en, z64_global_t *gl); /* 1 internal, 2 external, 52 lines */
+void func_80B25F08(entity_t *en, z64_global_t *gl); /* 3 internal, 2 external, 144 lines */
 
 
 /*** variables ***/
@@ -192,51 +193,23 @@ void func_80B259B8(void) /* 0 internal, 1 external, 25 lines */
 		"nop                                                    \n"
 	);
 }
-void data_80B2629C(void) /* 0 internal, 1 external, 36 lines */
+
+void tubo_trap_initialize_attack(entity_t *en) /* 0 internal, 1 external, 36 lines */
 {
 	asm(
-		".set noat        \n"
-		".set noreorder   \n"
-		".Ldata_80B2629C: \n"
+		".set at        \n"
+		".set reorder   \n"
+		".Ltubo_trap_initialize_attack: \n"
 	);
-	asm(
-		"addiu           $sp,$sp,-32                            \n"
-		"sw              $ra,28($sp)                            \n"
-		"sw              $s0,24($sp)                            \n"
-		"sw              $a1,36($sp)                            \n"
-		"lh              $t6,182($a0)                           \n"
-		"or              $s0,$a0,$zero                          \n"
-		"lui             $a2,0x3F4C                             \n"
-		"addiu           $t7,$t6,5000                           \n"
-		"sh              $t7,182($a0)                           \n"
-		"lw              $a1,336($s0)                           \n"
-		"ori             $a2,$a2,0xcccd                         \n"
-		"addiu           $a0,$a0,40                             \n"
-		"jal             0x8007841C                 \n"
-		"lui             $a3,0x4040                             \n"
-		"lwc1            $f4,40($s0)                            \n"
-		"lwc1            $f6,336($s0)                           \n"
-		"lui             $at,0x4120                             \n"
-		"mtc1            $at,$f2                                \n"
-		"sub.s           $f0,$f4,$f6                            \n"
-		"lui             $t9,%hi(data_80B26328)                 \n"
-		"addiu           $t9,$t9,%lo(data_80B26328)             \n"
-		"abs.s           $f0,$f0                                \n"
-		"c.lt.s          $f0,$f2                                \n"
-		"nop                                                    \n"
-		"bc1fl           .L000016                               \n"
-		"lw              $ra,28($sp)                            \n"
-		"lh              $t8,138($s0)                           \n"
-		"swc1            $f2,104($s0)                           \n"
-		"sw              $t9,332($s0)                           \n"
-		"sh              $t8,50($s0)                            \n"
-		"lw              $ra,28($sp)                            \n"
-		".L000016:                                              \n"
-		"lw              $s0,24($sp)                            \n"
-		"addiu           $sp,$sp,32                             \n"
-		"jr              $ra                                    \n"
-		"nop                                                    \n"
-	);
+
+	(en->actor).rot_2.y += 5000;
+	external_func_8007841C(&(en->actor).pos_2.y, en->pos_y_seek, 0.8f, 3.0f); /* Tween levitation */
+	if (ABS((en->actor).pos_2.y - en->pos_y_seek) < 10.0f)
+	{
+		(en->actor).xz_speed = 10.0f;
+		(en->actor).xz_dir = (en->actor).rot_toward_link_y;
+		en->playfunc = (z64_actorfunc_t *)tubo_trap_fly;
+	}
 }
 
 void tubo_trap_test_levitate(entity_t *en, z64_global_t *gl) /* 0 internal, 3 external, 95 lines */
@@ -275,7 +248,7 @@ void tubo_trap_test_levitate(entity_t *en, z64_global_t *gl) /* 0 internal, 3 ex
 			(en->pos_init).y = en->actor.pos_2.y;
 			(en->pos_init).z = en->actor.pos_2.z;
 			sound_play_actor2(&en->actor, NA_SE_EV_POT_MOVE_START);
-			en->playfunc = (z64_actorfunc_t *)data_80B2629C;
+			en->playfunc = (z64_actorfunc_t *)tubo_trap_initialize_attack;
 	}
 }
 
@@ -656,69 +629,33 @@ void play(entity_t *en, z64_global_t *gl) /* 0 internal, 6 external, 46 lines */
 	actor_collision_check_set_at(gl, /*&gl->sbc_group_at_1*/AADDR(gl, 0x011E60), &en->capsule);
 }
 
-void data_80B26328(void) /* 1 internal, 2 external, 52 lines */
+void tubo_trap_fly(entity_t *en, z64_global_t *gl) /* 1 internal, 2 external, 52 lines */
 {
 	asm(
-		".set noat        \n"
-		".set noreorder   \n"
-		".Ldata_80B26328: \n"
+		".set at        \n"
+		".set reorder   \n"
+		".Ltubo_trap_fly: \n"
 	);
-	asm(
-		"addiu           $sp,$sp,-48                            \n"
-		"sw              $ra,28($sp)                            \n"
-		"sw              $s0,24($sp)                            \n"
-		"sw              $a1,52($sp)                            \n"
-		"lwc1            $f18,340($a0)                          \n"
-		"lwc1            $f16,36($a0)                           \n"
-		"lwc1            $f14,344($a0)                          \n"
-		"lwc1            $f12,40($a0)                           \n"
-		"sub.s           $f16,$f18,$f16                         \n"
-		"lwc1            $f18,348($a0)                          \n"
-		"lwc1            $f10,44($a0)                           \n"
-		"sub.s           $f12,$f14,$f12                         \n"
-		"or              $s0,$a0,$zero                          \n"
-		"swc1            $f16,44($sp)                           \n"
-		"sub.s           $f10,$f18,$f10                         \n"
-		"swc1            $f12,40($sp)                           \n"
-		"addiu           $a1,$zero,12343                        \n"
-		"jal             0x8002F828                 \n"
-		"swc1            $f10,36($sp)                           \n"
-		"lwc1            $f2,44($sp)                            \n"
-		"lwc1            $f12,40($sp)                           \n"
-		"lwc1            $f14,36($sp)                           \n"
-		"mul.s           $f4,$f2,$f2                            \n"
-		"lui             $at,0x4370                             \n"
-		"mtc1            $at,$f16                               \n"
-		"mul.s           $f6,$f12,$f12                          \n"
-		"lui             $a2,0x3E4C                             \n"
-		"ori             $a2,$a2,0xcccd                         \n"
-		"mul.s           $f10,$f14,$f14                         \n"
-		"addiu           $a0,$s0,108                            \n"
-		"lui             $a1,0xC040                             \n"
-		"add.s           $f8,$f4,$f6                            \n"
-		"add.s           $f0,$f8,$f10                           \n"
-		"sqrt.s          $f0,$f0                                \n"
-		"c.lt.s          $f16,$f0                               \n"
-		"nop                                                    \n"
-		"bc1fl           .L000017                               \n"
-		"lh              $t6,182($s0)                           \n"
-		"jal             0x8007841C                 \n"
-		"lui             $a3,0x3F00                             \n"
-		"lh              $t6,182($s0)                           \n"
-		".L000017:                                              \n"
-		"or              $a0,$s0,$zero                          \n"
-		"addiu           $t7,$t6,5000                           \n"
-		"sh              $t7,182($s0)                           \n"
-		"jal             func_80B25F08                          \n"
-		"lw              $a1,52($sp)                            \n"
-		"lw              $ra,28($sp)                            \n"
-		"lw              $s0,24($sp)                            \n"
-		"addiu           $sp,$sp,48                             \n"
-		"jr              $ra                                    \n"
-		"nop                                                    \n"
-	);
+
+	vec3f_t pos_delta;
+	int16_t rot_y;
+
+	VEC3_SUB(pos_delta, en->pos_init, en->actor.pos_2);
+	sound_play_actor2(&en->actor, NA_SE_EN_TUBOOCK_FLY);
+	if (240.0f < SQRT((pos_delta.x * pos_delta.x) + (pos_delta.y * pos_delta.y) + (pos_delta.z * pos_delta.z)))
+	{
+		external_func_8007841C(&(en->actor).gravity, -3.0f, 0.2f, 0.5f); /* Tween to ground */
+		rot_y = (en->actor).rot_2.y;
+	}
+	else
+	{
+		rot_y = (en->actor).rot_2.y;
+	}
+	(en->actor).rot_2.y = rot_y + 5000;
+	func_80B25F08(en, gl);
 }
-void func_80B25F08(void) /* 3 internal, 2 external, 144 lines */
+
+void func_80B25F08(entity_t *en, z64_global_t *gl) /* 3 internal, 2 external, 144 lines */
 {
 	asm(
 		".set noat        \n"
