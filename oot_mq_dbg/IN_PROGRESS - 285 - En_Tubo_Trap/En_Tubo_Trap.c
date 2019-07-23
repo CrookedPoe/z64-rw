@@ -7,30 +7,35 @@
 #define DL_TUBO 0x05017870
 
 /*** sounds ***/
-#define	NA_SE_EV_POT_MOVE_START 0x28C4
-#define NA_SE_EN_TUBOOCK_FLY    0x3037
+#define NA_SE_PL_BODY_HIT          0x083E
+#define NA_SE_IT_SHIELD_REFLECT_SW 0x1808
+#define NA_SE_EV_EXPLOSION         0x2802
+#define NA_SE_EV_BOMB_DROP_WATER   0x2817
+#define NA_SE_EV_POT_BROKEN        0x2887
+#define	NA_SE_EV_POT_MOVE_START    0x28C4
+#define NA_SE_EN_TUBOOCK_FLY       0x3037
 
 typedef struct {
-	z64_actor_t actor; 				 /* 0x0000, 0x013C */
-	uint8_t inst_unk[16];  	   /* 0x013C, 0x0010 */
-	z64_actorfunc_t *playfunc; /* 0x014C, 0x0004 */
-	float pos_y_seek;          /* 0x0150, 0x0004 */
-	vec3f_t pos_init;          /* 0x0154, 0x000C */
-	z64_capsule_t capsule;		 /* 0x0160, 0x004C */
+	z64_actor_t actor; 				 							 /* 0x0000, 0x013C */
+	uint8_t inst_unk[16];  	   							 /* 0x013C, 0x0010 */
+	z64_actorfunc_t *playfunc; 							 /* 0x014C, 0x0004 */
+	float pos_y_seek;          							 /* 0x0150, 0x0004 */
+	vec3f_t pos_init;          							 /* 0x0154, 0x000C */
+	z64_collider_cylinder_main_t capsule;		 /* 0x0160, 0x004C */
 } entity_t; /* 01AC */
 
 
 /*** function prototypes ***/
 void draw(entity_t *en, z64_global_t *gl); /* Confirmed */
 void dest(entity_t *en, z64_global_t *gl); /* Confirmed */
-void func_80B259B8(void); /* 0 internal, 1 external, 25 lines */
-void tubo_trap_initialize_attack(entity_t *en); /* 0 internal, 1 external, 36 lines */
-void tubo_trap_test_levitate(entity_t *en, z64_global_t *gl); /* 0 internal, 3 external, 95 lines */
+void func_80B259B8(entity_t *en, z64_global_t *gl); /* 0 internal, 1 external, 25 lines */
+void tubo_trap_initialize_attack(entity_t *en); /* Confirmed */
+void tubo_trap_test_levitate(entity_t *en, z64_global_t *gl); /* Confirmed */
 void init(entity_t *en, z64_global_t *gl); /* Confirmed */
-void func_80B25A18(void); /* 0 internal, 5 external, 160 lines */
+void func_80B25A18(entity_t *en, z64_global_t *gl); /* 0 internal, 5 external, 160 lines */
 void func_80B25C8C(void); /* 0 internal, 5 external, 161 lines */
 void play(entity_t *en, z64_global_t *gl); /* Confirmed */
-void tubo_trap_fly(entity_t *en, z64_global_t *gl); /* 1 internal, 2 external, 52 lines */
+void tubo_trap_fly(entity_t *en, z64_global_t *gl); /* Confirmed */
 void func_80B25F08(entity_t *en, z64_global_t *gl); /* 3 internal, 2 external, 144 lines */
 
 
@@ -158,7 +163,7 @@ void dest(entity_t *en, z64_global_t *gl) /* 0 internal, 1 external, 10 lines */
 	actor_capsule_free(gl, &en->capsule);
 }
 
-void func_80B259B8(void) /* 0 internal, 1 external, 25 lines */
+void func_80B259B8(entity_t *en, z64_global_t *gl) /* 0 internal, 1 external, 25 lines */
 {
 	asm(
 		".set noat        \n"
@@ -269,7 +274,7 @@ void init(entity_t *en, z64_global_t *gl) /* 0 internal, 5 external, 40 lines */
 	en->playfunc = (z64_actorfunc_t *)tubo_trap_test_levitate;
 }
 
-void func_80B25A18(void) /* 0 internal, 5 external, 160 lines */
+void func_80B25A18(entity_t *en, z64_global_t *gl) /* 0 internal, 5 external, 160 lines */
 {
 	asm(
 		".set noat        \n"
@@ -658,156 +663,84 @@ void tubo_trap_fly(entity_t *en, z64_global_t *gl) /* 1 internal, 2 external, 52
 void func_80B25F08(entity_t *en, z64_global_t *gl) /* 3 internal, 2 external, 144 lines */
 {
 	asm(
-		".set noat        \n"
-		".set noreorder   \n"
+		".set at        \n"
+		".set reorder   \n"
 		".Lfunc_80B25F08: \n"
 	);
-	asm(
-		"addiu           $sp,$sp,-48                            \n"
-		"sw              $ra,28($sp)                            \n"
-		"sw              $s1,24($sp)                            \n"
-		"sw              $s0,20($sp)                            \n"
-		"lw              $a2,7236($a1)                          \n"
-		"or              $s0,$a0,$zero                          \n"
-		"or              $s1,$a1,$zero                          \n"
-		"sw              $a2,40($sp)                            \n"
-		"lhu             $t6,136($a0)                           \n"
-		"lui             $at,0x4170                             \n"
-		"andi            $t7,$t6,0x20                           \n"
-		"beql            $t7,$zero,.L000006                     \n"
-		"lbu             $v0,368($s0)                           \n"
-		"mtc1            $at,$f4                                \n"
-		"lwc1            $f6,132($a0)                           \n"
-		"c.lt.s          $f4,$f6                                \n"
-		"nop                                                    \n"
-		"bc1fl           .L000006                               \n"
-		"lbu             $v0,368($s0)                           \n"
-		"jal             func_80B25C8C                          \n"
-		"nop                                                    \n"
-		"or              $a0,$s1,$zero                          \n"
-		"addiu           $a1,$s0,36                             \n"
-		"addiu           $a2,$zero,40                           \n"
-		"jal             0x8006BAD8                 \n"
-		"addiu           $a3,$zero,10263                        \n"
-		"or              $a0,$s0,$zero                          \n"
-		"jal             func_80B259B8                          \n"
-		"or              $a1,$s1,$zero                          \n"
-		"jal             0x8002D570                 \n"
-		"or              $a0,$s0,$zero                          \n"
-		"b               .L000007                               \n"
-		"lw              $ra,28($sp)                            \n"
-		"lbu             $v0,368($s0)                           \n"
-		".L000006:                                              \n"
-		"or              $a0,$s0,$zero                          \n"
-		"or              $a1,$s1,$zero                          \n"
-		"andi            $t8,$v0,0x4                            \n"
-		"beq             $t8,$zero,.L000008                     \n"
-		"andi            $t9,$v0,0xfffb                         \n"
-		"jal             func_80B25A18                          \n"
-		"sb              $t9,368($s0)                           \n"
-		"addiu           $a1,$s0,36                             \n"
-		"sw              $a1,36($sp)                            \n"
-		"or              $a0,$s1,$zero                          \n"
-		"addiu           $a2,$zero,40                           \n"
-		"jal             0x8006BAD8                 \n"
-		"addiu           $a3,$zero,6152                         \n"
-		"lw              $a1,36($sp)                            \n"
-		"or              $a0,$s1,$zero                          \n"
-		"addiu           $a2,$zero,40                           \n"
-		"jal             0x8006BAD8                 \n"
-		"addiu           $a3,$zero,10375                        \n"
-		"or              $a0,$s0,$zero                          \n"
-		"jal             func_80B259B8                          \n"
-		"or              $a1,$s1,$zero                          \n"
-		"jal             0x8002D570                 \n"
-		"or              $a0,$s0,$zero                          \n"
-		"b               .L000007                               \n"
-		"lw              $ra,28($sp)                            \n"
-		".L000008:                                              \n"
-		"lbu             $v1,369($s0)                           \n"
-		"or              $a0,$s0,$zero                          \n"
-		"andi            $t2,$v0,0x2                            \n"
-		"andi            $t0,$v1,0x2                            \n"
-		"beq             $t0,$zero,.L000009                     \n"
-		"andi            $t1,$v1,0xfffd                         \n"
-		"sb              $t1,369($s0)                           \n"
-		"jal             func_80B25A18                          \n"
-		"or              $a1,$s1,$zero                          \n"
-		"addiu           $a1,$s0,36                             \n"
-		"sw              $a1,36($sp)                            \n"
-		"or              $a0,$s1,$zero                          \n"
-		"addiu           $a2,$zero,40                           \n"
-		"jal             0x8006BAD8                 \n"
-		"addiu           $a3,$zero,10242                        \n"
-		"lw              $a1,36($sp)                            \n"
-		"or              $a0,$s1,$zero                          \n"
-		"addiu           $a2,$zero,40                           \n"
-		"jal             0x8006BAD8                 \n"
-		"addiu           $a3,$zero,10375                        \n"
-		"or              $a0,$s0,$zero                          \n"
-		"jal             func_80B259B8                          \n"
-		"or              $a1,$s1,$zero                          \n"
-		"jal             0x8002D570                 \n"
-		"or              $a0,$s0,$zero                          \n"
-		"b               .L000007                               \n"
-		"lw              $ra,28($sp)                            \n"
-		".L000009:                                              \n"
-		"beql            $t2,$zero,.L000010                     \n"
-		"lhu             $v0,136($s0)                           \n"
-		"lw              $t4,356($s0)                           \n"
-		"andi            $t3,$v0,0xfffd                         \n"
-		"sb              $t3,368($s0)                           \n"
-		"bne             $a2,$t4,.L000011                       \n"
-		"or              $a0,$s0,$zero                          \n"
-		"jal             func_80B25A18                          \n"
-		"or              $a1,$s1,$zero                          \n"
-		"or              $a0,$s1,$zero                          \n"
-		"addiu           $a1,$s0,36                             \n"
-		"addiu           $a2,$zero,40                           \n"
-		"jal             0x8006BAD8                 \n"
-		"addiu           $a3,$zero,10375                        \n"
-		"lw              $a1,40($sp)                            \n"
-		"or              $a0,$s1,$zero                          \n"
-		"addiu           $a2,$zero,40                           \n"
-		"addiu           $a3,$zero,2110                         \n"
-		"jal             0x8006BAD8                 \n"
-		"addiu           $a1,$a1,36                             \n"
-		"or              $a0,$s0,$zero                          \n"
-		"jal             func_80B259B8                          \n"
-		"or              $a1,$s1,$zero                          \n"
-		"jal             0x8002D570                 \n"
-		"or              $a0,$s0,$zero                          \n"
-		"b               .L000007                               \n"
-		"lw              $ra,28($sp)                            \n"
-		".L000011:                                              \n"
-		"lhu             $v0,136($s0)                           \n"
-		".L000010:                                              \n"
-		"or              $a0,$s0,$zero                          \n"
-		"andi            $t5,$v0,0x8                            \n"
-		"bne             $t5,$zero,.L000012                     \n"
-		"andi            $t6,$v0,0x1                            \n"
-		"beql            $t6,$zero,.L000007                     \n"
-		"lw              $ra,28($sp)                            \n"
-		".L000012:                                              \n"
-		"jal             func_80B25A18                          \n"
-		"or              $a1,$s1,$zero                          \n"
-		"or              $a0,$s1,$zero                          \n"
-		"addiu           $a1,$s0,36                             \n"
-		"addiu           $a2,$zero,40                           \n"
-		"jal             0x8006BAD8                 \n"
-		"addiu           $a3,$zero,10375                        \n"
-		"or              $a0,$s0,$zero                          \n"
-		"jal             func_80B259B8                          \n"
-		"or              $a1,$s1,$zero                          \n"
-		"jal             0x8002D570                 \n"
-		"or              $a0,$s0,$zero                          \n"
-		"lw              $ra,28($sp)                            \n"
-		".L000007:                                              \n"
-		"lw              $s0,20($sp)                            \n"
-		"lw              $s1,24($sp)                            \n"
-		"jr              $ra                                    \n"
-		"addiu           $sp,$sp,48                             \n"
-	);
+
+	uint8_t bVar1, bVar2;
+	uint16_t uVar3;
+	z64_actor_t *collided_actor;
+	z64_player_t *player = helper_get_player(gl);
+
+	if (((en->actor).bgcheck_flags & 20) == 0)
+	{
+		bVar1 = (en->capsule).base.collider_flags;
+	}
+	else
+	{
+		if ((en->actor).water_surface_dist > 15.0f)
+		{
+			func_80B25C8C();
+			sound_play_position(gl, &(en->actor).pos_2, 0x28, NA_SE_EV_BOMB_DROP_WATER);
+			func_80B259B8(en, gl);
+			actor_kill(&en->actor);
+			return;
+		}
+		bVar1 = (en->capsule).base.collider_flags;
+	}
+
+	if ((bVar1 & 4) == 0)
+	{
+		bVar2 = (en->capsule).base.collide_flags;
+		if ((bVar2 & 2) == 0)
+		{
+			if ((bVar1 & 2) == 0)
+			{
+				uVar3 = (en->actor).bgcheck_flags;
+			}
+			else
+			{
+				collided_actor = (en->capsule).base.unk_actor_1;
+				(en->capsule).base.collider_flags = bVar1 & 0xFD;
+				if (collided_actor == &(player->actor))
+				{
+					func_80B25A18(en, gl);
+					sound_play_position(gl, &(en->actor).pos_2, 0x28, NA_SE_EV_POT_BROKEN);
+					sound_play_position(gl, &(player->actor).pos_2, 0x28, NA_SE_PL_BODY_HIT);
+					func_80B259B8(en, gl);
+					actor_kill(&en->actor);
+					return;
+				}
+				uVar3 = (en->actor).bgcheck_flags;
+			}
+			if (((uVar3 & 8) != 0) || ((uVar3 & 1) != 0))
+			{
+				func_80B25A18(en, gl);
+				sound_play_position(gl, &(en->actor).pos_2, 0x28, NA_SE_EV_POT_BROKEN);
+				func_80B259B8(en, gl);
+				actor_kill(&en->actor);
+			}
+		}
+		else
+		{
+			(en->capsule).base.collide_flags = bVar2 & 0xFD;
+			func_80B25A18(en, gl);
+			sound_play_position(gl, &(en->actor).pos_2, 0x28, NA_SE_EV_EXPLOSION);
+			sound_play_position(gl, &(en->actor).pos_2, 0x28, NA_SE_EV_POT_BROKEN);
+			func_80B259B8(en, gl);
+			actor_kill(&en->actor);
+		}
+	}
+	else
+	{
+		(en->capsule).base.collider_flags = bVar1 & 0xFB;
+		func_80B25A18(en, gl);
+		sound_play_position(gl, &(en->actor).pos_2, 0x28, NA_SE_IT_SHIELD_REFLECT_SW);
+		sound_play_position(gl, &(en->actor).pos_2, 0x28, NA_SE_EV_POT_BROKEN);
+		func_80B259B8(en, gl);
+		actor_kill(&en->actor);
+	}
 }
 
 const z64_actor_init_t init_vars = {
