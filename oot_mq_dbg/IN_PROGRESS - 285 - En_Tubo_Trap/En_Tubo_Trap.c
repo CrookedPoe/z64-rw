@@ -933,6 +933,7 @@ void func_80B25F08(void) /* 3 internal, 2 external, 144 lines */
 		"addiu           $sp,$sp,48                             \n"
 	);
 }
+
 const z64_actor_init_t init_vars = {
 	.number = 0xDEAD, .padding = 0xBEEF, /* for use with zzromtool */
 	.type = 0x06,
