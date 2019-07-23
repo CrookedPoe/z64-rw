@@ -6,11 +6,11 @@
 #define DL_TUBO 0x05017870
 
 typedef struct {
-	z64_actor_t actor; 				/* 0x0000, 0x013C */
-	uint8_t inst_unk[16]  	  /* 0x013C, 0x0010 */
-	z64_actorfunc_t *playfunc /* 0x014C, 0x0004 */
-	uint8_t inst_unk_2[16];   /* 0x0150, 0x0010 */
-	z64_capsule_t capsule;		/* 0x0160, 0x004C */
+	z64_actor_t actor; 				 /* 0x0000, 0x013C */
+	uint8_t inst_unk[16];  	   /* 0x013C, 0x0010 */
+	z64_actorfunc_t *playfunc; /* 0x014C, 0x0004 */
+	uint8_t inst_unk_2[16];    /* 0x0150, 0x0010 */
+	z64_capsule_t capsule;		 /* 0x0160, 0x004C */
 } entity_t; /* 01AC */
 
 
@@ -42,8 +42,9 @@ const uint32_t data_80B264E0[] =
 	0x01010000,
 	0x00090017,
 	0x00000000,
-	0x00000000,
-	0x011D0600,
+	0x00000000
+};
+/*	0x011D0600,
 	0x00000010,
 	0x00030000,
 	0x000001AC,
@@ -52,7 +53,7 @@ const uint32_t data_80B264E0[] =
 	(uint32_t)(void*)play,
 	(uint32_t)(void*)draw,
 	0x00000000,
-};
+};*/
 const uint32_t data_80B26530[] =
 {
 	0x0A0A0000
@@ -178,7 +179,7 @@ void func_80B259B8(void) /* 0 internal, 1 external, 25 lines */
 		"or              $a2,$v0,$t7                            \n"
 		"sll             $a2,$a2,16                             \n"
 		"sra             $a2,$a2,16                             \n"
-		"jal             external_func_8001F548                 \n"
+		"jal             0x8001F548                 \n"
 		"addiu           $a1,$a3,36                             \n"
 		".L000000:                                              \n"
 		"lw              $ra,20($sp)                            \n"
@@ -207,7 +208,7 @@ void data_80B2629C(void) /* 0 internal, 1 external, 36 lines */
 		"lw              $a1,336($s0)                           \n"
 		"ori             $a2,$a2,0xcccd                         \n"
 		"addiu           $a0,$a0,40                             \n"
-		"jal             external_func_8007841C                 \n"
+		"jal             0x8007841C                 \n"
 		"lui             $a3,0x4040                             \n"
 		"lwc1            $f4,40($s0)                            \n"
 		"lwc1            $f6,336($s0)                           \n"
@@ -259,7 +260,7 @@ void data_80B2612C(void) /* 0 internal, 3 external, 95 lines */
 		"cvt.d.s         $f6,$f4                                \n"
 		"mfc1            $a3,$f6                                \n"
 		"mfc1            $a2,$f7                                \n"
-		"jal             external_func_80002130                 \n"
+		"jal             0x80002130                 \n"
 		"nop                                                    \n"
 		"lw              $t0,36($sp)                            \n"
 		"lui             $a0,%hi(data_80B26590)                 \n"
@@ -268,10 +269,10 @@ void data_80B2612C(void) /* 0 internal, 3 external, 95 lines */
 		"cvt.d.s         $f10,$f8                               \n"
 		"mfc1            $a3,$f10                               \n"
 		"mfc1            $a2,$f11                               \n"
-		"jal             external_func_80002130                 \n"
+		"jal             0x80002130                 \n"
 		"nop                                                    \n"
 		"lui             $a0,%hi(data_80B265BC)                 \n"
-		"jal             external_func_80002130                 \n"
+		"jal             0x80002130                 \n"
 		"addiu           $a0,$a0,%lo(data_80B265BC)             \n"
 		"lui             $at,0x4348                             \n"
 		".L000013:                                              \n"
@@ -290,7 +291,7 @@ void data_80B2612C(void) /* 0 internal, 3 external, 95 lines */
 		"addiu           $a1,$a0,7204                           \n"
 		"bc1fl           .L000014                               \n"
 		"lw              $ra,28($sp)                            \n"
-		"jal             external_func_80033748                 \n"
+		"jal             0x80033748                 \n"
 		"addiu           $a3,$zero,5                            \n"
 		"lw              $t3,4($s0)                             \n"
 		"lui             $t5,0x8016                             \n"
@@ -325,7 +326,7 @@ void data_80B2612C(void) /* 0 internal, 3 external, 95 lines */
 		"sw              $t8,340($s0)                           \n"
 		"lw              $t8,44($s0)                            \n"
 		"sw              $t7,344($s0)                           \n"
-		"jal             external_func_8002F828                 \n"
+		"jal             0x8002F828                 \n"
 		"sw              $t8,348($s0)                           \n"
 		"lui             $t9,%hi(data_80B2629C)                 \n"
 		"addiu           $t9,$t9,%lo(data_80B2629C)             \n"
@@ -351,7 +352,7 @@ void init(entity_t *en, z64_global_t *gl) /* 0 internal, 5 external, 40 lines */
 	//debug_message(&data_80B26530);
 	//debug_message(&data_80B26534, (en->actor).variable);
 	actor_capsule_alloc(gl, &en->capsule);
-	actor_capsule_init(gl, &en->capsule, &en->actor, &data_80B264E0);
+	actor_capsule_init(gl, &en->capsule, &en->actor, data_80B264E0);
 	actor_set_scale(&en->actor, 0.1f);
 	en->playfunc = (z64_actorfunc_t *)data_80B2612C;
 }
@@ -400,15 +401,15 @@ void func_80B25A18(void) /* 0 internal, 5 external, 160 lines */
 		"addiu           $s7,$zero,15                           \n"
 		".L000003:                                              \n"
 		"sll             $a0,$s2,16                             \n"
-		"jal             external_func_80077870                 \n"
+		"jal             0x80077870                 \n"
 		"sra             $a0,$a0,16                             \n"
 		"sll             $a0,$s2,16                             \n"
 		"mov.s           $f20,$f0                               \n"
-		"jal             external_func_80077834                 \n"
+		"jal             0x80077834                 \n"
 		"sra             $a0,$a0,16                             \n"
 		"mul.s           $f4,$f20,$f24                          \n"
 		"mov.s           $f22,$f0                               \n"
-		"jal             external_func_800FD9AC                 \n"
+		"jal             0x800FD9AC                 \n"
 		"swc1            $f4,200($sp)                           \n"
 		"mul.s           $f6,$f0,$f26                           \n"
 		"lwc1            $f16,200($sp)                          \n"
@@ -418,7 +419,7 @@ void func_80B25A18(void) /* 0 internal, 5 external, 160 lines */
 		"add.s           $f8,$f6,$f28                           \n"
 		"swc1            $f10,208($sp)                          \n"
 		"swc1            $f8,204($sp)                           \n"
-		"jal             external_func_800FD9AC                 \n"
+		"jal             0x800FD9AC                 \n"
 		"swc1            $f18,188($sp)                          \n"
 		"mul.s           $f4,$f0,$f26                           \n"
 		"lwc1            $f8,208($sp)                           \n"
@@ -436,7 +437,7 @@ void func_80B25A18(void) /* 0 internal, 5 external, 160 lines */
 		"swc1            $f16,204($sp)                          \n"
 		"lwc1            $f18,8($s1)                            \n"
 		"add.s           $f4,$f8,$f18                           \n"
-		"jal             external_func_800FD9AC                 \n"
+		"jal             0x800FD9AC                 \n"
 		"swc1            $f4,208($sp)                           \n"
 		"lui             $at,%hi(data_80B265C4)                 \n"
 		"lwc1            $f6,%lo(data_80B265C4)($at)            \n"
@@ -457,7 +458,7 @@ void func_80B25A18(void) /* 0 internal, 5 external, 160 lines */
 		"b               .L000002                               \n"
 		"addiu           $s0,$zero,64                           \n"
 		".L000002:                                              \n"
-		"jal             external_func_800FD9AC                 \n"
+		"jal             0x800FD9AC                 \n"
 		"nop                                                    \n"
 		"lui             $at,0x4282                             \n"
 		"mtc1            $at,$f16                               \n"
@@ -489,7 +490,7 @@ void func_80B25A18(void) /* 0 internal, 5 external, 160 lines */
 		"sw              $zero,32($sp)                          \n"
 		"sw              $zero,40($sp)                          \n"
 		"sw              $s6,60($sp)                            \n"
-		"jal             external_func_80029E8C                 \n"
+		"jal             0x80029E8C                 \n"
 		"sw              $t0,36($sp)                            \n"
 		"addiu           $s2,$s2,20000                          \n"
 		"sll             $s2,$s2,16                             \n"
@@ -504,7 +505,7 @@ void func_80B25A18(void) /* 0 internal, 5 external, 160 lines */
 		"or              $a1,$s1,$zero                          \n"
 		"lui             $a2,0x41F0                             \n"
 		"addiu           $a3,$zero,4                            \n"
-		"jal             external_func_80033480                 \n"
+		"jal             0x80033480                 \n"
 		"sw              $zero,24($sp)                          \n"
 		"lw              $ra,156($sp)                           \n"
 		"ldc1            $f20,72($sp)                           \n"
@@ -570,7 +571,7 @@ void func_80B25C8C(void) /* 0 internal, 5 external, 161 lines */
 		"add.s           $f8,$f4,$f6                            \n"
 		"sw              $t8,20($sp)                            \n"
 		"sw              $zero,16($sp)                          \n"
-		"jal             external_func_8002949C                 \n"
+		"jal             0x8002949C                 \n"
 		"swc1            $f8,204($sp)                           \n"
 		"lui             $at,0x40A0                             \n"
 		"mtc1            $at,$f30                               \n"
@@ -588,15 +589,15 @@ void func_80B25C8C(void) /* 0 internal, 5 external, 161 lines */
 		"addiu           $s6,$sp,188                            \n"
 		".L000005:                                              \n"
 		"sll             $a0,$s2,16                             \n"
-		"jal             external_func_80077870                 \n"
+		"jal             0x80077870                 \n"
 		"sra             $a0,$a0,16                             \n"
 		"sll             $a0,$s2,16                             \n"
 		"mov.s           $f20,$f0                               \n"
-		"jal             external_func_80077834                 \n"
+		"jal             0x80077834                 \n"
 		"sra             $a0,$a0,16                             \n"
 		"mul.s           $f10,$f20,$f24                         \n"
 		"mov.s           $f22,$f0                               \n"
-		"jal             external_func_800FD9AC                 \n"
+		"jal             0x800FD9AC                 \n"
 		"swc1            $f10,200($sp)                          \n"
 		"mul.s           $f16,$f0,$f30                          \n"
 		"lwc1            $f6,200($sp)                           \n"
@@ -606,7 +607,7 @@ void func_80B25C8C(void) /* 0 internal, 5 external, 161 lines */
 		"add.s           $f18,$f16,$f26                         \n"
 		"swc1            $f4,208($sp)                           \n"
 		"swc1            $f18,204($sp)                          \n"
-		"jal             external_func_800FD9AC                 \n"
+		"jal             0x800FD9AC                 \n"
 		"swc1            $f8,188($sp)                           \n"
 		"lui             $at,0x4080                             \n"
 		"mtc1            $at,$f10                               \n"
@@ -626,7 +627,7 @@ void func_80B25C8C(void) /* 0 internal, 5 external, 161 lines */
 		"swc1            $f8,204($sp)                           \n"
 		"lwc1            $f10,8($s1)                            \n"
 		"add.s           $f16,$f4,$f10                          \n"
-		"jal             external_func_800FD9AC                 \n"
+		"jal             0x800FD9AC                 \n"
 		"swc1            $f16,208($sp)                          \n"
 		"lui             $at,%hi(data_80B265D0)                 \n"
 		"lwc1            $f18,%lo(data_80B265D0)($at)           \n"
@@ -638,7 +639,7 @@ void func_80B25C8C(void) /* 0 internal, 5 external, 161 lines */
 		"b               .L000004                               \n"
 		"addiu           $s0,$zero,64                           \n"
 		".L000004:                                              \n"
-		"jal             external_func_800FD9AC                 \n"
+		"jal             0x800FD9AC                 \n"
 		"nop                                                    \n"
 		"lui             $at,0x4282                             \n"
 		"mtc1            $at,$f6                                \n"
@@ -670,7 +671,7 @@ void func_80B25C8C(void) /* 0 internal, 5 external, 161 lines */
 		"sw              $zero,32($sp)                          \n"
 		"sw              $zero,40($sp)                          \n"
 		"sw              $s7,60($sp)                            \n"
-		"jal             external_func_80029E8C                 \n"
+		"jal             0x80029E8C                 \n"
 		"sw              $t3,36($sp)                            \n"
 		"addiu           $s2,$s2,20000                          \n"
 		"sll             $s2,$s2,16                             \n"
@@ -707,7 +708,7 @@ void play(entity_t *en, z64_global_t *gl) /* 0 internal, 6 external, 46 lines */
 	);
 
 	z64_actorfunc_t *playfunc = en->playfunc;
-	playfunc();
+	playfunc(en, gl);
 	external_func_8002D8E0(&en->actor); /* Probably to haul ass towards Link */
 	external_func_8002E4B4(gl, &en->actor, 10.0f, 10.0f, 20.0f, 0x1D); /* Necessary for drawing a shadow */
 	actor_set_height(&en->actor, 0);
@@ -741,7 +742,7 @@ void data_80B26328(void) /* 1 internal, 2 external, 52 lines */
 		"sub.s           $f10,$f18,$f10                         \n"
 		"swc1            $f12,40($sp)                           \n"
 		"addiu           $a1,$zero,12343                        \n"
-		"jal             external_func_8002F828                 \n"
+		"jal             0x8002F828                 \n"
 		"swc1            $f10,36($sp)                           \n"
 		"lwc1            $f2,44($sp)                            \n"
 		"lwc1            $f12,40($sp)                           \n"
@@ -762,7 +763,7 @@ void data_80B26328(void) /* 1 internal, 2 external, 52 lines */
 		"nop                                                    \n"
 		"bc1fl           .L000017                               \n"
 		"lh              $t6,182($s0)                           \n"
-		"jal             external_func_8007841C                 \n"
+		"jal             0x8007841C                 \n"
 		"lui             $a3,0x3F00                             \n"
 		"lh              $t6,182($s0)                           \n"
 		".L000017:                                              \n"
@@ -810,12 +811,12 @@ void func_80B25F08(void) /* 3 internal, 2 external, 144 lines */
 		"or              $a0,$s1,$zero                          \n"
 		"addiu           $a1,$s0,36                             \n"
 		"addiu           $a2,$zero,40                           \n"
-		"jal             external_func_8006BAD8                 \n"
+		"jal             0x8006BAD8                 \n"
 		"addiu           $a3,$zero,10263                        \n"
 		"or              $a0,$s0,$zero                          \n"
 		"jal             func_80B259B8                          \n"
 		"or              $a1,$s1,$zero                          \n"
-		"jal             external_func_8002D570                 \n"
+		"jal             0x8002D570                 \n"
 		"or              $a0,$s0,$zero                          \n"
 		"b               .L000007                               \n"
 		"lw              $ra,28($sp)                            \n"
@@ -832,17 +833,17 @@ void func_80B25F08(void) /* 3 internal, 2 external, 144 lines */
 		"sw              $a1,36($sp)                            \n"
 		"or              $a0,$s1,$zero                          \n"
 		"addiu           $a2,$zero,40                           \n"
-		"jal             external_func_8006BAD8                 \n"
+		"jal             0x8006BAD8                 \n"
 		"addiu           $a3,$zero,6152                         \n"
 		"lw              $a1,36($sp)                            \n"
 		"or              $a0,$s1,$zero                          \n"
 		"addiu           $a2,$zero,40                           \n"
-		"jal             external_func_8006BAD8                 \n"
+		"jal             0x8006BAD8                 \n"
 		"addiu           $a3,$zero,10375                        \n"
 		"or              $a0,$s0,$zero                          \n"
 		"jal             func_80B259B8                          \n"
 		"or              $a1,$s1,$zero                          \n"
-		"jal             external_func_8002D570                 \n"
+		"jal             0x8002D570                 \n"
 		"or              $a0,$s0,$zero                          \n"
 		"b               .L000007                               \n"
 		"lw              $ra,28($sp)                            \n"
@@ -860,17 +861,17 @@ void func_80B25F08(void) /* 3 internal, 2 external, 144 lines */
 		"sw              $a1,36($sp)                            \n"
 		"or              $a0,$s1,$zero                          \n"
 		"addiu           $a2,$zero,40                           \n"
-		"jal             external_func_8006BAD8                 \n"
+		"jal             0x8006BAD8                 \n"
 		"addiu           $a3,$zero,10242                        \n"
 		"lw              $a1,36($sp)                            \n"
 		"or              $a0,$s1,$zero                          \n"
 		"addiu           $a2,$zero,40                           \n"
-		"jal             external_func_8006BAD8                 \n"
+		"jal             0x8006BAD8                 \n"
 		"addiu           $a3,$zero,10375                        \n"
 		"or              $a0,$s0,$zero                          \n"
 		"jal             func_80B259B8                          \n"
 		"or              $a1,$s1,$zero                          \n"
-		"jal             external_func_8002D570                 \n"
+		"jal             0x8002D570                 \n"
 		"or              $a0,$s0,$zero                          \n"
 		"b               .L000007                               \n"
 		"lw              $ra,28($sp)                            \n"
@@ -887,18 +888,18 @@ void func_80B25F08(void) /* 3 internal, 2 external, 144 lines */
 		"or              $a0,$s1,$zero                          \n"
 		"addiu           $a1,$s0,36                             \n"
 		"addiu           $a2,$zero,40                           \n"
-		"jal             external_func_8006BAD8                 \n"
+		"jal             0x8006BAD8                 \n"
 		"addiu           $a3,$zero,10375                        \n"
 		"lw              $a1,40($sp)                            \n"
 		"or              $a0,$s1,$zero                          \n"
 		"addiu           $a2,$zero,40                           \n"
 		"addiu           $a3,$zero,2110                         \n"
-		"jal             external_func_8006BAD8                 \n"
+		"jal             0x8006BAD8                 \n"
 		"addiu           $a1,$a1,36                             \n"
 		"or              $a0,$s0,$zero                          \n"
 		"jal             func_80B259B8                          \n"
 		"or              $a1,$s1,$zero                          \n"
-		"jal             external_func_8002D570                 \n"
+		"jal             0x8002D570                 \n"
 		"or              $a0,$s0,$zero                          \n"
 		"b               .L000007                               \n"
 		"lw              $ra,28($sp)                            \n"
@@ -917,12 +918,12 @@ void func_80B25F08(void) /* 3 internal, 2 external, 144 lines */
 		"or              $a0,$s1,$zero                          \n"
 		"addiu           $a1,$s0,36                             \n"
 		"addiu           $a2,$zero,40                           \n"
-		"jal             external_func_8006BAD8                 \n"
+		"jal             0x8006BAD8                 \n"
 		"addiu           $a3,$zero,10375                        \n"
 		"or              $a0,$s0,$zero                          \n"
 		"jal             func_80B259B8                          \n"
 		"or              $a1,$s1,$zero                          \n"
-		"jal             external_func_8002D570                 \n"
+		"jal             0x8002D570                 \n"
 		"or              $a0,$s0,$zero                          \n"
 		"lw              $ra,28($sp)                            \n"
 		".L000007:                                              \n"
