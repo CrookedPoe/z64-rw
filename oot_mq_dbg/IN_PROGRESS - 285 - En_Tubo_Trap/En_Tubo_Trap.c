@@ -28,7 +28,7 @@ typedef struct {
 /*** function prototypes ***/
 void draw(entity_t *en, z64_global_t *gl); /* Confirmed */
 void dest(entity_t *en, z64_global_t *gl); /* Confirmed */
-void tubo_trap_drop_collectible(entity_t *en, z64_global_t *gl); /* 0 internal, 1 external, 25 lines */
+void tubo_trap_drop_collectible(entity_t *en, z64_global_t *gl); /* Confirmed */
 void tubo_trap_initialize_attack(entity_t *en); /* Confirmed */
 void tubo_trap_test_levitate(entity_t *en, z64_global_t *gl); /* Confirmed */
 void init(entity_t *en, z64_global_t *gl); /* Confirmed */
@@ -36,7 +36,7 @@ void func_80B25A18(entity_t *en, z64_global_t *gl); /* 0 internal, 5 external, 1
 void func_80B25C8C(entity_t *en, z64_global_t *gl); /* 0 internal, 5 external, 161 lines */
 void play(entity_t *en, z64_global_t *gl); /* Confirmed */
 void tubo_trap_fly(entity_t *en, z64_global_t *gl); /* Confirmed */
-void func_80B25F08(entity_t *en, z64_global_t *gl); /* Check on this */
+void func_80B25F08(entity_t *en, z64_global_t *gl); /* Confirmed */
 
 
 /*** variables ***/
