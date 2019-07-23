@@ -1,30 +1,34 @@
 #include <z64ovl/oot/debug.h>
+#include <z64ovl/oot/helpers.h>
 
 #define OBJ_ID 3
 
 /*** object ***/
 #define DL_TUBO 0x05017870
 
+/*** sounds ***/
+#define	NA_SE_EV_POT_MOVE_START 0x28C4
+
 typedef struct {
 	z64_actor_t actor; 				 /* 0x0000, 0x013C */
 	uint8_t inst_unk[16];  	   /* 0x013C, 0x0010 */
 	z64_actorfunc_t *playfunc; /* 0x014C, 0x0004 */
-	uint8_t inst_unk_2[16];    /* 0x0150, 0x0010 */
+	float pos_y_seek;          /* 0x0150, 0x0004 */
+	vec3f_t pos_init;          /* 0x0154, 0x000C */
 	z64_capsule_t capsule;		 /* 0x0160, 0x004C */
 } entity_t; /* 01AC */
 
 
 /*** function prototypes ***/
-void draw(entity_t *en, z64_global_t *gl); /* 0 internal, 1 external, 13 lines */
-
-void dest(entity_t *en, z64_global_t *gl); /* 0 internal, 1 external, 10 lines */
+void draw(entity_t *en, z64_global_t *gl); /* Confirmed */
+void dest(entity_t *en, z64_global_t *gl); /* Confirmed */
 void func_80B259B8(void); /* 0 internal, 1 external, 25 lines */
 void data_80B2629C(void); /* 0 internal, 1 external, 36 lines */
-void data_80B2612C(void); /* 0 internal, 3 external, 95 lines */
-void init(entity_t *en, z64_global_t *gl); /* 0 internal, 5 external, 40 lines */
+void tubo_trap_test_levitate(entity_t *en, z64_global_t *gl); /* 0 internal, 3 external, 95 lines */
+void init(entity_t *en, z64_global_t *gl); /* Confirmed */
 void func_80B25A18(void); /* 0 internal, 5 external, 160 lines */
 void func_80B25C8C(void); /* 0 internal, 5 external, 161 lines */
-void play(entity_t *en, z64_global_t *gl); /* 0 internal, 6 external, 46 lines */
+void play(entity_t *en, z64_global_t *gl); /* Confirmed */
 void data_80B26328(void); /* 1 internal, 2 external, 52 lines */
 void func_80B25F08(void); /* 3 internal, 2 external, 144 lines */
 
@@ -234,110 +238,45 @@ void data_80B2629C(void) /* 0 internal, 1 external, 36 lines */
 		"nop                                                    \n"
 	);
 }
-void data_80B2612C(void) /* 0 internal, 3 external, 95 lines */
+
+void tubo_trap_test_levitate(entity_t *en, z64_global_t *gl) /* 0 internal, 3 external, 95 lines */
 {
 	asm(
-		".set noat        \n"
-		".set noreorder   \n"
-		".Ldata_80B2612C: \n"
+		".set at        \n"
+		".set reorder   \n"
+		".Ltubo_trap_test_levitate: \n"
 	);
-	asm(
-		"addiu           $sp,$sp,-40                            \n"
-		"sw              $ra,28($sp)                            \n"
-		"sw              $s0,24($sp)                            \n"
-		"sw              $a1,44($sp)                            \n"
-		"lw              $t7,7236($a1)                          \n"
-		"lui             $t8,0x8016                             \n"
-		"lw              $t8,-1392($t8)                         \n"
-		"sw              $t7,36($sp)                            \n"
-		"or              $s0,$a0,$zero                          \n"
-		"lh              $t9,4824($t8)                          \n"
-		"beql            $t9,$zero,.L000013                     \n"
-		"lui             $at,0x4348                             \n"
-		"lwc1            $f4,40($s0)                            \n"
-		"lui             $a0,%hi(data_80B26564)                 \n"
-		"addiu           $a0,$a0,%lo(data_80B26564)             \n"
-		"cvt.d.s         $f6,$f4                                \n"
-		"mfc1            $a3,$f6                                \n"
-		"mfc1            $a2,$f7                                \n"
-		"jal             0x80002130                 \n"
-		"nop                                                    \n"
-		"lw              $t0,36($sp)                            \n"
-		"lui             $a0,%hi(data_80B26590)                 \n"
-		"addiu           $a0,$a0,%lo(data_80B26590)             \n"
-		"lwc1            $f8,40($t0)                            \n"
-		"cvt.d.s         $f10,$f8                               \n"
-		"mfc1            $a3,$f10                               \n"
-		"mfc1            $a2,$f11                               \n"
-		"jal             0x80002130                 \n"
-		"nop                                                    \n"
-		"lui             $a0,%hi(data_80B265BC)                 \n"
-		"jal             0x80002130                 \n"
-		"addiu           $a0,$a0,%lo(data_80B265BC)             \n"
-		"lui             $at,0x4348                             \n"
-		".L000013:                                              \n"
-		"mtc1            $at,$f18                               \n"
-		"lwc1            $f16,144($s0)                          \n"
-		"lw              $t1,36($sp)                            \n"
-		"c.lt.s          $f16,$f18                              \n"
-		"nop                                                    \n"
-		"bc1fl           .L000014                               \n"
-		"lw              $ra,28($sp)                            \n"
-		"lwc1            $f4,40($t1)                            \n"
-		"lwc1            $f6,40($s0)                            \n"
-		"lw              $a0,44($sp)                            \n"
-		"or              $a2,$s0,$zero                          \n"
-		"c.le.s          $f6,$f4                                \n"
-		"addiu           $a1,$a0,7204                           \n"
-		"bc1fl           .L000014                               \n"
-		"lw              $ra,28($sp)                            \n"
-		"jal             0x80033748                 \n"
-		"addiu           $a3,$zero,5                            \n"
-		"lw              $t3,4($s0)                             \n"
-		"lui             $t5,0x8016                             \n"
-		"lui             $at,0xC120                             \n"
-		"ori             $t4,$t3,0x1                            \n"
-		"sw              $t4,4($s0)                             \n"
-		"lw              $t5,-6556($t5)                         \n"
-		"mtc1            $at,$f16                               \n"
-		"lui             $at,0x4220                             \n"
-		"mtc1            $t5,$f8                                \n"
-		"mtc1            $at,$f4                                \n"
-		"lw              $t6,36($sp)                            \n"
-		"cvt.s.w         $f10,$f8                               \n"
-		"lwc1            $f0,40($s0)                            \n"
-		"lwc1            $f6,40($t6)                            \n"
-		"or              $a0,$s0,$zero                          \n"
-		"mul.s           $f18,$f10,$f16                         \n"
-		"add.s           $f2,$f18,$f4                           \n"
-		"add.s           $f8,$f6,$f2                            \n"
-		"swc1            $f8,336($s0)                           \n"
-		"lwc1            $f10,336($s0)                          \n"
-		"c.lt.s          $f10,$f0                               \n"
-		"nop                                                    \n"
-		"bc1fl           .L000015                               \n"
-		"lw              $t8,36($s0)                            \n"
-		"add.s           $f16,$f0,$f2                           \n"
-		"swc1            $f16,336($s0)                          \n"
-		"lw              $t8,36($s0)                            \n"
-		".L000015:                                              \n"
-		"lw              $t7,40($s0)                            \n"
-		"addiu           $a1,$zero,10436                        \n"
-		"sw              $t8,340($s0)                           \n"
-		"lw              $t8,44($s0)                            \n"
-		"sw              $t7,344($s0)                           \n"
-		"jal             0x8002F828                 \n"
-		"sw              $t8,348($s0)                           \n"
-		"lui             $t9,%hi(data_80B2629C)                 \n"
-		"addiu           $t9,$t9,%lo(data_80B2629C)             \n"
-		"sw              $t9,332($s0)                           \n"
-		"lw              $ra,28($sp)                            \n"
-		".L000014:                                              \n"
-		"lw              $s0,24($sp)                            \n"
-		"addiu           $sp,$sp,40                             \n"
-		"jr              $ra                                    \n"
-		"nop                                                    \n"
-	);
+
+	z64_player_t *player = helper_get_player(gl);
+
+	if ((AVAL(0x8015FA90, int16_t, 0x12D8)) != 0)
+	{
+		float pos_y = (en->actor).pos_2.y;
+		//debug_message(&data_80B26564, gl, (pos_y >> 0x20), SUB84(pos_y, 0));
+		//debug_message(&data_80B26590);
+		//debug_message(&data_80B265BC);
+	}
+
+	float link_y = (player->actor).pos_2.y;
+
+	if (((en->actor).dist_from_link_xz < 200.0f) && ((en->actor).pos_2.y <= link_y))
+	{
+			float seek_y;
+
+			external_func_80033748(gl, /*gl->actor_ctxt*/&AVAL(gl, char, 0x1C24), &en->actor, 5);
+			(en->actor).flags |= 1;
+			seek_y = 40.0f - (10.0f * zh_link_is_child()); /* 10 units lower if Child */
+			en->pos_y_seek = link_y + seek_y;
+			if (en->pos_y_seek < (en->actor).pos_2.y)
+			{
+					en->pos_y_seek = (en->actor).pos_2.y + seek_y;
+			}
+			(en->pos_init).x = en->actor.pos_2.x;
+			(en->pos_init).y = en->actor.pos_2.y;
+			(en->pos_init).z = en->actor.pos_2.z;
+			sound_play_actor2(&en->actor, NA_SE_EV_POT_MOVE_START);
+			en->playfunc = (z64_actorfunc_t *)data_80B2629C;
+	}
 }
 
 void init(entity_t *en, z64_global_t *gl) /* 0 internal, 5 external, 40 lines */
@@ -354,7 +293,7 @@ void init(entity_t *en, z64_global_t *gl) /* 0 internal, 5 external, 40 lines */
 	actor_capsule_alloc(gl, &en->capsule);
 	actor_capsule_init(gl, &en->capsule, &en->actor, data_80B264E0);
 	actor_set_scale(&en->actor, 0.1f);
-	en->playfunc = (z64_actorfunc_t *)data_80B2612C;
+	en->playfunc = (z64_actorfunc_t *)tubo_trap_test_levitate;
 }
 
 void func_80B25A18(void) /* 0 internal, 5 external, 160 lines */
