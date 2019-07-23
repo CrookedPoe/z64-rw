@@ -28,15 +28,15 @@ typedef struct {
 /*** function prototypes ***/
 void draw(entity_t *en, z64_global_t *gl); /* Confirmed */
 void dest(entity_t *en, z64_global_t *gl); /* Confirmed */
-void func_80B259B8(entity_t *en, z64_global_t *gl); /* 0 internal, 1 external, 25 lines */
+void tubo_trap_drop_collectible(entity_t *en, z64_global_t *gl); /* 0 internal, 1 external, 25 lines */
 void tubo_trap_initialize_attack(entity_t *en); /* Confirmed */
 void tubo_trap_test_levitate(entity_t *en, z64_global_t *gl); /* Confirmed */
 void init(entity_t *en, z64_global_t *gl); /* Confirmed */
 void func_80B25A18(entity_t *en, z64_global_t *gl); /* 0 internal, 5 external, 160 lines */
-void func_80B25C8C(void); /* 0 internal, 5 external, 161 lines */
+void func_80B25C8C(entity_t *en, z64_global_t *gl); /* 0 internal, 5 external, 161 lines */
 void play(entity_t *en, z64_global_t *gl); /* Confirmed */
 void tubo_trap_fly(entity_t *en, z64_global_t *gl); /* Confirmed */
-void func_80B25F08(entity_t *en, z64_global_t *gl); /* 3 internal, 2 external, 144 lines */
+void func_80B25F08(entity_t *en, z64_global_t *gl); /* Check on this */
 
 
 /*** variables ***/
@@ -163,40 +163,23 @@ void dest(entity_t *en, z64_global_t *gl) /* 0 internal, 1 external, 10 lines */
 	actor_capsule_free(gl, &en->capsule);
 }
 
-void func_80B259B8(entity_t *en, z64_global_t *gl) /* 0 internal, 1 external, 25 lines */
+void tubo_trap_drop_collectible(entity_t *en, z64_global_t *gl) /* 0 internal, 1 external, 25 lines */
 {
 	asm(
-		".set noat        \n"
-		".set noreorder   \n"
-		".Lfunc_80B259B8: \n"
+		".set at        \n"
+		".set reorder   \n"
+		".Ltubo_trap_drop_collectible: \n"
 	);
-	asm(
-		"addiu           $sp,$sp,-24                            \n"
-		"sw              $ra,20($sp)                            \n"
-		"sw              $a1,28($sp)                            \n"
-		"lh              $v1,28($a0)                            \n"
-		"or              $a3,$a0,$zero                          \n"
-		"sra             $v0,$v1,6                              \n"
-		"andi            $v0,$v0,0x3ff                          \n"
-		"sll             $v0,$v0,16                             \n"
-		"sra             $v0,$v0,16                             \n"
-		"bltz            $v0,.L000000                           \n"
-		"slti            $at,$v0,26                             \n"
-		"beq             $at,$zero,.L000000                     \n"
-		"or              $a0,$a1,$zero                          \n"
-		"andi            $t6,$v1,0x3f                           \n"
-		"sll             $t7,$t6,8                              \n"
-		"or              $a2,$v0,$t7                            \n"
-		"sll             $a2,$a2,16                             \n"
-		"sra             $a2,$a2,16                             \n"
-		"jal             0x8001F548                 \n"
-		"addiu           $a1,$a3,36                             \n"
-		".L000000:                                              \n"
-		"lw              $ra,20($sp)                            \n"
-		"addiu           $sp,$sp,24                             \n"
-		"jr              $ra                                    \n"
-		"nop                                                    \n"
-	);
+
+	uint16_t uVar1;
+	uint32_t uVar2;
+
+	uVar2 = SEXT24((en->actor).variable);
+	uVar1 = uVar2 >> 6 & 0x03FF;
+	if (uVar1 < 0x001A)
+	{
+		item_drop_collectible(gl, &(en->actor).pos_2, (uVar1 | (uVar2 & 0x3F) << 8));
+	}
 }
 
 void tubo_trap_initialize_attack(entity_t *en) /* 0 internal, 1 external, 36 lines */
@@ -444,7 +427,7 @@ void func_80B25A18(entity_t *en, z64_global_t *gl) /* 0 internal, 5 external, 16
 		"addiu           $sp,$sp,224                            \n"
 	);
 }
-void func_80B25C8C(void) /* 0 internal, 5 external, 161 lines */
+void func_80B25C8C(entity_t *en, z64_global_t *gl) /* 0 internal, 5 external, 161 lines */
 {
 	asm(
 		".set noat        \n"
@@ -681,9 +664,9 @@ void func_80B25F08(entity_t *en, z64_global_t *gl) /* 3 internal, 2 external, 14
 	{
 		if ((en->actor).water_surface_dist > 15.0f)
 		{
-			func_80B25C8C();
+			func_80B25C8C(en, gl);
 			sound_play_position(gl, &(en->actor).pos_2, 0x28, NA_SE_EV_BOMB_DROP_WATER);
-			func_80B259B8(en, gl);
+			tubo_trap_drop_collectible(en, gl);
 			actor_kill(&en->actor);
 			return;
 		}
@@ -708,7 +691,7 @@ void func_80B25F08(entity_t *en, z64_global_t *gl) /* 3 internal, 2 external, 14
 					func_80B25A18(en, gl);
 					sound_play_position(gl, &(en->actor).pos_2, 0x28, NA_SE_EV_POT_BROKEN);
 					sound_play_position(gl, &(player->actor).pos_2, 0x28, NA_SE_PL_BODY_HIT);
-					func_80B259B8(en, gl);
+					tubo_trap_drop_collectible(en, gl);
 					actor_kill(&en->actor);
 					return;
 				}
@@ -718,7 +701,7 @@ void func_80B25F08(entity_t *en, z64_global_t *gl) /* 3 internal, 2 external, 14
 			{
 				func_80B25A18(en, gl);
 				sound_play_position(gl, &(en->actor).pos_2, 0x28, NA_SE_EV_POT_BROKEN);
-				func_80B259B8(en, gl);
+				tubo_trap_drop_collectible(en, gl);
 				actor_kill(&en->actor);
 			}
 		}
@@ -728,7 +711,7 @@ void func_80B25F08(entity_t *en, z64_global_t *gl) /* 3 internal, 2 external, 14
 			func_80B25A18(en, gl);
 			sound_play_position(gl, &(en->actor).pos_2, 0x28, NA_SE_EV_EXPLOSION);
 			sound_play_position(gl, &(en->actor).pos_2, 0x28, NA_SE_EV_POT_BROKEN);
-			func_80B259B8(en, gl);
+			tubo_trap_drop_collectible(en, gl);
 			actor_kill(&en->actor);
 		}
 	}
@@ -738,7 +721,7 @@ void func_80B25F08(entity_t *en, z64_global_t *gl) /* 3 internal, 2 external, 14
 		func_80B25A18(en, gl);
 		sound_play_position(gl, &(en->actor).pos_2, 0x28, NA_SE_IT_SHIELD_REFLECT_SW);
 		sound_play_position(gl, &(en->actor).pos_2, 0x28, NA_SE_EV_POT_BROKEN);
-		func_80B259B8(en, gl);
+		tubo_trap_drop_collectible(en, gl);
 		actor_kill(&en->actor);
 	}
 }
