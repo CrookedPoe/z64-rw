@@ -41,19 +41,20 @@ static void tubo_trap_test_collider(entity_t *en, z64_global_t *gl); /* Confirme
 
 
 /*** variables ***/
-const uint32_t data_80B264E0[] =
-{
-	0x0A110900,
-	0x20010000,
-	0x00000000,
-	0xFFCFFFFF,
-	0x00040000,
-	0xFFCFFFFF,
-	0x00000000,
-	0x01010000,
-	0x00090017,
-	0x00000000,
-	0x00000000
+const z64_collider_cylinder_init_t data_80B264E0 = {
+0x0A, 0x11, 0x09, 0x00, 0x20, 0x01,
+0x00, 0x00,
+0x00,
+0x00, 0x00, 0x00,
+0xFFCFFFFF,
+0x00, 0x04,
+0x00, 0x00,
+0xFFCFFFFF,
+0x00, 0x00, 0x00, 0x00,
+0x01, 0x01, 0x00,
+0x00,
+0x0009, 0x0017, 0x0000,
+0x0000, 0x0000, 0x0000
 };
 
 /*** functions ***/
@@ -64,7 +65,7 @@ static void draw(entity_t *en, z64_global_t *gl)
 
 static void dest(entity_t *en, z64_global_t *gl)
 {
-	actor_capsule_free(gl, &en->capsule);
+	actor_collider_cylinder_free(gl, &en->capsule);
 }
 
 static void tubo_trap_drop_collectible(entity_t *en, z64_global_t *gl)
@@ -123,8 +124,8 @@ static void tubo_trap_test_levitate(entity_t *en, z64_global_t *gl)
 static void init(entity_t *en, z64_global_t *gl) /* 0 internal, 5 external, 40 lines */
 {
 	actor_init_shadow(&(en->actor).rot_2, 0, &ACTOR_SHADOW_DRAWFUNC_CIRCLE, 2.0f);
-	actor_capsule_alloc(gl, &en->capsule);
-	actor_capsule_init(gl, &en->capsule, &en->actor, data_80B264E0);
+	actor_collider_cylinder_alloc(gl, &en->capsule);
+	actor_collider_cylinder_init(gl, &en->capsule, &en->actor, &data_80B264E0);
 	actor_set_scale(&en->actor, 0.1f);
 	en->playfunc = (z64_actorfunc_t *)tubo_trap_test_levitate;
 }
