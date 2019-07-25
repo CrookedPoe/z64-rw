@@ -12,9 +12,10 @@ typedef struct {
 	uint8_t inst_etc_01_[92];
 	uint32_t inst_unk_02;
 	uint8_t inst_etc_02_[104];
-	uint16_t inst_unk_03;
+	int16_t inst_unk_03;
 	uint16_t inst_unk_04;
-	uint8_t inst_etc_04_[8];
+	uint32_t inst_unk_05;
+	z64_actorfunc_t * playfunc;
 } entity_t; /* 02B4 */
 
 /*** object ***/
@@ -22,10 +23,10 @@ typedef struct {
 #define ANIM_76EC 0x060076EC
 
 /*** function prototypes ***/
-void func_809B0370(void); /* 0 internal, 0 external, 2 lines */
+void ani_playfunc_set(entity_t *en, z64_actorfunc_t *func); /* 0 internal, 0 external, 2 lines */
 void data_809B0DD4(void); /* 0 internal, 1 external, 17 lines */
 void data_809B048C(void); /* 0 internal, 1 external, 10 lines */
-void func_809B04B4(void); /* 0 internal, 1 external, 15 lines */
+void func_809B04B4(entity_t *en, z64_global_t *gl, uint16_t msg_id); /* 0 internal, 1 external, 15 lines */
 void data_809B0D90(void); /* 0 internal, 0 external, 18 lines */
 void func_809B0A28(void); /* 0 internal, 1 external, 18 lines */
 void func_809B0994(void); /* 0 internal, 2 external, 38 lines */
@@ -44,7 +45,7 @@ void data_809B0558(void); /* 1 internal, 2 external, 42 lines */
 void data_809B0C10(void); /* 1 internal, 5 external, 107 lines */
 void init(entity_t *en, z64_global_t *gl); /* 1 internal, 6 external, 71 lines */
 void data_809B07F8(void); /* 2 internal, 1 external, 110 lines */
-void data_809B064C(void); /* 2 internal, 2 external, 116 lines */
+void data_809B064C(entity_t *en, z64_global_t *gl); /* 2 internal, 2 external, 116 lines */
 
 
 /*** variables ***/
@@ -64,10 +65,11 @@ const z64_collider_cylinder_init_t capsule =
 	0x001E, 0x0028, 0x0000,
 	0x0000, 0x0000, 0x0000
 };
-const z64_dynapoly_init_t dynapoly_init =
-{
-	0xC850000A,
-	0x30F40352
+
+const z64_dynapoly_init_t dynapoly_init = {
+  .unk_0 = {0xC8, 0x50},
+  .scale = 0x000A,
+  .unk_1 = 0x30F40352
 };
 const uint32_t data_809B0F74[] =
 {
@@ -110,18 +112,17 @@ const uint32_t data_809B0FB0[] =
 
 
 /*** functions ***/
-void func_809B0370(void) /* 0 internal, 0 external, 2 lines */
+void ani_playfunc_set(entity_t *en, z64_actorfunc_t *func) /* 0 internal, 0 external, 2 lines */
 {
 	asm(
-		".set noat        \n"
-		".set noreorder   \n"
-		".Lfunc_809B0370: \n"
+		".set at        \n"
+		".set reorder   \n"
+		".Lani_playfunc_set: \n"
 	);
-	asm(
-		"jr              $ra                                    \n"
-		"sw              $a1,688($a0)                           \n"
-	);
+
+	en->playfunc = func;
 }
+
 void data_809B0DD4(void) /* 0 internal, 1 external, 17 lines */
 {
 	asm(
@@ -169,31 +170,21 @@ void data_809B048C(void) /* 0 internal, 1 external, 10 lines */
 		"nop                                                    \n"
 	);
 }
-void func_809B04B4(void) /* 0 internal, 1 external, 15 lines */
+
+void func_809B04B4(entity_t *en, z64_global_t *gl, uint16_t msg_id) /* 0 internal, 1 external, 15 lines */
 {
 	asm(
-		".set noat        \n"
-		".set noreorder   \n"
+		".set at        \n"
+		".set reorder   \n"
 		".Lfunc_809B04B4: \n"
 	);
-	asm(
-		"addiu           $sp,$sp,-24                            \n"
-		"sw              $ra,20($sp)                            \n"
-		"sw              $a2,32($sp)                            \n"
-		"lhu             $t6,680($a0)                           \n"
-		"or              $a3,$a2,$zero                          \n"
-		"sh              $a3,270($a0)                           \n"
-		"ori             $t7,$t6,0x1                            \n"
-		"sh              $t7,680($a0)                           \n"
-		"jal             0x8002F2CC                 \n"
-		"lui             $a2,0x42C8                             \n"
-		"lw              $ra,20($sp)                            \n"
-		"addiu           $sp,$sp,24                             \n"
-		"or              $v0,$zero,$zero                        \n"
-		"jr              $ra                                    \n"
-		"nop                                                    \n"
-	);
+
+	//int16_t _temp = en->inst_unk_03;
+	(en->actor).text_id = msg_id;
+	en->inst_unk_03 |= 1;
+	external_func_8002F2CC(&en->actor, gl, 100.0f);
 }
+
 void data_809B0D90(void) /* 0 internal, 0 external, 18 lines */
 {
 	asm(
@@ -590,7 +581,7 @@ void data_809B04F0(void) /* 1 internal, 1 external, 14 lines */
 		"beq             $v0,$zero,.L000002                     \n"
 		"lw              $a0,24($sp)                            \n"
 		"lui             $a1,%hi(data_809B064C)                 \n"
-		"jal             func_809B0370                          \n"
+		"jal             ani_playfunc_set                          \n"
 		"addiu           $a1,$a1,%lo(data_809B064C)             \n"
 		".L000002:                                              \n"
 		"lw              $ra,20($sp)                            \n"
@@ -614,7 +605,7 @@ void data_809B0524(void) /* 1 internal, 1 external, 14 lines */
 		"beq             $v0,$zero,.L000003                     \n"
 		"lw              $a0,24($sp)                            \n"
 		"lui             $a1,%hi(data_809B07F8)                 \n"
-		"jal             func_809B0370                          \n"
+		"jal             ani_playfunc_set                          \n"
 		"addiu           $a1,$a1,%lo(data_809B07F8)             \n"
 		".L000003:                                              \n"
 		"lw              $ra,20($sp)                            \n"
@@ -639,7 +630,7 @@ void data_809B05F0(void) /* 1 internal, 2 external, 24 lines */
 		"beq             $v0,$zero,.L000008                     \n"
 		"lw              $a0,32($sp)                            \n"
 		"lui             $a1,%hi(data_809B0558)                 \n"
-		"jal             func_809B0370                          \n"
+		"jal             ani_playfunc_set                          \n"
 		"addiu           $a1,$a1,%lo(data_809B0558)             \n"
 		".L000008:                                              \n"
 		"lui             $at,0x4348                             \n"
@@ -679,12 +670,12 @@ void data_809B0558(void) /* 1 internal, 2 external, 42 lines */
 		"beq             $t6,$zero,.L000005                     \n"
 		"nop                                                    \n"
 		"lui             $a1,%hi(data_809B04F0)                 \n"
-		"jal             func_809B0370                          \n"
+		"jal             ani_playfunc_set                          \n"
 		"addiu           $a1,$a1,%lo(data_809B04F0)             \n"
 		"b               .L000006                               \n"
 		"nop                                                    \n"
 		".L000005:                                              \n"
-		"jal             func_809B0370                          \n"
+		"jal             ani_playfunc_set                          \n"
 		"addiu           $a1,$a1,%lo(data_809B0524)             \n"
 		".L000006:                                              \n"
 		"lui             $t7,0x8016                             \n"
@@ -858,14 +849,14 @@ void init(entity_t *en, z64_global_t *gl) /* 1 internal, 6 external, 71 lines */
 
 	/* Test Link's Age */
 	if (zh_link_is_adult())
-		func_809B0370(en, data_809B07F8());
+		ani_playfunc_set(en, (z64_actorfunc_t *)data_809B07F8);
 	else
-		func_809B0370(en, data_809B064C());
+		ani_playfunc_set(en, (z64_actorfunc_t *)data_809B064C);
 
 	en->inst_unk_04 = 0;
 	en->inst_unk_03 = 0;
 	(en->actor).min_vel_y = -1.0f;
-	(en->actor).vel_1.y = -1.0f
+	(en->actor).vel_1.y = -1.0f;
 }
 
 void data_809B07F8(void) /* 2 internal, 1 external, 110 lines */
@@ -896,7 +887,7 @@ void data_809B07F8(void) /* 2 internal, 1 external, 110 lines */
 		"lui             $a1,%hi(data_809B0524)                 \n"
 		"bnel            $v0,$at,.L000019                       \n"
 		"addiu           $at,$zero,20565                        \n"
-		"jal             func_809B0370                          \n"
+		"jal             ani_playfunc_set                          \n"
 		"addiu           $a1,$a1,%lo(data_809B0524)             \n"
 		"b               .L000020                               \n"
 		"lw              $ra,20($sp)                            \n"
@@ -905,12 +896,12 @@ void data_809B07F8(void) /* 2 internal, 1 external, 110 lines */
 		"bne             $v0,$at,.L000021                       \n"
 		"lui             $a1,%hi(data_809B0524)                 \n"
 		"lui             $a1,%hi(data_809B05F0)                 \n"
-		"jal             func_809B0370                          \n"
+		"jal             ani_playfunc_set                          \n"
 		"addiu           $a1,$a1,%lo(data_809B05F0)             \n"
 		"b               .L000020                               \n"
 		"lw              $ra,20($sp)                            \n"
 		".L000021:                                              \n"
-		"jal             func_809B0370                          \n"
+		"jal             ani_playfunc_set                          \n"
 		"addiu           $a1,$a1,%lo(data_809B0524)             \n"
 		"b               .L000020                               \n"
 		"lw              $ra,20($sp)                            \n"
@@ -988,132 +979,71 @@ void data_809B07F8(void) /* 2 internal, 1 external, 110 lines */
 		"nop                                                    \n"
 	);
 }
-void data_809B064C(void) /* 2 internal, 2 external, 116 lines */
+
+void data_809B064C(entity_t *en, z64_global_t *gl) /* 2 internal, 2 external, 116 lines */
 {
 	asm(
-		".set noat        \n"
-		".set noreorder   \n"
+		".set at        \n"
+		".set reorder   \n"
 		".Ldata_809B064C: \n"
 	);
-	asm(
-		"addiu           $sp,$sp,-32                            \n"
-		"or              $a3,$a0,$zero                          \n"
-		"sw              $ra,20($sp)                            \n"
-		"sw              $a1,36($sp)                            \n"
-		"or              $a0,$a1,$zero                          \n"
-		"addiu           $a1,$zero,10                           \n"
-		"jal             0x8006C360                 \n"
-		"sw              $a3,32($sp)                            \n"
-		"lw              $a1,36($sp)                            \n"
-		"lw              $a3,32($sp)                            \n"
-		"bne             $v0,$zero,.L000009                     \n"
-		"andi            $a2,$v0,0xffff                         \n"
-		"lui             $t6,0x8016                             \n"
-		"lw              $t6,-6544($t6)                         \n"
-		"addiu           $a2,$zero,20560                        \n"
-		"beq             $t6,$zero,.L000009                     \n"
-		"nop                                                    \n"
-		"b               .L000009                               \n"
-		"addiu           $a2,$zero,20561                        \n"
-		".L000009:                                              \n"
-		"lh              $t7,138($a3)                           \n"
-		"lh              $t8,182($a3)                           \n"
-		"sw              $a3,32($sp)                            \n"
-		"sh              $a2,30($sp)                            \n"
-		"subu            $v1,$t7,$t8                            \n"
-		"sll             $v1,$v1,16                             \n"
-		"sra             $v1,$v1,16                             \n"
-		"sh              $v1,28($sp)                            \n"
-		"jal             0x8002F194                 \n"
-		"or              $a0,$a3,$zero                          \n"
-		"lh              $v1,28($sp)                            \n"
-		"lw              $a1,36($sp)                            \n"
-		"lhu             $a2,30($sp)                            \n"
-		"beq             $v0,$zero,.L000010                     \n"
-		"lw              $a3,32($sp)                            \n"
-		"lhu             $v0,270($a3)                           \n"
-		"addiu           $at,$zero,20566                        \n"
-		"or              $a0,$a3,$zero                          \n"
-		"bne             $v0,$at,.L000011                       \n"
-		"lui             $a1,%hi(data_809B04F0)                 \n"
-		"jal             func_809B0370                          \n"
-		"addiu           $a1,$a1,%lo(data_809B04F0)             \n"
-		"b               .L000012                               \n"
-		"lw              $ra,20($sp)                            \n"
-		".L000011:                                              \n"
-		"addiu           $at,$zero,20565                        \n"
-		"bne             $v0,$at,.L000013                       \n"
-		"or              $a0,$a3,$zero                          \n"
-		"lui             $a1,%hi(data_809B05F0)                 \n"
-		"addiu           $a1,$a1,%lo(data_809B05F0)             \n"
-		"jal             func_809B0370                          \n"
-		"or              $a0,$a3,$zero                          \n"
-		"b               .L000012                               \n"
-		"lw              $ra,20($sp)                            \n"
-		".L000013:                                              \n"
-		"lui             $a1,%hi(data_809B04F0)                 \n"
-		"jal             func_809B0370                          \n"
-		"addiu           $a1,$a1,%lo(data_809B04F0)             \n"
-		"b               .L000012                               \n"
-		"lw              $ra,20($sp)                            \n"
-		".L000010:                                              \n"
-		"slti            $at,$v1,-13999                         \n"
-		"bnel            $at,$zero,.L000014                     \n"
-		"slti            $at,$v1,-999                           \n"
-		"bgez            $v1,.L000015                           \n"
-		"lui             $at,0x4316                             \n"
-		"lwc1            $f4,144($a3)                           \n"
-		"mtc1            $at,$f6                                \n"
-		"lui             $at,0xC2A0                             \n"
-		"c.lt.s          $f4,$f6                                \n"
-		"nop                                                    \n"
-		"bc1fl           .L000014                               \n"
-		"slti            $at,$v1,-999                           \n"
-		"mtc1            $at,$f8                                \n"
-		"lwc1            $f10,148($a3)                          \n"
-		"lui             $t9,0x8016                             \n"
-		"c.lt.s          $f8,$f10                               \n"
-		"nop                                                    \n"
-		"bc1fl           .L000014                               \n"
-		"slti            $at,$v1,-999                           \n"
-		"lhu             $t9,-2734($t9)                         \n"
-		"addiu           $a2,$zero,20566                        \n"
-		"or              $a0,$a3,$zero                          \n"
-		"andi            $t0,$t9,0x20                           \n"
-		"beq             $t0,$zero,.L000016                     \n"
-		"nop                                                    \n"
-		"jal             func_809B04B4                          \n"
-		"or              $a0,$a3,$zero                          \n"
-		"b               .L000012                               \n"
-		"lw              $ra,20($sp)                            \n"
-		".L000016:                                              \n"
-		"jal             func_809B04B4                          \n"
-		"addiu           $a2,$zero,20565                        \n"
-		"b               .L000012                               \n"
-		"lw              $ra,20($sp)                            \n"
-		".L000015:                                              \n"
-		"slti            $at,$v1,-999                           \n"
-		".L000014:                                              \n"
-		"bne             $at,$zero,.L000017                     \n"
-		"slti            $at,$v1,14000                          \n"
-		"beq             $at,$zero,.L000017                     \n"
-		"lui             $at,0x43AF                             \n"
-		"mtc1            $at,$f18                               \n"
-		"lwc1            $f16,144($a3)                          \n"
-		"c.lt.s          $f16,$f18                              \n"
-		"nop                                                    \n"
-		"bc1fl           .L000012                               \n"
-		"lw              $ra,20($sp)                            \n"
-		"jal             func_809B04B4                          \n"
-		"or              $a0,$a3,$zero                          \n"
-		".L000017:                                              \n"
-		"lw              $ra,20($sp)                            \n"
-		".L000012:                                              \n"
-		"addiu           $sp,$sp,32                             \n"
-		"jr              $ra                                    \n"
-		"nop                                                    \n"
-	);
+
+	uint16_t msg_id;
+	int iVar1;
+	int16_t sVar2;
+
+	iVar1 = external_func_8006C360(gl, 10);
+	msg_id = iVar1;
+
+	if ((iVar1 == 0) && (msg_id = 0x5050, GLOBAL_IS_NIGHT != 0))
+		msg_id = 0x5051;
+
+	sVar2 = ((en->actor).rot_toward_link_y - (en->actor).rot_2.y) * 0x10000 >> 0x10;
+	iVar1 = external_func_8002F194(&en->actor, gl); /* sets actor flags */
+	if (iVar1 == 0)
+	{
+		if ((((sVar2 < -13999)
+		||(-1 < sVar2))
+		|| (150.0f <= (en->actor).dist_from_link_xz))
+		|| ((en->actor).dist_from_link_y <= -80.0f))
+		{
+			if (((-1000 < sVar2) && (sVar2 < 14000)) && ((en->actor).dist_from_link_xz < 350.0f))
+			{
+				func_809B04B4(en, gl, msg_id);
+			}
+		}
+		else
+		{
+			if (((AVAL(SAVE_CONTEXT, uint16_t, 0x0EF2)) & 0x20) == 0)
+			{
+				func_809B04B4(en, gl, 0x5055);
+			}
+			else
+			{
+				func_809B04B4(en, gl, 0x5056);
+			}
+		}
+	}
+	else
+	{
+		if ((en->actor).text_id == 0x5056)
+		{
+			ani_playfunc_set(en, (z64_actorfunc_t*)data_809B04F0);
+		}
+		else
+		{
+			if ((en->actor).text_id == 0x5055)
+			{
+				ani_playfunc_set(en, (z64_actorfunc_t*)data_809B05F0);
+			}
+			else
+			{
+				ani_playfunc_set(en, (z64_actorfunc_t*)data_809B04F0);
+			}
+		}
+	}
 }
+
 const z64_actor_init_t init_vars = {
 	.number = 0xDEAD, .padding = 0xBEEF, /* <-- magic values, do not change */
 	.type = 0x04,

@@ -21,9 +21,6 @@ void data_80B1DDC4(void); /* 3 internal, 25 external, 1769 lines */
 
 
 /*** variables ***/
-asm(
-	".comm           bss_blank,64                           \n"
-);
 const uint32_t data_80B1F9F0[] =
 {
 	0x00000000
