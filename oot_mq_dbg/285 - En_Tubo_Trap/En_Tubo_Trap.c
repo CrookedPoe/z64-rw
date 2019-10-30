@@ -360,7 +360,7 @@ static void tubo_trap_test_collider(entity_t *en, z64_global_t *gl)
 
 const z64_actor_init_t init_vars = {
 	.number = 0xDEAD, .padding = 0xBEEF, /* for use with zzromtool */
-	.type = 0x06,
+	.type = OVLTYPE_PROP,
 	.room = 0x00,
 	.flags = 0x00000010,
 	.object = OBJ_ID,

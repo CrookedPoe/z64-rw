@@ -1,0 +1,925 @@
+#include <z64ovl/oot/debug.h>
+
+#define OBJ_ID 1
+
+/*** sounds ***/
+#define NA_SE_EV_TORCH 0x2031
+
+/*** instance structure ***/
+typedef struct {
+	z64_actor_t actor;
+	uint8_t pad_00[16];
+	uint8_t inst_014C;
+	uint32_t *inst_0150;
+	uint32_t inst_0154;
+	uint16_t inst_0158;
+	uint16_t inst_015A;
+	uint16_t inst_015C;
+	int16_t inst_015E;
+	int16_t inst_0160;
+} entity_t; /* 0164 */
+
+
+/*** function prototypes ***/
+void dest(entity_t *en, z64_global_t *gl); /* rewritten, CONFIRMED */
+void func_80A9DD50(entity_t *en, z64_global_t *gl); /* rewritten, CONFIRMED */
+void init(entity_t *en, z64_global_t *gl); /* rewritten, CRASH */
+void draw(entity_t *en, z64_global_t *gl); /* 0 internal, 8 external, 224 lines */
+void play(entity_t *en, z64_global_t *gl); /* rewritten,  */
+void data_80A9E074(entity_t *en, z64_global_t *gl); /* 1 internal, 6 external, 291 lines */
+
+
+/*** variables ***/
+const uint8_t data_80A9E840[] =
+{
+0xFF, 0xC8, 0x00, 0xFF, 0xFF, 0x00, 0x00, 0x4B,
+0xFF, 0xC8, 0x00, 0xFF, 0xFF, 0x00, 0x00, 0x4B,
+0x00, 0xAA, 0xFF, 0xFF, 0x00, 0x00, 0xFF, 0x4B,
+0xAA, 0xFF, 0x00, 0xFF, 0x00, 0x96, 0x00, 0x4B,
+0xFF, 0xC8, 0x00, 0xFF, 0xFF, 0x00, 0x00, 0x28,
+0xFF, 0xC8, 0x00, 0xFF, 0xFF, 0x00, 0x00, 0x4B,
+0xAA, 0xFF, 0x00, 0xFF, 0x00, 0x96, 0x00, 0x4B,
+0x00, 0xAA, 0xFF, 0xFF, 0x00, 0x00, 0xFF, 0x4B,
+0xFF, 0x00, 0xAA, 0xFF, 0xC8, 0x00, 0x00, 0x4B,
+0xFF, 0xFF, 0xAA, 0xFF, 0xFF, 0x32, 0x00, 0x4B,
+0xFF, 0xFF, 0xAA, 0xFF, 0xFF, 0xFF, 0x00, 0x4B,
+0xFF, 0xFF, 0xAA, 0xFF, 0x64, 0xFF, 0x00, 0x4B,
+0xFF, 0xAA, 0xFF, 0xFF, 0xFF, 0x00, 0x64, 0x4B,
+0xFF, 0xAA, 0xFF, 0xFF, 0x64, 0x00, 0xFF, 0x4B,
+0xAA, 0xFF, 0xFF, 0xFF, 0x00, 0x00, 0xFF, 0x4B,
+0xAA, 0xFF, 0xFF, 0xFF, 0x00, 0x96, 0xFF, 0x4B
+};
+
+uint8_t data_80A9E847[] = {
+0x4B, 0xFF, 0xC8, 0x00, 0xFF, 0xFF, 0x00, 0x00,
+0x4B, 0x00, 0xAA, 0xFF, 0xFF, 0x00, 0x00, 0xFF,
+0x4B, 0xAA, 0xFF, 0x00, 0xFF, 0x00, 0x96, 0x00,
+0x4B, 0xFF, 0xC8, 0x00, 0xFF, 0xFF, 0x00, 0x00,
+0x28, 0xFF, 0xC8, 0x00, 0xFF, 0xFF, 0x00, 0x00,
+0x4B, 0xAA, 0xFF, 0x00, 0xFF, 0x00, 0x96, 0x00,
+0x4B, 0x00, 0xAA, 0xFF, 0xFF, 0x00, 0x00, 0xFF,
+0x4B, 0xFF, 0x00, 0xAA, 0xFF, 0xC8, 0x00, 0x00,
+0x4B, 0xFF, 0xFF, 0xAA, 0xFF, 0xFF, 0x32, 0x00,
+0x4B, 0xFF, 0xFF, 0xAA, 0xFF, 0xFF, 0xFF, 0x00,
+0x4B, 0xFF, 0xFF, 0xAA, 0xFF, 0x64, 0xFF, 0x00,
+0x4B, 0xFF, 0xAA, 0xFF, 0xFF, 0xFF, 0x00, 0x64,
+0x4B, 0xFF, 0xAA, 0xFF, 0xFF, 0x64, 0x00, 0xFF,
+0x4B, 0xAA, 0xFF, 0xFF, 0xFF, 0x00, 0x00, 0xFF,
+0x4B, 0xAA, 0xFF, 0xFF, 0xFF, 0x00, 0x96, 0xFF,
+0x4B};
+
+/*uint8_t data_80A9E840[] =
+{
+0xFF, 0xC8, 0x00, 0xFF, 0xFF, 0x00, 0x00
+};*/
+
+const uint32_t data_80A9E8C0[] =
+{
+	0x2E2E2F7A,
+	0x5F656E5F,
+	0x6C696768,
+	0x742E6300
+};
+const uint32_t data_80A9E8D0[] =
+{
+	0x2E2E2F7A,
+	0x5F656E5F,
+	0x6C696768,
+	0x742E6300
+};
+const uint32_t data_80A9E8E0[] =
+{
+	0x2E2E2F7A,
+	0x5F656E5F,
+	0x6C696768,
+	0x742E6300
+};
+const uint32_t data_80A9E8F0[] =
+{
+	0x38D1B717,
+	0x00000000
+};
+const uint32_t data_80A9E8F8[] =
+{
+	0x3F1A36E2,
+	0xEB1C432D
+};
+const uint32_t data_80A9E900[] =
+{
+	0x3DCCCCCD
+};
+const uint32_t data_80A9E904[] =
+{
+	0x3DCCCCCD
+};
+const uint32_t data_80A9E908[] =
+{
+	0x3F1A36E2,
+	0xEB1C432D
+};
+const uint32_t data_80A9E910[] =
+{
+	0x38C90FDA
+};
+const uint32_t data_80A9E914[] =
+{
+	0x40490FDA,
+	0x00000000,
+	0x00000000
+};
+
+
+/*** functions ***/
+void dest(entity_t *en, z64_global_t *gl)
+{
+	asm(
+		".set noat        \n"
+		".set noreorder   \n"
+		".Ldata_80A9DD20: \n"
+	);
+	asm(
+		"addiu           $sp,$sp,-24                            \n"
+		"sw              $a0,24($sp)                            \n"
+		"lw              $t6,24($sp)                            \n"
+		"sw              $ra,20($sp)                            \n"
+		"or              $a0,$a1,$zero                          \n"
+		"addiu           $a1,$a1,1960                           \n"
+		"jal             0x8007A7C4                 \n"
+		"lw              $a2,336($t6)                           \n"
+		"lw              $ra,20($sp)                            \n"
+		"addiu           $sp,$sp,24                             \n"
+		"jr              $ra                                    \n"
+		"nop                                                    \n"
+	);
+}
+
+void func_80A9DD50(entity_t *en, z64_global_t *gl)
+{
+	asm(
+		".set noat        \n"
+		".set noreorder   \n"
+		".Lfunc_80A9DD50: \n"
+	);
+	asm(
+		"addiu           $sp,$sp,-24                            \n"
+		"sw              $ra,20($sp)                            \n"
+		"lh              $t6,1952($a1)                          \n"
+		"or              $a2,$a0,$zero                          \n"
+		"sll             $t7,$t6,2                              \n"
+		"addu            $t8,$a1,$t7                            \n"
+		"lw              $a0,1936($t8)                          \n"
+		"jal             0x8005A9F4                 \n"
+		"sw              $a2,24($sp)                            \n"
+		"lw              $a2,24($sp)                            \n"
+		"ori             $at,$zero,0x8000                       \n"
+		"addu            $t9,$v0,$at                            \n"
+		"lw              $v1,280($a2)                           \n"
+		"sh              $t9,182($a2)                           \n"
+		"addiu           $a0,$a2,36                             \n"
+		"beq             $v1,$zero,.L000008                     \n"
+		"addiu           $a1,$v1,36                             \n"
+		"jal             0x80077E40                 \n"
+		"sw              $a2,24($sp)                            \n"
+		"lw              $a2,24($sp)                            \n"
+		"lui             $at,0x4188                             \n"
+		"mtc1            $at,$f6                                \n"
+		"lwc1            $f4,40($a2)                            \n"
+		"add.s           $f8,$f4,$f6                            \n"
+		"swc1            $f8,40($a2)                            \n"
+		".L000008:                                              \n"
+		"lbu             $t0,332($a2)                           \n"
+		"addiu           $t1,$t0,1                              \n"
+		"sb              $t1,332($a2)                           \n"
+		"lw              $ra,20($sp)                            \n"
+		"addiu           $sp,$sp,24                             \n"
+		"jr              $ra                                    \n"
+		"nop                                                    \n"
+	);
+}
+
+void init(entity_t *en, z64_global_t *gl) /* CRASH; ASM for now */
+{
+	asm(
+		".set noat        \n"
+		".set noreorder   \n"
+		".Ldata_80A9DB40: \n"
+	);
+	asm(
+		"lui             $t6,0x8016                             \n"
+		"lw              $t6,-1604($t6)                         \n"
+		"addiu           $sp,$sp,-48                            \n"
+		"sw              $s0,36($sp)                            \n"
+		"addiu           $at,$zero,3                            \n"
+		"or              $s0,$a0,$zero                          \n"
+		"sw              $ra,44($sp)                            \n"
+		"sw              $s1,40($sp)                            \n"
+		"bne             $t6,$at,.L000000                       \n"
+		"sw              $a1,52($sp)                            \n"
+		"lh              $t7,28($a0)                            \n"
+		"addiu           $s1,$s0,340                            \n"
+		"or              $a0,$s1,$zero                          \n"
+		"bgez            $t7,.L000001                           \n"
+		"addiu           $t4,$zero,255                          \n"
+		"beq             $zero,$zero,.L000002                   \n"
+		"addiu           $v0,$zero,1                            \n"
+		".L000001:                                              \n"
+		"addiu           $v0,$zero,40                           \n"
+		".L000002:                                              \n"
+		"lwc1            $f8,40($s0)                            \n"
+		"lwc1            $f4,36($s0)                            \n"
+		"lwc1            $f16,44($s0)                           \n"
+		"trunc.w.s       $f10,$f8                               \n"
+		"addiu           $t5,$zero,255                          \n"
+		"addiu           $t6,$zero,180                          \n"
+		"trunc.w.s       $f6,$f4                                \n"
+		"mfc1            $t2,$f10                               \n"
+		"addiu           $t7,$zero,-1                           \n"
+		"trunc.w.s       $f18,$f16                              \n"
+		"mfc1            $a1,$f6                                \n"
+		"addu            $a2,$v0,$t2                            \n"
+		"sll             $a2,$a2,16                             \n"
+		"mfc1            $a3,$f18                               \n"
+		"sll             $a1,$a1,16                             \n"
+		"sra             $a1,$a1,16                             \n"
+		"sll             $a3,$a3,16                             \n"
+		"sra             $a3,$a3,16                             \n"
+		"sra             $a2,$a2,16                             \n"
+		"sw              $t7,28($sp)                            \n"
+		"sw              $t6,24($sp)                            \n"
+		"sw              $t5,20($sp)                            \n"
+		"jal             0x80079D8C                 \n"
+		"sw              $t4,16($sp)                            \n"
+		"beq             $zero,$zero,.L000003                   \n"
+		"lw              $a0,52($sp)                            \n"
+		".L000000:                                              \n"
+		"lh              $t8,28($s0)                            \n"
+		"addiu           $s1,$s0,340                            \n"
+		"or              $a0,$s1,$zero                          \n"
+		"bgez            $t8,.L000004                           \n"
+		"addiu           $t5,$zero,255                          \n"
+		"beq             $zero,$zero,.L000005                   \n"
+		"addiu           $v0,$zero,1                            \n"
+		".L000004:                                              \n"
+		"addiu           $v0,$zero,40                           \n"
+		".L000005:                                              \n"
+		"lwc1            $f8,40($s0)                            \n"
+		"lwc1            $f4,36($s0)                            \n"
+		"lwc1            $f16,44($s0)                           \n"
+		"trunc.w.s       $f10,$f8                               \n"
+		"addiu           $t6,$zero,255                          \n"
+		"addiu           $t7,$zero,180                          \n"
+		"trunc.w.s       $f6,$f4                                \n"
+		"mfc1            $t3,$f10                               \n"
+		"addiu           $t8,$zero,-1                           \n"
+		"trunc.w.s       $f18,$f16                              \n"
+		"mfc1            $a1,$f6                                \n"
+		"addu            $a2,$v0,$t3                            \n"
+		"sll             $a2,$a2,16                             \n"
+		"mfc1            $a3,$f18                               \n"
+		"sll             $a1,$a1,16                             \n"
+		"sra             $a1,$a1,16                             \n"
+		"sll             $a3,$a3,16                             \n"
+		"sra             $a3,$a3,16                             \n"
+		"sra             $a2,$a2,16                             \n"
+		"sw              $t8,28($sp)                            \n"
+		"sw              $t7,24($sp)                            \n"
+		"sw              $t6,20($sp)                            \n"
+		"jal             0x80079DF0                 \n"
+		"sw              $t5,16($sp)                            \n"
+		"lw              $a0,52($sp)                            \n"
+		".L000003:                                              \n"
+		"or              $a2,$s1,$zero                          \n"
+		"jal             0x8007A764                 \n"
+		"addiu           $a1,$a0,1960                           \n"
+		"lh              $t0,28($s0)                            \n"
+		"lui             $t3,%hi(data_80A9E847)                 \n"
+		"sw              $v0,336($s0)                           \n"
+		"andi            $t1,$t0,0xf                            \n"
+		"sll             $t2,$t1,3                              \n"
+		"addu            $t3,$t3,$t2                            \n"
+		"lbu             $t3,%lo(data_80A9E847)($t3)            \n"
+		"or              $a0,$s0,$zero                          \n"
+		"lui             $at,0x4F80                             \n"
+		"mtc1            $t3,$f4                                \n"
+		"bgez            $t3,.L000006                           \n"
+		"cvt.s.w         $f6,$f4                                \n"
+		"mtc1            $at,$f8                                \n"
+		"nop                                                    \n"
+		"add.s           $f6,$f6,$f8                            \n"
+		".L000006:                                              \n"
+		"lui             $at,%hi(data_80A9E8F0)                 \n"
+		"lwc1            $f10,%lo(data_80A9E8F0)($at)           \n"
+		"mul.s           $f16,$f6,$f10                          \n"
+		"mfc1            $a1,$f16                               \n"
+		"jal             0x8002D62C                 \n"
+		"nop                                                    \n"
+		"jal             0x800FD9AC                 \n"
+		"nop                                                    \n"
+		"lui             $at,0x437F                             \n"
+		"mtc1            $at,$f18                               \n"
+		"lh              $t6,28($s0)                            \n"
+		"lui             $t8,%hi(data_80A9E074)                 \n"
+		"mul.s           $f4,$f0,$f18                           \n"
+		"andi            $t7,$t6,0x400                          \n"
+		"addiu           $t8,$t8,%lo(data_80A9E074)             \n"
+		"trunc.w.s       $f8,$f4                                \n"
+		"mfc1            $t5,$f8                                \n"
+		"beq             $t7,$zero,.L000007                     \n"
+		"sb              $t5,332($s0)                           \n"
+		"sw              $t8,304($s0)                           \n"
+		".L000007:                                              \n"
+		"lw              $ra,44($sp)                            \n"
+		"lw              $s0,36($sp)                            \n"
+		"lw              $s1,40($sp)                            \n"
+		"jr              $ra                                    \n"
+		"addiu           $sp,$sp,48                             \n"
+	);
+}
+
+void draw(entity_t *en, z64_global_t *gl) /* 0 internal, 8 external, 224 lines */
+{
+	asm(
+		".set noat        \n"
+		".set noreorder   \n"
+		".Ldraw: \n"
+	);
+	asm(
+		"addiu           $sp,$sp,-144                           \n"
+		"sw              $ra,60($sp)                            \n"
+		"sw              $s0,56($sp)                            \n"
+		"sw              $a0,144($sp)                           \n"
+		"sw              $a1,148($sp)                           \n"
+		"lh              $t7,28($a0)                            \n"
+		"lui             $t2,%hi(data_80A9E840)                 \n"
+		"lw              $a1,0($a1)                             \n"
+		"andi            $t8,$t7,0xf                            \n"
+		"sll             $t9,$t8,3                              \n"
+		"addiu           $t2,$t2,%lo(data_80A9E840)             \n"
+		"addu            $t0,$t9,$t2                            \n"
+		"lui             $a2,%hi(data_80A9E8C0)                 \n"
+		"addiu           $a2,$a2,%lo(data_80A9E8C0)             \n"
+		"sw              $t0,132($sp)                           \n"
+		"addiu           $a0,$sp,108                            \n"
+		"addiu           $a3,$zero,441                          \n"
+		"jal             0x800C6AC4                 \n"
+		"or              $s0,$a1,$zero                          \n"
+		"lw              $t4,148($sp)                           \n"
+		"jal             0x80093D84                 \n"
+		"lw              $a0,0($t4)                             \n"
+		"lw              $t1,144($sp)                           \n"
+		"lui             $t8,0xDB06                             \n"
+		"lw              $t0,132($sp)                           \n"
+		"lh              $t5,28($t1)                            \n"
+		"ori             $t8,$t8,0x20                           \n"
+		"or              $a1,$zero,$zero                        \n"
+		"bltz            $t5,.L000044                           \n"
+		"or              $a2,$zero,$zero                        \n"
+		"lw              $v0,720($s0)                           \n"
+		"lui             $t7,0xDB06                             \n"
+		"ori             $t7,$t7,0x20                           \n"
+		"addiu           $t6,$v0,8                              \n"
+		"sw              $t6,720($s0)                           \n"
+		"sw              $t7,0($v0)                             \n"
+		"lw              $t8,148($sp)                           \n"
+		"addiu           $t9,$zero,32                           \n"
+		"addiu           $t2,$zero,64                           \n"
+		"lw              $a0,0($t8)                             \n"
+		"addiu           $t3,$zero,1                            \n"
+		"sw              $t3,24($sp)                            \n"
+		"sw              $zero,28($sp)                          \n"
+		"sw              $t2,20($sp)                            \n"
+		"sw              $t9,16($sp)                            \n"
+		"lbu             $t4,332($t1)                           \n"
+		"addiu           $t8,$zero,128                          \n"
+		"addiu           $t7,$zero,32                           \n"
+		"subu            $at,$zero,$t4                          \n"
+		"sll             $t5,$at,2                              \n"
+		"addu            $t5,$t5,$at                            \n"
+		"sll             $t5,$t5,2                              \n"
+		"andi            $t6,$t5,0x1ff                          \n"
+		"sw              $t6,32($sp)                            \n"
+		"sw              $t7,36($sp)                            \n"
+		"sw              $t8,40($sp)                            \n"
+		"sw              $t0,132($sp)                           \n"
+		"or              $a1,$zero,$zero                        \n"
+		"or              $a2,$zero,$zero                        \n"
+		"or              $a3,$zero,$zero                        \n"
+		"jal             0x80094F40                 \n"
+		"sw              $v0,104($sp)                           \n"
+		"lw              $v1,104($sp)                           \n"
+		"lw              $t0,132($sp)                           \n"
+		"lui             $t9,0x0405                             \n"
+		"addiu           $t9,$t9,-11040                         \n"
+		"sw              $v0,4($v1)                             \n"
+		"sw              $t9,128($sp)                           \n"
+		"lw              $v0,720($s0)                           \n"
+		"lui             $t3,0xFA00                             \n"
+		"ori             $t3,$t3,0x8080                         \n"
+		"addiu           $t2,$v0,8                              \n"
+		"sw              $t2,720($s0)                           \n"
+		"sw              $t3,0($v0)                             \n"
+		"lbu             $t8,1($t0)                             \n"
+		"lbu             $t5,0($t0)                             \n"
+		"lbu             $t4,2($t0)                             \n"
+		"sll             $t9,$t8,16                             \n"
+		"sll             $t6,$t5,24                             \n"
+		"or              $t2,$t6,$t9                            \n"
+		"lbu             $t6,3($t0)                             \n"
+		"sll             $t5,$t4,8                              \n"
+		"or              $t7,$t2,$t5                            \n"
+		"or              $t9,$t7,$t6                            \n"
+		"sw              $t9,4($v0)                             \n"
+		"lw              $v0,720($s0)                           \n"
+		"lui             $t4,0xFB00                             \n"
+		"addiu           $t3,$v0,8                              \n"
+		"sw              $t3,720($s0)                           \n"
+		"sw              $t4,0($v0)                             \n"
+		"lbu             $t5,4($t0)                             \n"
+		"lbu             $t6,5($t0)                             \n"
+		"lbu             $t2,6($t0)                             \n"
+		"sll             $t8,$t5,24                             \n"
+		"sll             $t9,$t6,16                             \n"
+		"or              $t3,$t8,$t9                            \n"
+		"sll             $t5,$t2,8                              \n"
+		"or              $t7,$t3,$t5                            \n"
+		"beq             $zero,$zero,.L000045                   \n"
+		"sw              $t7,4($v0)                             \n"
+		".L000044:                                              \n"
+		"lw              $v0,720($s0)                           \n"
+		"addiu           $t4,$zero,16                           \n"
+		"addiu           $t2,$zero,32                           \n"
+		"addiu           $t6,$v0,8                              \n"
+		"sw              $t6,720($s0)                           \n"
+		"sw              $t8,0($v0)                             \n"
+		"lw              $t9,148($sp)                           \n"
+		"addiu           $t3,$zero,1                            \n"
+		"or              $a3,$zero,$zero                        \n"
+		"lw              $a0,0($t9)                             \n"
+		"sw              $t3,24($sp)                            \n"
+		"sw              $t2,20($sp)                            \n"
+		"sw              $t4,16($sp)                            \n"
+		"lbu             $v1,332($t1)                           \n"
+		"addiu           $t4,$zero,32                           \n"
+		"addiu           $t9,$zero,16                           \n"
+		"subu            $at,$zero,$v1                          \n"
+		"sll             $t6,$at,2                              \n"
+		"subu            $t6,$t6,$at                            \n"
+		"sll             $t6,$t6,1                              \n"
+		"sll             $t5,$v1,1                              \n"
+		"andi            $t7,$t5,0x3f                           \n"
+		"andi            $t8,$t6,0x7f                           \n"
+		"sw              $t8,32($sp)                            \n"
+		"sw              $t7,28($sp)                            \n"
+		"sw              $t9,36($sp)                            \n"
+		"sw              $t4,40($sp)                            \n"
+		"jal             0x80094F40                 \n"
+		"sw              $v0,92($sp)                            \n"
+		"lw              $t0,92($sp)                            \n"
+		"lui             $t2,0x0500                             \n"
+		"addiu           $t2,$t2,1088                           \n"
+		"sw              $v0,4($t0)                             \n"
+		"sw              $t2,128($sp)                           \n"
+		"lw              $v0,720($s0)                           \n"
+		"lui             $t5,0xFA00                             \n"
+		"ori             $t5,$t5,0xc0c0                         \n"
+		"addiu           $t3,$v0,8                              \n"
+		"sw              $t3,720($s0)                           \n"
+		"lui             $t7,0xFFC8                             \n"
+		"sw              $t7,4($v0)                             \n"
+		"sw              $t5,0($v0)                             \n"
+		"lw              $v0,720($s0)                           \n"
+		"lui             $t8,0xFB00                             \n"
+		"lui             $t9,0xFF00                             \n"
+		"addiu           $t6,$v0,8                              \n"
+		"sw              $t6,720($s0)                           \n"
+		"sw              $t9,4($v0)                             \n"
+		"sw              $t8,0($v0)                             \n"
+		".L000045:                                              \n"
+		"lw              $v0,148($sp)                           \n"
+		"lh              $t4,1952($v0)                          \n"
+		"sll             $t2,$t4,2                              \n"
+		"addu            $t3,$v0,$t2                            \n"
+		"jal             0x8005A9F4                 \n"
+		"lw              $a0,1936($t3)                          \n"
+		"lw              $t5,144($sp)                           \n"
+		"ori             $at,$zero,0x8000                       \n"
+		"addiu           $a1,$zero,1                            \n"
+		"lh              $t7,182($t5)                           \n"
+		"subu            $t6,$v0,$t7                            \n"
+		"addu            $t8,$t6,$at                            \n"
+		"sll             $t9,$t8,16                             \n"
+		"sra             $t4,$t9,16                             \n"
+		"mtc1            $t4,$f4                                \n"
+		"lui             $at,%hi(data_80A9E910)                 \n"
+		"lwc1            $f8,%lo(data_80A9E910)($at)            \n"
+		"cvt.s.w         $f6,$f4                                \n"
+		"mul.s           $f12,$f6,$f8                           \n"
+		"jal             0x800D0D20                 \n"
+		"nop                                                    \n"
+		"lw              $t2,144($sp)                           \n"
+		"lui             $at,%hi(data_80A9E914)                 \n"
+		"addiu           $a1,$zero,1                            \n"
+		"lh              $t3,28($t2)                            \n"
+		"andi            $t5,$t3,0x1                            \n"
+		"beql            $t5,$zero,.L000046                     \n"
+		"lui             $at,0x3F80                             \n"
+		"jal             0x800D0D20                 \n"
+		"lwc1            $f12,%lo(data_80A9E914)($at)           \n"
+		"lui             $at,0x3F80                             \n"
+		".L000046:                                              \n"
+		"mtc1            $at,$f12                               \n"
+		"addiu           $a3,$zero,1                            \n"
+		"mfc1            $a2,$f12                               \n"
+		"jal             0x800D0A8C                 \n"
+		"mov.s           $f14,$f12                              \n"
+		"lw              $v0,720($s0)                           \n"
+		"lui             $t6,0xDA38                             \n"
+		"ori             $t6,$t6,0x3                            \n"
+		"addiu           $t7,$v0,8                              \n"
+		"sw              $t7,720($s0)                           \n"
+		"sw              $t6,0($v0)                             \n"
+		"lw              $t8,148($sp)                           \n"
+		"lui             $a1,%hi(data_80A9E8D0)                 \n"
+		"addiu           $a1,$a1,%lo(data_80A9E8D0)             \n"
+		"lw              $a0,0($t8)                             \n"
+		"addiu           $a2,$zero,488                          \n"
+		"jal             0x800D1A88                 \n"
+		"sw              $v0,80($sp)                            \n"
+		"lw              $v1,80($sp)                            \n"
+		"lui             $t4,0xDE00                             \n"
+		"lui             $a2,%hi(data_80A9E8E0)                 \n"
+		"sw              $v0,4($v1)                             \n"
+		"lw              $v0,720($s0)                           \n"
+		"addiu           $a2,$a2,%lo(data_80A9E8E0)             \n"
+		"addiu           $a0,$sp,108                            \n"
+		"addiu           $t9,$v0,8                              \n"
+		"sw              $t9,720($s0)                           \n"
+		"sw              $t4,0($v0)                             \n"
+		"lw              $t2,128($sp)                           \n"
+		"addiu           $a3,$zero,491                          \n"
+		"sw              $t2,4($v0)                             \n"
+		"lw              $t3,148($sp)                           \n"
+		"jal             0x800C6B54                 \n"
+		"lw              $a1,0($t3)                             \n"
+		"lw              $ra,60($sp)                            \n"
+		"lw              $s0,56($sp)                            \n"
+		"addiu           $sp,$sp,144                            \n"
+		"jr              $ra                                    \n"
+		"nop                                                    \n"
+		"nop                                                    \n"
+		"nop                                                    \n"
+	);
+}
+
+void play(entity_t *en, z64_global_t *gl)
+{
+    asm(
+        ".set at        \n"
+        ".set reorder   \n"
+        ".Lplay: \n"
+    );
+
+		int var = ((en->actor).variable & 0x000F) << 3;
+		/* Initialize Flame Glow Size and Burning Sound */
+		int glow_size;
+		if ((en->actor).variable < 0)
+			glow_size = 100;
+		else
+		{
+			glow_size = 300;
+			sound_play_actor2(&en->actor, NA_SE_EV_TORCH);
+		}
+
+		/* Initialize Flame/Glow Color and Flickering*/
+    float opacity = (math_rand_zero_one() * 0.5f + 0.5f); /* This is randomized to get a more natural flickering effect */
+
+    int32_t red = FLOOR((data_80A9E840[var]) * opacity);
+    if (red < 0)
+			red = 0xFFFFFFFF;
+
+    int32_t green = FLOOR((data_80A9E840[var + 1]) * opacity);
+    if (green < 0)
+			green = 0xFFFFFFFF;
+
+    int32_t blue = FLOOR((data_80A9E840[var + 2]) * opacity);
+    if (blue < 0)
+			blue = 0xFFFFFFFF;
+
+    external_func_80079E58(&en->inst_0154, (red & 0xFF), (green & 0xFF), (blue & 0xFF), glow_size);
+    func_80A9DD50(en, gl);
+}
+
+void data_80A9E074(entity_t *en, z64_global_t *gl) /* 1 internal, 6 external, 291 lines */
+{
+	asm(
+		".set noat        \n"
+		".set noreorder   \n"
+		".Ldata_80A9E074: \n"
+	);
+	asm(
+		"addiu           $sp,$sp,-64                            \n"
+		"sw              $ra,36($sp)                            \n"
+		"sw              $s0,32($sp)                            \n"
+		"sw              $a1,68($sp)                            \n"
+		"lh              $t6,28($a0)                            \n"
+		"lui             $t9,%hi(data_80A9E840)                 \n"
+		"addiu           $t9,$t9,%lo(data_80A9E840)             \n"
+		"andi            $t7,$t6,0xf                            \n"
+		"sll             $t8,$t7,3                              \n"
+		"addu            $t0,$t8,$t9                            \n"
+		"sw              $t0,56($sp)                            \n"
+		"lbu             $t1,7($t0)                             \n"
+		"or              $s0,$a0,$zero                          \n"
+		"lui             $at,0x4F80                             \n"
+		"mtc1            $t1,$f4                                \n"
+		"bgez            $t1,.L000023                           \n"
+		"cvt.s.w         $f6,$f4                                \n"
+		"mtc1            $at,$f8                                \n"
+		"nop                                                    \n"
+		"add.s           $f6,$f6,$f8                            \n"
+		".L000023:                                              \n"
+		"lui             $at,%hi(data_80A9E8F8)                 \n"
+		"ldc1            $f16,%lo(data_80A9E8F8)($at)           \n"
+		"cvt.d.s         $f10,$f6                               \n"
+		"lwc1            $f4,80($s0)                            \n"
+		"mul.d           $f18,$f10,$f16                         \n"
+		"lw              $a0,68($sp)                            \n"
+		"cvt.d.s         $f8,$f4                                \n"
+		"div.d           $f6,$f8,$f18                           \n"
+		"cvt.s.d         $f10,$f6                               \n"
+		"swc1            $f10,48($sp)                           \n"
+		"lh              $v0,28($s0)                            \n"
+		"andi            $t2,$v0,0x800                          \n"
+		"beq             $t2,$zero,.L000024                     \n"
+		"andi            $a1,$v0,0x3f0                          \n"
+		"andi            $a1,$v0,0x3f0                          \n"
+		"sra             $a1,$a1,4                              \n"
+		"jal             0x8002CB40                 \n"
+		"lw              $a0,68($sp)                            \n"
+		"beq             $v0,$zero,.L000025                     \n"
+		"lwc1            $f16,48($sp)                           \n"
+		"lui             $a2,0x3D4C                             \n"
+		"ori             $a2,$a2,0xcccd                         \n"
+		"addiu           $a0,$sp,48                             \n"
+		"jal             0x80077A00                 \n"
+		"lui             $a1,0x3F80                             \n"
+		"beq             $zero,$zero,.L000026                   \n"
+		"lw              $t3,56($sp)                            \n"
+		".L000025:                                              \n"
+		"lui             $at,%hi(data_80A9E900)                 \n"
+		"lwc1            $f4,%lo(data_80A9E900)($at)            \n"
+		"addiu           $a0,$sp,48                             \n"
+		"addiu           $a1,$zero,0                            \n"
+		"c.lt.s          $f16,$f4                               \n"
+		"lui             $a2,0x3D4C                             \n"
+		"bc1f            .L000027                               \n"
+		"nop                                                    \n"
+		"or              $a0,$s0,$zero                          \n"
+		"jal             0x8002D62C                 \n"
+		"addiu           $a1,$zero,0                            \n"
+		"beq             $zero,$zero,.L000028                   \n"
+		"lw              $ra,36($sp)                            \n"
+		".L000027:                                              \n"
+		"jal             0x80077A00                 \n"
+		"ori             $a2,$a2,0xcccd                         \n"
+		"beq             $zero,$zero,.L000026                   \n"
+		"lw              $t3,56($sp)                            \n"
+		".L000024:                                              \n"
+		"jal             0x8002CB40                 \n"
+		"sra             $a1,$a1,4                              \n"
+		"beq             $v0,$zero,.L000029                     \n"
+		"addiu           $a0,$sp,48                             \n"
+		"lui             $at,%hi(data_80A9E904)                 \n"
+		"lwc1            $f18,%lo(data_80A9E904)($at)           \n"
+		"lwc1            $f8,48($sp)                            \n"
+		"addiu           $a0,$sp,48                             \n"
+		"addiu           $a1,$zero,0                            \n"
+		"c.lt.s          $f8,$f18                               \n"
+		"lui             $a2,0x3D4C                             \n"
+		"bc1f            .L000030                               \n"
+		"nop                                                    \n"
+		"or              $a0,$s0,$zero                          \n"
+		"jal             0x8002D62C                 \n"
+		"addiu           $a1,$zero,0                            \n"
+		"beq             $zero,$zero,.L000028                   \n"
+		"lw              $ra,36($sp)                            \n"
+		".L000030:                                              \n"
+		"jal             0x80077A00                 \n"
+		"ori             $a2,$a2,0xcccd                         \n"
+		"beq             $zero,$zero,.L000026                   \n"
+		"lw              $t3,56($sp)                            \n"
+		".L000029:                                              \n"
+		"lui             $a2,0x3D4C                             \n"
+		"ori             $a2,$a2,0xcccd                         \n"
+		"jal             0x80077A00                 \n"
+		"lui             $a1,0x3F80                             \n"
+		"lw              $t3,56($sp)                            \n"
+		".L000026:                                              \n"
+		"or              $a0,$s0,$zero                          \n"
+		"lbu             $t4,7($t3)                             \n"
+		"mtc1            $t4,$f6                                \n"
+		"bgez            $t4,.L000031                           \n"
+		"cvt.s.w         $f10,$f6                               \n"
+		"lui             $at,0x4F80                             \n"
+		"mtc1            $at,$f16                               \n"
+		"nop                                                    \n"
+		"add.s           $f10,$f10,$f16                         \n"
+		".L000031:                                              \n"
+		"lui             $at,%hi(data_80A9E908)                 \n"
+		"ldc1            $f8,%lo(data_80A9E908)($at)            \n"
+		"cvt.d.s         $f4,$f10                               \n"
+		"lwc1            $f6,48($sp)                            \n"
+		"mul.d           $f18,$f4,$f8                           \n"
+		"cvt.d.s         $f16,$f6                               \n"
+		"mul.d           $f10,$f18,$f16                         \n"
+		"cvt.s.d         $f4,$f10                               \n"
+		"mfc1            $a1,$f4                                \n"
+		"jal             0x8002D62C                 \n"
+		"nop                                                    \n"
+		"jal             0x800FD9AC                 \n"
+		"nop                                                    \n"
+		"lui             $at,0x3F00                             \n"
+		"mtc1            $at,$f12                               \n"
+		"lw              $t5,56($sp)                            \n"
+		"lui             $at,0x4F80                             \n"
+		"mul.s           $f8,$f0,$f12                           \n"
+		"lbu             $t6,0($t5)                             \n"
+		"addiu           $a0,$s0,340                            \n"
+		"mtc1            $t6,$f6                                \n"
+		"add.s           $f2,$f8,$f12                           \n"
+		"bgez            $t6,.L000032                           \n"
+		"cvt.s.w         $f18,$f6                               \n"
+		"mtc1            $at,$f16                               \n"
+		"nop                                                    \n"
+		"add.s           $f18,$f18,$f16                         \n"
+		".L000032:                                              \n"
+		"mul.s           $f10,$f18,$f2                          \n"
+		"addiu           $a1,$zero,1                            \n"
+		"lui             $at,0x4F00                             \n"
+		"cfc1            $t7,$f31                               \n"
+		"ctc1            $a1,$f31                               \n"
+		"nop                                                    \n"
+		"cvt.w.s         $f4,$f10                               \n"
+		"cfc1            $a1,$f31                               \n"
+		"nop                                                    \n"
+		"andi            $a1,$a1,0x78                           \n"
+		"beql            $a1,$zero,.L000033                     \n"
+		"mfc1            $a1,$f4                                \n"
+		"mtc1            $at,$f4                                \n"
+		"addiu           $a1,$zero,1                            \n"
+		"sub.s           $f4,$f10,$f4                           \n"
+		"ctc1            $a1,$f31                               \n"
+		"nop                                                    \n"
+		"cvt.w.s         $f4,$f4                                \n"
+		"cfc1            $a1,$f31                               \n"
+		"nop                                                    \n"
+		"andi            $a1,$a1,0x78                           \n"
+		"bne             $a1,$zero,.L000034                     \n"
+		"nop                                                    \n"
+		"mfc1            $a1,$f4                                \n"
+		"lui             $at,0x8000                             \n"
+		"beq             $zero,$zero,.L000035                   \n"
+		"or              $a1,$a1,$at                            \n"
+		".L000034:                                              \n"
+		"beq             $zero,$zero,.L000035                   \n"
+		"addiu           $a1,$zero,-1                           \n"
+		"mfc1            $a1,$f4                                \n"
+		".L000033:                                              \n"
+		"nop                                                    \n"
+		"bltz            $a1,.L000034                           \n"
+		"nop                                                    \n"
+		".L000035:                                              \n"
+		"lbu             $t8,1($t5)                             \n"
+		"ctc1            $t7,$f31                               \n"
+		"andi            $a1,$a1,0xff                           \n"
+		"mtc1            $t8,$f8                                \n"
+		"lui             $at,0x4F80                             \n"
+		"bgez            $t8,.L000036                           \n"
+		"cvt.s.w         $f6,$f8                                \n"
+		"mtc1            $at,$f16                               \n"
+		"nop                                                    \n"
+		"add.s           $f6,$f6,$f16                           \n"
+		".L000036:                                              \n"
+		"mul.s           $f18,$f6,$f2                           \n"
+		"addiu           $a2,$zero,1                            \n"
+		"lui             $at,0x4F00                             \n"
+		"cfc1            $t9,$f31                               \n"
+		"ctc1            $a2,$f31                               \n"
+		"nop                                                    \n"
+		"cvt.w.s         $f10,$f18                              \n"
+		"cfc1            $a2,$f31                               \n"
+		"nop                                                    \n"
+		"andi            $a2,$a2,0x78                           \n"
+		"beql            $a2,$zero,.L000037                     \n"
+		"mfc1            $a2,$f10                               \n"
+		"mtc1            $at,$f10                               \n"
+		"addiu           $a2,$zero,1                            \n"
+		"sub.s           $f10,$f18,$f10                         \n"
+		"ctc1            $a2,$f31                               \n"
+		"nop                                                    \n"
+		"cvt.w.s         $f10,$f10                              \n"
+		"cfc1            $a2,$f31                               \n"
+		"nop                                                    \n"
+		"andi            $a2,$a2,0x78                           \n"
+		"bne             $a2,$zero,.L000038                     \n"
+		"nop                                                    \n"
+		"mfc1            $a2,$f10                               \n"
+		"lui             $at,0x8000                             \n"
+		"beq             $zero,$zero,.L000039                   \n"
+		"or              $a2,$a2,$at                            \n"
+		".L000038:                                              \n"
+		"beq             $zero,$zero,.L000039                   \n"
+		"addiu           $a2,$zero,-1                           \n"
+		"mfc1            $a2,$f10                               \n"
+		".L000037:                                              \n"
+		"nop                                                    \n"
+		"bltz            $a2,.L000038                           \n"
+		"nop                                                    \n"
+		".L000039:                                              \n"
+		"lbu             $t0,2($t5)                             \n"
+		"ctc1            $t9,$f31                               \n"
+		"andi            $a2,$a2,0xff                           \n"
+		"mtc1            $t0,$f4                                \n"
+		"lui             $at,0x4F80                             \n"
+		"bgez            $t0,.L000040                           \n"
+		"cvt.s.w         $f8,$f4                                \n"
+		"mtc1            $at,$f16                               \n"
+		"nop                                                    \n"
+		"add.s           $f8,$f8,$f16                           \n"
+		".L000040:                                              \n"
+		"mul.s           $f6,$f8,$f2                            \n"
+		"addiu           $a3,$zero,1                            \n"
+		"lui             $at,0x4F00                             \n"
+		"cfc1            $t1,$f31                               \n"
+		"ctc1            $a3,$f31                               \n"
+		"nop                                                    \n"
+		"cvt.w.s         $f18,$f6                               \n"
+		"cfc1            $a3,$f31                               \n"
+		"nop                                                    \n"
+		"andi            $a3,$a3,0x78                           \n"
+		"beql            $a3,$zero,.L000041                     \n"
+		"mfc1            $a3,$f18                               \n"
+		"mtc1            $at,$f18                               \n"
+		"addiu           $a3,$zero,1                            \n"
+		"sub.s           $f18,$f6,$f18                          \n"
+		"ctc1            $a3,$f31                               \n"
+		"nop                                                    \n"
+		"cvt.w.s         $f18,$f18                              \n"
+		"cfc1            $a3,$f31                               \n"
+		"nop                                                    \n"
+		"andi            $a3,$a3,0x78                           \n"
+		"bne             $a3,$zero,.L000042                     \n"
+		"nop                                                    \n"
+		"mfc1            $a3,$f18                               \n"
+		"lui             $at,0x8000                             \n"
+		"beq             $zero,$zero,.L000043                   \n"
+		"or              $a3,$a3,$at                            \n"
+		".L000042:                                              \n"
+		"beq             $zero,$zero,.L000043                   \n"
+		"addiu           $a3,$zero,-1                           \n"
+		"mfc1            $a3,$f18                               \n"
+		".L000041:                                              \n"
+		"nop                                                    \n"
+		"bltz            $a3,.L000042                           \n"
+		"nop                                                    \n"
+		".L000043:                                              \n"
+		"lui             $at,0x4396                             \n"
+		"mtc1            $at,$f10                               \n"
+		"ctc1            $t1,$f31                               \n"
+		"lwc1            $f4,48($sp)                            \n"
+		"andi            $a3,$a3,0xff                           \n"
+		"mul.s           $f16,$f10,$f4                          \n"
+		"trunc.w.s       $f8,$f16                               \n"
+		"mfc1            $t3,$f8                                \n"
+		"jal             0x80079E58                 \n"
+		"sw              $t3,16($sp)                            \n"
+		"or              $a0,$s0,$zero                          \n"
+		"jal             func_80A9DD50                          \n"
+		"lw              $a1,68($sp)                            \n"
+		"lh              $t4,28($s0)                            \n"
+		"or              $a0,$s0,$zero                          \n"
+		"bltzl           $t4,.L000028                           \n"
+		"lw              $ra,36($sp)                            \n"
+		"jal             0x8002F828                 \n"
+		"addiu           $a1,$zero,8241                         \n"
+		"lw              $ra,36($sp)                            \n"
+		".L000028:                                              \n"
+		"lw              $s0,32($sp)                            \n"
+		"addiu           $sp,$sp,64                             \n"
+		"jr              $ra                                    \n"
+		"nop                                                    \n"
+	);
+}
+
+z64_actor_init_t init_vars = {
+	.number = 0xDEAD, .padding = 0xBEEF, /* <-- magic values, do not change */
+	.type = 0x07,
+	.room = 0x00,
+	.flags = 0x00000000,
+	.object = OBJ_ID,
+	.instance_size = sizeof(entity_t),
+	.init = init,
+	.dest = dest,
+	.main = play,
+	.draw = draw
+};

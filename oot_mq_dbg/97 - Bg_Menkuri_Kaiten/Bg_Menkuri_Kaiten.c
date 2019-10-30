@@ -61,7 +61,7 @@ static void draw(entity_t *en, z64_global_t *gl)
 const z64_actor_init_t init_vars =
 {
   .number = ACT_ID,
-  .type = Bg,
+  .type = OVLTYPE_BG,
   .room = 0x00,
   .flags = 0x00000030,
   .object = OBJ_ID,

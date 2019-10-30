@@ -26,26 +26,6 @@ typedef struct {
    int16_t          unk168;
 } entity_t;
 
-
-/*** external functions ***/
-extern int32_t external_func_80086FA0(void);
-asm("external_func_80086FA0 = 0x80086FA0");
-
-extern float external_func_800C411C(void *gl830, void *floorpoly, void *unk_sp2C, z64_actor_t *actor, vec3f_t *pos);
-asm("external_func_800C411C = 0x800C411C");
-
-extern void external_func_800C6314(z64_global_t *gl, void *gl880, uint32_t *collision);
-asm("external_func_800C6314 = 0x800C6314");
-
-extern void external_func_800CA1E8(z64_global_t *gl, void *gl830, float a, float b, float *c, void *unk);
-asm("external_func_800CA1E8 = 0x800CA1E8");
-
-extern int external_func_800CAF70(z64_actor_t *actor);
-asm("external_func_800CAF70 = 0x800CAF70");
-
-extern float external_func_801794EC(float a0);
-asm("external_func_801794EC = 0x801794EC");
-
 /*** function prototypes ***/
 static void init(entity_t *en, z64_global_t *gl);
 static void dest(entity_t *en, z64_global_t *gl);
@@ -73,7 +53,7 @@ static void init(entity_t *en, z64_global_t *gl)
    actor_dynapoly_set_move(&en->actor, DPM_PLAYER);
    actor_dynapoly_new(gl, &en->actor, DP_COLLIDE);
    en->actor.floor_height =
-      external_func_800C411C(
+      external_func_8003C940(
            AADDR(gl, 0x0830)
          , &en->actor.floor_poly
          , &unknown
@@ -81,7 +61,7 @@ static void init(entity_t *en, z64_global_t *gl)
          , &en->actor.pos_2
       );
    en->unk168 = 0x60;
-   en->actor.speedRot.y = external_func_80086FA0();
+   en->actor.speedRot.y = external_func_800FD970();
    en->playfunc = (z64_actorfunc_t *)lotus_interact;
 }
 
@@ -93,7 +73,7 @@ static void dest(entity_t *en, z64_global_t *gl)
 static void play(entity_t *en, z64_global_t *gl)
 {
    uint32_t unknown = 0;
-   external_func_800CA1E8(
+   external_func_8002F758(
         gl
       , AADDR(gl, 0x0830)
       , en->actor.pos_2.x
@@ -120,7 +100,7 @@ static void data_80AD6B68(entity_t *en, z64_global_t *gl)
          )
       {
          en->actor.draw_proc = &draw;
-         external_func_800C6314(
+         external_func_8003EC50(
               gl
             , AADDR(gl, 0x0880)
             , &en->dynap_id
@@ -149,7 +129,7 @@ static void lotus_surface_disturbed(entity_t *en)
    {
       float factor;
 
-      factor = external_func_801794EC(en->unk166 * 0.7854f);
+      factor = external_func_800CA720(en->unk166 * 0.7854f);
       factor = factor * (0.014f * (en->unk166 / 8.0f) + 0.01f);
       en->actor.scale.x = (factor + 1.0f) * 0.1f;
       en->actor.scale.z = (1.0f - factor) * 0.1f;
@@ -189,7 +169,7 @@ static void lotus_interact(entity_t *en, z64_global_t *gl)
    if (en->actor.variable == 0) {
       float factor;
 
-      factor = external_func_801794EC(en->unk168 * 0.0654f);;
+      factor = external_func_800CA720(en->unk168 * 0.0654f);;
       en->actor.pos_2.x =
             math_sins(en->actor.speedRot.y)
          * factor
@@ -204,7 +184,7 @@ static void lotus_interact(entity_t *en, z64_global_t *gl)
       ;
       if (en->unk168 == 0) {
          en->unk168 = 0x60;
-         en->actor.speedRot.y += external_func_80086FA0() >> 2;
+         en->actor.speedRot.y += external_func_800FD970() >> 2;
       }
    }
    if (en->unk160 < en->actor.floor_height) {
@@ -212,7 +192,7 @@ static void lotus_interact(entity_t *en, z64_global_t *gl)
    }
    else {
       en->actor.pos_2.y = en->unk160;
-      if (external_func_800CAF70(&en->actor) == 0) {
+      if (external_func_8004356C(&en->actor) == 0) {
          en->unk164 = 0;
       }
       else {
