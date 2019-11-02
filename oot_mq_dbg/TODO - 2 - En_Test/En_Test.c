@@ -1,5 +1,8 @@
 /* vRAM Start 0x8085F650. */
 #include <z64ovl/oot/debug.h>
+#include <z64ovl/oot/helpers.h>
+//#include "C:\msys64\opt\n64\mips64\include\z64ovl\oot\debug.h"
+//#include "C:\msys64\opt\n64\mips64\include\z64ovl\oot\helpers.h"
 
 #define OBJ_ID 50
 
@@ -651,8 +654,8 @@ void init(entity_t *en, z64_global_t *gl) /* 2 internal, 8 external, 149 lines *
 void dest(entity_t *en, z64_global_t *gl) /* 0 internal, 5 external, 40 lines */
 {
 	asm(
-		".set noat        \n"
-		".set noreorder   \n"
+		".set at        \n"
+		".set reorder   \n"
 		".Ldest: \n"
 	);
 
@@ -661,16 +664,16 @@ void dest(entity_t *en, z64_global_t *gl) /* 0 internal, 5 external, 40 lines */
   if ((en->actor).variable != 2)
   {
     /* external_func_800353F4 */
-    if (closest = find_closest_actor_instance_within_range(gl, en, 0x0002, 0x0005, 8000.0f), closest == 0)
+    if (closest = find_closest_actor_instance_within_range(gl, en, 0x0002, OVLTYPE_ENEMY, 8000.0f), closest == 0)
     {
       /* external_func_800F5B58 */
       external_func_800F5B58();
     }
   }
-  external_func_8002709C(gl, AADDR(en->unknown, 0x06D0)); /* external_func_8002709C */
-  actor_collider_cylinder_free(gl, AADDR(en->unknown, 0x07A0)); /* external_func_8005C3AC */
-  actor_collider_cylinder_free(gl, AADDR(en->unknown, 0x06D4)); /* external_func_8005C3AC */
-  external_func_8005D060(gl, AADDR(en->unknown, 0x0720)); /* external_func_8005D060 */
+  external_func_8002709C(gl, AADDR(en, 0x080C)); /* external_func_8002709C */
+  actor_collider_cylinder_free(gl, AADDR(en, 0x08DC)); /* external_func_8005C3AC */
+  actor_collider_cylinder_free(gl, AADDR(en, 0x0810)); /* external_func_8005C3AC */
+  external_func_8005D060(gl, AADDR(en, 0x085C)); /* external_func_8005D060 */
 }
 
 void func_8085F938(void) /* 0 internal, 1 external, 53 lines */
@@ -1264,12 +1267,12 @@ void func_80860068(void) /* 1 internal, 2 external, 33 lines */
 void draw(entity_t *en, z64_global_t *gl) /* 0 internal, 4 external, 72 lines */
 {
 	asm(
-		".set noat        \n"
-		".set noreorder   \n"
+		".set at        \n"
+		".set reorder   \n"
 		".Ldraw: \n"
 	);
 
-  int16_t sVar2;
+  int16_t *_unk7E0 = AADDR(en, 0x07E0);
 
   external_func_80093D18((gl->common).gfx_ctxt); /* external_func_80093D18 */
   external_func_8002EBCC(en, gl, 1); /* external_func_8002EBCC */
@@ -1277,19 +1280,18 @@ void draw(entity_t *en, z64_global_t *gl) /* 0 internal, 4 external, 72 lines */
   if (((en->actor).variable < 4) || ((en->actor).attached_b == 0x0))
   {
     /* external_func_800A15C8 */
-    skelanime_draw(gl, *(en->unknown + 0x50), *(en->unknown + 0x6C), /*uint8_t limb_dlists_count,*/ &skl_callback_80863AB8, &skl_callback_80863CC4, en);
+    skelanime_draw(gl, AVAL(en, uint32_t, 0x018C), AVAL(en, uint32_t, 0x01A8), AVAL(en, uint8_t, 0x018A), &skl_callback_80863AB8, &skl_callback_80863CC4, en);
   }
-  if (*((en->unknown) + 0x06A4) != 0)
+  if (*_unk7E0 != 0)
   {
-    *((en->unknown) + 0x06A4)--;
-    sVar2 = *((en->unknown) + 0x06A4);
+	*_unk7E0--;
     (en->actor).damage_color_timer++;
-    if ((sVar2 * 3U) == 0)
+    if ((*_unk7E0 * 3U) == 0)
     {
       external_func_8002A1DC(
         gl,
         en,
-        en->unknown + (sVar2 >> 2) * 6 + 10,
+        (*_unk7E0 >> 2) * 6 + 0x014C,
         0x96,
         0x96,
         0x96,
@@ -3998,38 +4000,38 @@ void data_808638F4(void) /* 2 internal, 5 external, 127 lines */
 int32_t skl_callback_80863AB8(z64_global_t *gl, uint8_t limb, uint32_t *dlist, vec3f_t *translation, vec3s_t *rotation, entity_t *en) /* 0 internal, 3 external, 136 lines */
 {
 	asm(
-		".set noat        \n"
-		".set noreorder   \n"
+		".set at        \n"
+		".set reorder   \n"
 		".Lskl_callback_80863AB8: \n"
 	);
 
   if (limb == 0x06)
   {
-    rotation->x += *(en + 0x07D2);
-    rotation->y -= *(en + 0x07D0);
-    rotation->z += *(en + 0x07D4);
+    rotation->x += AVAL(en, int16_t, 0x07D2);
+    rotation->y -= AVAL(en, int16_t, 0x07D0);
+    rotation->z += AVAL(en, int16_t, 0x07D4);
   }
   else
   {
     if (limb == 0x0B)
     {
       #define GFX_POLY_OPA ZQDL(gl, poly_opa)
-    	z64_disp_buf_t *opa = &GFX_POLY_OPA;
-    	z64_gfx_t *gfx_ctxt;
+	  z64_disp_buf_t *opa = &GFX_POLY_OPA;
+	  z64_gfx_t *gfx_ctxt;
       float colorf;
       int32_t colori;
-      uint8_t[4] rgba;
-      /*external_func_800C6AC4(unk0, gfx_ctxt, "../z_en_test.c_80864700", __LINE__);*/
+      uint8_t rgba[4];
+      /*external_func_800C6AC4(unk0, gfx_ctxt, "../z_en_test.c", __LINE__);*/
       gDPPipeSync(opa->p++); /* 0xE700000000000000 */
       colorf = math_sins(gl->gameplay_frames * 0x07D0); /* external_func_80077870 */
       if ((colorf * 175.0f) < 0)
       {
-        colorf = math_sins(gl->gameplay_frames * 0x07D0) /* external_func_80077870 */
+        colorf = math_sins(gl->gameplay_frames * 0x07D0); /* external_func_80077870 */
         colori = -(colorf * 175.0f);
       }
       else
       {
-        colorf = math_sins(gl->gameplay_frames * 0x07D0) /* external_func_80077870 */
+        colorf = math_sins(gl->gameplay_frames * 0x07D0); /* external_func_80077870 */
         colori = colorf * 175.0f;
       }
       colori = (colori + 0x50) * 0x01000000 | 0xFF;
@@ -4038,7 +4040,7 @@ int32_t skl_callback_80863AB8(z64_global_t *gl, uint8_t limb, uint32_t *dlist, v
       rgba[2] = (colori >> 8) & 0xFF;
       rgba[3] = (colori) & 0xFF;
       gDPSetEnvColor(opa->p++, rgba[0], rgba[1], rgba[2], rgba[3]);
-      /*external_func_800C6AC4(unk0, gfx_ctxt, "../z_en_test.c_80864710", __LINE__);*/
+      /*external_func_800C6AC4(unk0, gfx_ctxt, "../z_en_test.c", __LINE__);*/
     }
   }
   if ((en->actor).variable == 0)
@@ -6554,6 +6556,7 @@ void data_808604FC(void) /* 9 internal, 10 external, 478 lines */
 		"nop                                                    \n"
 	);
 }
+
 const z64_actor_init_t init_vars = {
 	.number = 0xDEAD, .padding = 0xBEEF, /* <-- magic values, do not change */
 	.type = 0x05,
