@@ -82,7 +82,7 @@ void data_80863870(void); /* 0 internal, 0 external, 5 lines */
 void data_80863884(void); /* 0 internal, 2 external, 29 lines */
 void data_808638F4(void); /* 2 internal, 5 external, 127 lines */
 int32_t skl_callback_80863AB8(z64_global_t *gl, uint8_t limb, uint32_t *dlist, vec3f_t *translation, vec3s_t *rotation, entity_t *en); /* 0 internal, 3 external, 136 lines */
-void skl_callback_80863CC4(z64_global_t *gl, uint8_t limb, uint32_t dlist, vec3s_t *rotation, entity_t *en); /* 0 internal, 8 external, 177 lines */
+//void skl_callback_80863CC4(z64_global_t *gl, uint8_t limb, uint32_t dlist, vec3s_t *rotation, entity_t *en); /* 0 internal, 8 external, 177 lines */
 void func_808641E8(void); /* 4 internal, 4 external, 226 lines */
 void data_80863294(void); /* 3 internal, 2 external, 55 lines */
 void data_80860C24(void); /* 4 internal, 4 external, 182 lines */
@@ -494,161 +494,16 @@ void func_8085F650(void) /* 0 internal, 0 external, 2 lines */
 void init(entity_t *en, z64_global_t *gl) /* 2 internal, 8 external, 149 lines */
 {
 	asm(
-		".set noat        \n"
-		".set noreorder   \n"
+		".set at        \n"
+		".set reorder   \n"
 		".Linit: \n"
 	);
-	asm(
-		"addiu           $sp,$sp,-488                           \n"
-		"sw              $s1,40($sp)                            \n"
-		"or              $s1,$a1,$zero                          \n"
-		"sw              $ra,44($sp)                            \n"
-		"sw              $s0,36($sp)                            \n"
-		"lui             $a1,%hi(data_80864638)                 \n"
-		"or              $s0,$a0,$zero                          \n"
-		"jal             external_func_800780DC                 \n"
-		"addiu           $a1,$a1,%lo(data_80864638)             \n"
-		"lui             $a2,0x0600                             \n"
-		"lui             $a3,0x0600                             \n"
-		"addiu           $t6,$s0,460                            \n"
-		"addiu           $t7,$s0,826                            \n"
-		"addiu           $t8,$zero,61                           \n"
-		"sw              $t8,24($sp)                            \n"
-		"sw              $t7,20($sp)                            \n"
-		"sw              $t6,16($sp)                            \n"
-		"addiu           $a3,$a3,12652                          \n"
-		"addiu           $a2,$a2,31784                          \n"
-		"or              $a0,$s1,$zero                          \n"
-		"jal             external_func_800A457C                 \n"
-		"addiu           $a1,$s0,392                            \n"
-		"lui             $a2,0x0600                             \n"
-		"lui             $a3,0x0600                             \n"
-		"addiu           $t9,$s0,1260                           \n"
-		"addiu           $t0,$s0,1626                           \n"
-		"addiu           $t1,$zero,61                           \n"
-		"sw              $t1,24($sp)                            \n"
-		"sw              $t0,20($sp)                            \n"
-		"sw              $t9,16($sp)                            \n"
-		"addiu           $a3,$a3,12652                          \n"
-		"addiu           $a2,$a2,31784                          \n"
-		"or              $a0,$s1,$zero                          \n"
-		"jal             external_func_800A457C                 \n"
-		"addiu           $a1,$s0,1192                           \n"
-		"lui             $a2,0x8003                             \n"
-		"addiu           $a2,$a2,-18236                         \n"
-		"addiu           $a0,$s0,180                            \n"
-		"addiu           $a1,$zero,0                            \n"
-		"jal             external_func_8002B1E0                 \n"
-		"lui             $a3,0x42B4                             \n"
-		"lw              $t4,40($s0)                            \n"
-		"lui             $at,0x4234                             \n"
-		"lw              $t5,36($s0)                            \n"
-		"sw              $t4,60($s0)                            \n"
-		"lwc1            $f4,60($s0)                            \n"
-		"mtc1            $at,$f6                                \n"
-		"sw              $t5,56($s0)                            \n"
-		"lw              $t5,44($s0)                            \n"
-		"add.s           $f8,$f4,$f6                            \n"
-		"lui             $t6,%hi(data_80864618)                 \n"
-		"addiu           $t2,$zero,40                           \n"
-		"addiu           $t3,$zero,100                          \n"
-		"addiu           $t6,$t6,%lo(data_80864618)             \n"
-		"sh              $t2,168($s0)                           \n"
-		"sh              $t3,170($s0)                           \n"
-		"swc1            $f8,60($s0)                            \n"
-		"sw              $t6,152($s0)                           \n"
-		"addiu           $a1,$s0,2064                           \n"
-		"sw              $t5,64($s0)                            \n"
-		"sw              $a1,52($sp)                            \n"
-		"jal             external_func_8005C364                 \n"
-		"or              $a0,$s1,$zero                          \n"
-		"lui             $a3,%hi(data_80864570)                 \n"
-		"lw              $a1,52($sp)                            \n"
-		"addiu           $a3,$a3,%lo(data_80864570)             \n"
-		"or              $a0,$s1,$zero                          \n"
-		"jal             external_func_8005C4AC                 \n"
-		"or              $a2,$s0,$zero                          \n"
-		"addiu           $a1,$s0,2268                           \n"
-		"sw              $a1,52($sp)                            \n"
-		"jal             external_func_8005C364                 \n"
-		"or              $a0,$s1,$zero                          \n"
-		"lui             $a3,%hi(data_8086459C)                 \n"
-		"lw              $a1,52($sp)                            \n"
-		"addiu           $a3,$a3,%lo(data_8086459C)             \n"
-		"or              $a0,$s1,$zero                          \n"
-		"jal             external_func_8005C4AC                 \n"
-		"or              $a2,$s0,$zero                          \n"
-		"addiu           $a1,$s0,2140                           \n"
-		"sw              $a1,52($sp)                            \n"
-		"jal             external_func_8005D018                 \n"
-		"or              $a0,$s1,$zero                          \n"
-		"lui             $a3,%hi(data_808645C8)                 \n"
-		"lw              $a1,52($sp)                            \n"
-		"addiu           $a3,$a3,%lo(data_808645C8)             \n"
-		"or              $a0,$s1,$zero                          \n"
-		"jal             external_func_8005D104                 \n"
-		"or              $a2,$s0,$zero                          \n"
-		"addiu           $t7,$zero,254                          \n"
-		"addiu           $t8,$zero,10                           \n"
-		"sb              $t7,174($s0)                           \n"
-		"sb              $t8,175($s0)                           \n"
-		"addiu           $v0,$zero,255                          \n"
-		"addiu           $t9,$zero,255                          \n"
-		"addiu           $t0,$zero,64                           \n"
-		"addiu           $t1,$zero,4                            \n"
-		"addiu           $t2,$zero,2                            \n"
-		"addiu           $t3,$sp,72                             \n"
-		"sb              $t9,474($sp)                           \n"
-		"sb              $v0,473($sp)                           \n"
-		"sb              $v0,472($sp)                           \n"
-		"sb              $v0,470($sp)                           \n"
-		"sb              $v0,469($sp)                           \n"
-		"sb              $v0,468($sp)                           \n"
-		"sb              $v0,466($sp)                           \n"
-		"sb              $v0,465($sp)                           \n"
-		"sb              $v0,464($sp)                           \n"
-		"sb              $v0,463($sp)                           \n"
-		"sb              $v0,462($sp)                           \n"
-		"sb              $v0,461($sp)                           \n"
-		"sb              $v0,460($sp)                           \n"
-		"sb              $zero,471($sp)                         \n"
-		"sb              $zero,475($sp)                         \n"
-		"sb              $t0,467($sp)                           \n"
-		"sw              $t1,476($sp)                           \n"
-		"sw              $zero,480($sp)                         \n"
-		"sw              $t2,484($sp)                           \n"
-		"sw              $t3,20($sp)                            \n"
-		"sw              $zero,16($sp)                          \n"
-		"or              $a0,$s1,$zero                          \n"
-		"addiu           $a1,$s0,2060                           \n"
-		"addiu           $a2,$zero,1                            \n"
-		"jal             external_func_80026CD4                 \n"
-		"or              $a3,$zero,$zero                        \n"
-		"lh              $t4,28($s0)                            \n"
-		"addiu           $at,$zero,3                            \n"
-		"beq             $t4,$at,.L000000                       \n"
-		"nop                                                    \n"
-		"jal             func_8085FDD0                          \n"
-		"or              $a0,$s0,$zero                          \n"
-		"beq             $zero,$zero,.L000001                   \n"
-		"lh              $t5,28($s0)                            \n"
-		".L000000:                                              \n"
-		"jal             func_8085FF28                          \n"
-		"or              $a0,$s0,$zero                          \n"
-		"lh              $t5,28($s0)                            \n"
-		".L000001:                                              \n"
-		"bnel            $t5,$zero,.L000002                     \n"
-		"lw              $ra,44($sp)                            \n"
-		"lw              $t6,4($s0)                             \n"
-		"ori             $t7,$t6,0x80                           \n"
-		"sw              $t7,4($s0)                             \n"
-		"lw              $ra,44($sp)                            \n"
-		".L000002:                                              \n"
-		"lw              $s0,36($sp)                            \n"
-		"lw              $s1,40($sp)                            \n"
-		"jr              $ra                                    \n"
-		"addiu           $sp,$sp,488                            \n"
-	);
+
+	actor_init_dynapoly(en, &data_80864638); /* external_func_800780DC */
+	skelanime_init(gl, en, AADDR(en->unknown, 0x004C), 0x06007C28, 0x0600316C, AVAL(en->unknown, uint8_t, 0x0090), AVAL(en->unknown, uint8_t, 0x01FE), 0x3D); /* external_func_800A457C */
+	skelanime_init(gl, en, AADDR(en->unknown, 0x036C), 0x06007C28, 0x0600316C, AVAL(en->unknown, uint8_t, 0x03B0), AVAL(en->unknown, uint8_t, 0x051E), 0x3D); /* external_func_800A457C */
+	actor_init_shadow(&(en->actor).rot_2, 0.0f, &ACTOR_SHADOW_DRAWFUNC_TEARDROP, 90.0f) /* external_func_8002B1E0 */
+
 }
 
 void dest(entity_t *en, z64_global_t *gl) /* 0 internal, 5 external, 40 lines */
@@ -1280,7 +1135,7 @@ void draw(entity_t *en, z64_global_t *gl) /* 0 internal, 4 external, 72 lines */
   if (((en->actor).variable < 4) || ((en->actor).attached_b == 0x0))
   {
     /* external_func_800A15C8 */
-    skelanime_draw(gl, AVAL(en, uint32_t, 0x018C), AVAL(en, uint32_t, 0x01A8), AVAL(en, uint8_t, 0x018A), &skl_callback_80863AB8, &skl_callback_80863CC4, en);
+    skelanime_draw(gl, AVAL(en, uint32_t, 0x018C), AVAL(en, uint32_t, 0x01A8), AVAL(en, uint8_t, 0x018A), &skl_callback_80863AB8, /*&skl_callback_80863CC4*/0, en);
   }
   if (*_unk7E0 != 0)
   {
@@ -4051,107 +3906,6 @@ int32_t skl_callback_80863AB8(z64_global_t *gl, uint8_t limb, uint32_t *dlist, v
     }
   }
   return 0;
-}
-
-void skl_callback_80863CC4(z64_global_t *gl, uint8_t limb, uint32_t dlist, vec3s_t *rotation, entity_t *en) /* 0 internal, 8 external, 177 lines */
-{
-	asm(
-		".set noat        \n"
-		".set noreorder   \n"
-		".Ldata_80863CC4: \n"
-	);
-
-  external_func_80032F54(AADDR(en, 0x07F0), limb, 0, 0x3C, 0x3C, dlist, -1); /* external_func_80032F54 */
-  if (limb == 0x22)
-  {
-    //external_func_800D1AF4(data_8086467C);
-    //external_func_800D1AF4(data_80864688);
-    //external_func_800D1AF4(data_80864694);
-    //external_func_800D1AF4(data_808646A0, AADDR(en, 0x08B4));
-    external_func_0x80062734(AADDR(en, 0x85C), AADDR(en, 0x89C), AADDR(en, 0x8A8), AADDR(en, 0x8B4), AADDR(en, 0x8C0));
-    //external_func_800D1AF4(data_8086467C);
-    //external_func_800D1AF4(data_8086467C);
-
-    /*Take It Away, Ghidra*/
-        if (('\0' < *(en + 0x808)) && ((*(en + 0x1c) != 0 || (gl->actor_ctxt[3] != '\0')))) {
-      uVar1 = func_0x80026b0c(*(en + 0x80c));
-      func_0x8001fdf0(uVar1,auStack16,&local_1c);
-      sVar3 = *(en + 0x7e0);
-      goto LAB_80863f3c;
-    }
-    if (*(en + 0x808) < '\0') {
-      sVar3 = *(en + 0x7e0);
-      goto LAB_80863f3c;
-    }
-    uVar1 = func_0x80026b0c(*(en + 0x80c));
-    func_0x80020120(uVar1);
-    *(en + 0x808) = 0xff;
-  }
-  else {
-    if ((iVar2 == 0x1b) && (*(en + 0x7de) != '\0')) {
-      func_0x800d1af4(&DAT_80864670,&local_1c);
-      *(en + 0x922) = local_1c;
-      *(en + 0x924) = local_18;
-      *(en + 0x926) = local_14;
-    }
-    else {
-      func_0x8002bdb0(en,iVar2,0x30,&DAT_80864658,0x37,&DAT_80864658);
-      if ((iVar2 != 0x30) && (iVar2 != 0x37)) {
-        sVar3 = *(en + 0x7e0);
-        goto LAB_80863f3c;
-      }
-      if ((*(en + 0x7c8) != '\x15') && (*(en + 0x7c8) != '\x16')) {
-        sVar3 = *(en + 0x7e0);
-        goto LAB_80863f3c;
-      }
-      if (*(en + 0x68) == 0.00000000) {
-        sVar3 = *(en + 0x7e0);
-        goto LAB_80863f3c;
-      }
-      func_0x800d1af4(&DAT_80864658,&local_1c);
-      func_0x80033260(gl,en,&local_1c,0x41200000,1,0x41000000,100,0xf,0);
-    }
-  }
-  sVar3 = *(en + 0x7e0);
-  LAB_80863f3c:
-  if (sVar3 != 0) {
-    switch(iVar2) {
-    case 0xb:
-      local_4 = 0;
-      break;
-    case 0xf:
-      local_4 = 1;
-      break;
-    case 0x1b:
-      local_4 = 3;
-      break;
-    case 0x1d:
-      local_4 = 5;
-      break;
-    case 0x22:
-      local_4 = 2;
-      break;
-    case 0x25:
-      local_4 = 4;
-      break;
-    case 0x30:
-      local_4 = 7;
-      break;
-    case 0x39:
-      local_4 = 8;
-      break;
-    case 0x3c:
-      local_4 = 6;
-    }
-    if (-1 < local_4) {
-      func_0x800d1af4(&DAT_80864670,&local_30);
-      en = en + local_4 * 6;
-      *(en + 0x14c) = local_30;
-      *(en + 0x14e) = local_2c;
-      *(en + 0x150) = local_28;
-    }
-  }
-  return;
 }
 
 void func_808641E8(void) /* 4 internal, 4 external, 226 lines */
