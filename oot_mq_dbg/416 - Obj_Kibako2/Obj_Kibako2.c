@@ -30,18 +30,18 @@ typedef struct entity {
 
 const z64_collider_cylinder_init_t simplebody =
 {
-	0x0A, 0x11, 0x09, 0x00, 0x20, 0x01,
+	0x0A, 0x00, 0x09, 0x00, 0x20, 0x01,
 	0x00, 0x00,
 	0x00,
 	0x00, 0x00, 0x00,
-	0xFFCFFFFF,
-	0x00, 0x04,
+	0x00000000,
 	0x00, 0x00,
-	0xFFCFFFFF,
+	0x00, 0x00,
+	0x40000040,
 	0x00, 0x00, 0x00, 0x00,
-	0x01, 0x01, 0x00,
+	0x00, 0x01, 0x00,
 	0x00,
-	0x0009, 0x0017, 0x0000,
+	0x001F, 0x0030, 0x0000,
 	0x0000, 0x0000, 0x0000
 };
 
@@ -67,35 +67,37 @@ static void kibako2_init_simplebody(entity_t *en, z64_global_t *gl)
 static void kibako2_state_destroyed(entity_t *en, z64_global_t *gl)
 {
 
-	uint32_t uVar1;
+	int16_t rspeed;
 	int32_t rando_seed = 0;
 	int32_t plank_count = 0;
 
 	/* Spawn Pieces */
 	do {
 		vec3f_t burst_depth[2];
+		float rando;
+		rando = math_rand_zero_one() * 30.0f;
 		/* burst_depth_x */
-		burst_depth[0].x = math_sins(rando_seed) * 8.0f;
+		burst_depth[0].x = (math_sins((rando_seed << 0x10) >> 0x10) * rando);
 		burst_depth[0].y = (math_rand_zero_one() * 10.0f) + 2.0f;
-		burst_depth[0].z = math_coss(rando_seed) * 8.0f;
+		burst_depth[0].z = (math_coss((rando_seed << 0x10) >> 0x10) * rando);
 		/* burst_depth_y */
-		burst_depth[1].x = (float)(burst_depth[0].x * 0.23f);
+		burst_depth[1].x = (float)(burst_depth[0].x * 0.2f);
 		burst_depth[1].y = (float)(math_rand_zero_one() * 10.0f) + 2.0f;
-		burst_depth[1].z = (float)(burst_depth[0].z * 0.23f);
+		burst_depth[1].z = (float)(burst_depth[0].z * 0.2f);
 		VEC3_ADD(burst_depth[0], (en->actor).pos_2)
 
-		float rando = math_rand_zero_one();
+		rando = math_rand_zero_one();
 
 		if (rando < 0.05f)
 		{
-			uVar1 = 0x60;
+			rspeed = 0x60;
 		}
 		else
 		{
-			uVar1 = 0x20;
+			rspeed = 0x20;
 			if (rando < 0.7f)
 			{
-				uVar1 = 0x40;
+				rspeed = 0x40;
 			}
 		}
 
@@ -162,7 +164,7 @@ static void kibako2_state_default(entity_t *en, z64_global_t *gl)
 			kibako2_state_destroyed(en, gl);
 			sound_play_position(gl, &en->actor.pos_2, 0x14, SFX);
 			(en->actor).flags |= 0x10;
-			external_func_8003EBF8(gl, AADDR(gl->col_ctxt, 0x0050), (en->dynapoly).id); /* Dynapoly Collision Related */
+			external_func_8003EBF8(gl, AADDR(&gl->col_ctxt, 0x0050), (en->dynapoly).id); /* Dynapoly Collision Related */
 			(en->actor).draw_proc = 0;
 			en->machine_state = (z64_actorfunc_t*)kibako2_state_sutaruspawn;
 		}
@@ -180,7 +182,7 @@ static void init(entity_t *en, z64_global_t *gl)
 
     (en->actor).rot_2.x = 0;
     en->drop_seed = (int16_t)((en->actor).init.rot.z & 0x3F);
-    (en->dynapoly).id = actor_register_dynapoly(gl, AADDR(gl->col_ctxt, 0x0050), &en->actor, dynapoly_pointer);
+    (en->dynapoly).id = actor_register_dynapoly(gl, AADDR(&gl->col_ctxt, 0x0050), &en->actor, dynapoly_pointer);
     en->machine_state = (z64_actorfunc_t*)kibako2_state_default;
     (en->actor).unk30 = (en->actor).rot_2.x;
     (en->actor).rot_2.z = (en->actor).rot_2.x;
@@ -195,7 +197,7 @@ static void init(entity_t *en, z64_global_t *gl)
 static void dest(entity_t *en, z64_global_t *gl)
 {
     actor_collider_cylinder_free(gl, &en->cylinder_body);
-    dynapoly_free(gl, AADDR(gl->col_ctxt, 0x0050), (en->dynapoly).id);
+    dynapoly_free(gl, AADDR(&gl->col_ctxt, 0x0050), (en->dynapoly).id);
 }
 
 /* Complete */
