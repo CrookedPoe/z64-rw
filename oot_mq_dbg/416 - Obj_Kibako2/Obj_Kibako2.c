@@ -10,7 +10,6 @@
  **/
 
 #include <z64ovl/oot/debug.h>
-#include "C:/msys64/opt/n64/mips64/include/z64ovl/h/ichain.h"
 
 // Actor Information
 #define OBJ          0x0170       /* object_kibako2 */

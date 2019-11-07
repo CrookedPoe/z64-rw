@@ -1,5 +1,4 @@
 #include <z64ovl/oot/debug.h>
-#include "C:/msys64/opt/n64/mips64/include/z64ovl/h/ichain.h"
 
 #define ACT_ID                          0xDEAD
 #define OBJ_ID                          0x004D /* object_menkuri_objects */
