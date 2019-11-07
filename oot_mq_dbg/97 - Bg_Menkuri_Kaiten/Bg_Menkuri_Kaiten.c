@@ -1,4 +1,5 @@
 #include <z64ovl/oot/debug.h>
+#include "C:/msys64/opt/n64/mips64/include/z64ovl/h/ichain.h"
 
 #define ACT_ID                          0xDEAD
 #define OBJ_ID                          0x004D /* object_menkuri_objects */
@@ -18,44 +19,40 @@ static void init(entity_t *en, z64_global_t *gl);
 static void dest(entity_t *en, z64_global_t *gl);
 static void draw(entity_t *en, z64_global_t *gl);
 
-/*** variables ***/
-const z64_dynapoly_init_t dynapoly_vars = {
-  .unk_0 = {0x48, 0x50},
-  .scale = 100,
-  .unk_1 = 0x00000000,
-  .unk_2 = 0x00000000,
-  .unk_3 = 0x00000000
+/*** Compact Instance Initialization Variables ***/
+const uint32_t ichain[] = {
+  ICHAIN(1, ICHAIN_VEC3Fdiv1000, scale, 100)
 };
 
 static void init(entity_t *en, z64_global_t *gl)
 {
   uint32_t collision_offset = 0;
-  actor_init_dynapoly(&en->actor, &dynapoly_vars);
+  actor_init_ichain(&en->actor, ichain);
   actor_dynapoly_set_move(&en->actor, (DPM_PLAYER | DPM_ENEMY));
   dynapoly_alloc(DYNAPOLY, &collision_offset);
-  en->dynapoly.id = actor_register_dynapoly(gl, &gl->col_ctxt.sect_size.z, &en->actor, collision_offset);
+  en->dynapoly.id = actor_register_dynapoly(gl, AADDR(&gl->col_ctxt, 0x0050), &en->actor, collision_offset);
 }
 
 static void play(entity_t *en, z64_global_t *gl)
 {
-  if (flag_get_switch(gl, en->actor.variable) == 0)
+  if (flag_get_switch(gl, (en->actor).variable) == 0)
   {
       if (actor_dynapoly_get_link_floorcast(&en->actor) != 0)
       {
           actor_flag_play_sound(&en->actor, NA_SE_EV_ELEVATOR_MOVE);
-          en->actor.rot_2.y += 0x80;
+          (en->actor).rot_2.y += 0x80;
       }
   }
 }
 
 static void dest(entity_t *en, z64_global_t *gl)
 {
-    dynapoly_free(gl, &gl->col_ctxt.sect_size.z, &en->dynapoly.id);
+    dynapoly_free(gl, AADDR(&gl->col_ctxt, 0x0050), (en->dynapoly).id);
 }
 
 static void draw(entity_t *en, z64_global_t *gl)
 {
-    draw_static_dlist_opa(gl, DLIST);
+    draw_dlist_opa(gl, DLIST);
 }
 
 const z64_actor_init_t init_vars =

@@ -10,6 +10,7 @@
  **/
 
 #include <z64ovl/oot/debug.h>
+#include "C:/msys64/opt/n64/mips64/include/z64ovl/h/ichain.h"
 
 // Actor Information
 #define OBJ          0x0170       /* object_kibako2 */
@@ -45,13 +46,11 @@ const z64_collider_cylinder_init_t simplebody =
 	0x0000, 0x0000, 0x0000
 };
 
-const z64_dynapoly_init_t dynapoly_vars = {
-	.unk_0 = {0xC8, 0x50},
-	.scale = 100,
-	.unk_1 = 0xB0F40BB8,
-	.unk_2 = 0xB0F801F4,
-	.unk_3 = 0x30FC03E8,
-	.unk_4 = 0x00000000
+const uint32_t ichain[] = {
+  ICHAIN(0, ICHAIN_VEC3Fdiv1000, scale, 100)
+  , ICHAIN(0, ICHAIN_F, unk_0xF4, 3000)
+  , ICHAIN(0, ICHAIN_F, unk_0xF8, 500)
+  , ICHAIN(1, ICHAIN_F, unk_0xFC, 1000)
 };
 
 /* Complete */
@@ -106,7 +105,7 @@ static void kibako2_state_destroyed(entity_t *en, z64_global_t *gl)
 			gl
 		,	&burst_depth[0], &burst_depth[1], &(en->actor).pos_2
 		, -200
-		, uVar1
+		, rspeed
 		, 0x1C
 		, 2
 		, 0
@@ -129,9 +128,9 @@ static void kibako2_state_destroyed(entity_t *en, z64_global_t *gl)
 /* Complete */
 static int kibako2_state_drop_item(entity_t *en, z64_global_t *gl)
 {
-		if ((-1 < (en->actor).init.rot.x) && ((en->actor).init.rot.x < 0x001A))
+		if ((-1 < (en->actor).rot_init.x) && ((en->actor).rot_init.x < 0x001A))
 		{
-			item_drop_collectible(gl, &(en->actor).pos_2, (uint16_t)((en->actor).init.rot.x | (en->drop_seed << 8)));
+			item_drop_collectible(gl, &(en->actor).pos_2, (uint16_t)((en->actor).rot_init.x | (en->drop_seed << 8)));
 		}
 }
 
@@ -150,7 +149,7 @@ static void kibako2_state_sutaruspawn(entity_t *en, z64_global_t *gl)
 static void kibako2_state_default(entity_t *en, z64_global_t *gl)
 {
     if (((((en->cylinder_body).base.collide_flags & 2)) == 0)
-		&& ((en->actor).init.rot.z == 0)
+		&& ((en->actor).rot_init.z == 0)
 		&& !(external_func_80033684(gl, en))
 		)
     {
@@ -176,21 +175,21 @@ static void init(entity_t *en, z64_global_t *gl)
     uint32_t dynapoly_pointer = 0;
 
     actor_dynapoly_set_move(&en->actor, DPM_NONE);
-    actor_init_dynapoly(&en->actor, &dynapoly_vars);
+    actor_init_ichain(&en->actor, ichain);
     kibako2_init_simplebody(en, gl);
     dynapoly_alloc(DYNAPOLY, &dynapoly_pointer);
 
     (en->actor).rot_2.x = 0;
-    en->drop_seed = (int16_t)((en->actor).init.rot.z & 0x3F);
+    en->drop_seed = (int16_t)((en->actor).rot_init.z & 0x3F);
     (en->dynapoly).id = actor_register_dynapoly(gl, AADDR(&gl->col_ctxt, 0x0050), &en->actor, dynapoly_pointer);
     en->machine_state = (z64_actorfunc_t*)kibako2_state_default;
     (en->actor).unk30 = (en->actor).rot_2.x;
     (en->actor).rot_2.z = (en->actor).rot_2.x;
     (en->actor).unk34 = (en->actor).rot_2.x;
-    (en->actor).init.rot.z = (en->actor).rot_2.x;
+    (en->actor).rot_init.z = (en->actor).rot_2.x;
 		/*** Debug Information ***/
     //char data_80B96010[] = "_(_)(arg_&04xH)(item_%04xH_%d)";
-    //external_func_80002130(&data_80B96010, (en->actor).variable, en->drop_seed, en->actor.init.rot.x);
+    //external_func_80002130(&data_80B96010, (en->actor).variable, en->drop_seed, en->actor.rot_init.x);
 }
 
 /* Complete */
