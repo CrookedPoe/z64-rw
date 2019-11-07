@@ -21,7 +21,7 @@ static void draw(entity_t *en, z64_global_t *gl);
 
 /*** Compact Instance Initialization Variables ***/
 const uint32_t ichain[] = {
-  ICHAIN(1, ICHAIN_VEC3Fdiv1000, scale, 100)
+  ICHAIN(ICHAIN_VEC3Fdiv1000, scale, 100) & ICHAIN_LAST
 };
 
 static void init(entity_t *en, z64_global_t *gl)

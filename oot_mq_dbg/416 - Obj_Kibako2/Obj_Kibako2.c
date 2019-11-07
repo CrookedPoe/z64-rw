@@ -47,10 +47,10 @@ const z64_collider_cylinder_init_t simplebody =
 };
 
 const uint32_t ichain[] = {
-  ICHAIN(0, ICHAIN_VEC3Fdiv1000, scale, 100)
-  , ICHAIN(0, ICHAIN_F, unk_0xF4, 3000)
-  , ICHAIN(0, ICHAIN_F, unk_0xF8, 500)
-  , ICHAIN(1, ICHAIN_F, unk_0xFC, 1000)
+  ICHAIN(ICHAIN_VEC3Fdiv1000, scale, 100)
+  , ICHAIN(ICHAIN_F, unk_0xF4, 3000)
+  , ICHAIN(ICHAIN_F, unk_0xF8, 500)
+  , ICHAIN(ICHAIN_F, unk_0xFC, 1000) & ICHAIN_LAST
 };
 
 /* Complete */
