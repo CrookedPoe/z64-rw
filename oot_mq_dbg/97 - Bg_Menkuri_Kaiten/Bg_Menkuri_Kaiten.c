@@ -29,7 +29,7 @@ static void init(entity_t *en, z64_global_t *gl)
   actor_init_ichain(&en->actor, ichain);
   actor_dynapoly_set_move(&en->actor, (DPM_PLAYER | DPM_ENEMY));
   dynapoly_alloc(DYNAPOLY, &collision_offset);
-  en->dynapoly.id = actor_register_dynapoly(gl, AADDR(&gl->col_ctxt, 0x0050), &en->actor, collision_offset);
+  (en->dynapoly).poly_id = actor_register_dynapoly(gl, AADDR(&gl->col_ctxt, 0x0050), &en->actor, collision_offset);
 }
 
 static void play(entity_t *en, z64_global_t *gl)
@@ -46,7 +46,7 @@ static void play(entity_t *en, z64_global_t *gl)
 
 static void dest(entity_t *en, z64_global_t *gl)
 {
-    dynapoly_free(gl, AADDR(&gl->col_ctxt, 0x0050), (en->dynapoly).id);
+    dynapoly_free(gl, AADDR(&gl->col_ctxt, 0x0050), (en->dynapoly).poly_id);
 }
 
 static void draw(entity_t *en, z64_global_t *gl)
