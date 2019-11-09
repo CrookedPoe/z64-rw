@@ -21,10 +21,10 @@ static void draw(entity_t *en, z64_global_t *gl);
 static void init(entity_t *en, z64_global_t *gl)
 {
 	actor_set_scale(&en->actor, 0.01f);
-	en->actor.pos_3.x = en->actor.pos_2.x;
-	en->actor.pos_3.y = en->actor.pos_2.y;
-	en->actor.pos_3.z = en->actor.pos_2.z;
-	actor_init_shadow(&en->actor.rot_2, 0.0f, &ACTOR_SHADOW_DRAWFUNC_CIRCLE, 6.0f);
+	(en->actor).pos_3.x = (en->actor).pos_2.x;
+	(en->actor).pos_3.y = (en->actor).pos_2.y;
+	(en->actor).pos_3.z = (en->actor).pos_2.z;
+	actor_init_shadow(&(en->actor).rot_2, 0.0f, &ACTOR_SHADOW_DRAWFUNC_CIRCLE, 6.0f);
 }
 
 static void dest(entity_t *en, z64_global_t *gl)
@@ -33,12 +33,12 @@ static void dest(entity_t *en, z64_global_t *gl)
 
 static void draw(entity_t *en, z64_global_t *gl)
 {
-	draw_static_dlist_opa(gl, DL_VASE);
+	draw_dlist_opa(gl, DL_VASE);
 }
 
 const z64_actor_init_t init_vars = {
 	.number = ACT_ID,
-	.type = Prop,
+	.type = OVLTYPE_PROP,
 	.room = 0x00,
 	.flags = 0x00000010,
 	.object = OBJ_ID,
