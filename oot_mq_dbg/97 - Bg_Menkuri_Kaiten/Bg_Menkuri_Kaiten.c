@@ -5,7 +5,7 @@
 #define NA_SE_EV_ELEVATOR_MOVE          0x2024
 
 /*** object ***/
-#define DLIST                           0x060038D0
+#define DL_PLATFORM                     0x060038D0
 #define DYNAPOLY                        0x060042D8
 
 typedef struct {
@@ -51,7 +51,7 @@ static void dest(entity_t *en, z64_global_t *gl)
 
 static void draw(entity_t *en, z64_global_t *gl)
 {
-    draw_dlist_opa(gl, DLIST);
+    draw_dlist_opa(gl, DL_PLATFORM);
 }
 
 const z64_actor_init_t init_vars =
