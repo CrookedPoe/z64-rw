@@ -1,4 +1,5 @@
 #include <z64ovl/oot/debug.h>
+#include <z64ovl/oot/helpers.h>
 
 #define ACT_ID                          0xDEAD
 #define OBJ_ID                          0x004D /* object_menkuri_objects */
