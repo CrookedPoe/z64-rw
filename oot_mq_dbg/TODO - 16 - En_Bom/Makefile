@@ -1,6 +1,6 @@
-PROGRAM = En_Light
-OVLOUT = "C:\Z64\z64rw_testing\actor\8\actor.zovl"
-ADDRESS = 0x80A9DB40
+PROGRAM = En_Bom
+OVLOUT = $(PROGRAM).zovl
+ADDRESS = 0x809C26D0
 PARTS = $(PROGRAM).o
 
 Z64OVL_LD  = /opt/n64/mips64/include/z64ovl/z64ovl.ld
