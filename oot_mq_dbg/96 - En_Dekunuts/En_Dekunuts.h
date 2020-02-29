@@ -1,5 +1,3 @@
-#include <z64ovl/oot/sfx.h>
-
 /*** object documentation ***/
 #define OBJ_ID 							74 /* object_dekunuts */
 #define SKL 								0x06003268 /* Skeleton */
