@@ -52,6 +52,7 @@
 #define	L_BLANKD						22
 #define	L_RFOOT							23
 #define	L_RTHIGH						24
+#define LIMB_TOTAL 					24
 /* Sound Effects */
 #define NA_SE_EN_STAL_DEAD 			0x393B
 #define NA_SE_EN_NUTS_UP 				0x387C
@@ -74,10 +75,8 @@ typedef struct {
 	uint16_t inst0196;
 	uint16_t inst0198;
 	uint16_t inst019A;
-	uint32_t inst019C;
-	char dekunuts_ex_1[146];
-	uint16_t inst0232;
-	uint8_t dekunuts_ex_2[146];
+	vec3s_t dt_rot[LIMB_TOTAL + 1];
+	vec3s_t dt_pos[LIMB_TOTAL + 1];
 	z64_collider_cylinder_main_t collider;
 } entity_t; /* 0314 */
 
@@ -316,7 +315,7 @@ static void draw_809EAAC4(entity_t* en, z64_global_t* gl) /* 0 internal, 2 exter
 		z_skelanime_draw(
 			gl
 			, (en->skelanime).limb_index
-			, (en->skelanime).draw_table_start
+			, (en->skelanime).draw_table_rot
 			, &callback_809EA98C
 			, 0
 			, &en->actor
@@ -464,7 +463,7 @@ static void init_809E9560(entity_t* en, z64_global_t* gl) /* 1 internal, 7 exter
 	else
 	{
 		z_actor_shadow_init(&(en->actor).rot_2, 0, &Z_SHADOW_CIRCLE, 35.0f);
-		z_skelanime_init(gl,&en->skelanime, SKL, ANIM_IDLE, (uint32_t)&en->inst019C, (uint32_t)&en->inst0232, 0x19);
+		z_skelanime_init(gl, &en->skelanime, SKL, ANIM_IDLE, en->dt_rot, en->dt_pos, (LIMB_TOTAL + 1));
 		z_collider_cylinder_alloc(gl, &en->collider);
 		z_collider_cylinder_init(gl, &en->collider, &en->actor, &collider_data);
 		z_actor_damage_table_init(&(en->actor).damage_table, &damage_chart, damage_chart_a2);
