@@ -1,5 +1,6 @@
 #include <z64ovl/oot/debug.h>
 #include <z64ovl/oot/helpers.h>
+#include <z64ovl/oot/sfx.h>
 #include "En_Dekunuts.h"
 
 typedef struct {
