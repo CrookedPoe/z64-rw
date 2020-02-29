@@ -251,7 +251,7 @@ static int32_t scale_limb(z64_global_t* gl, int32_t limb, uint32_t* dlist, vec3f
 static void burrow_into_ground(entity_t* en)
 {
 	z_skelanime_change_anim_trate(&en->skelanime, ANIM_BURROW, -5.0f);
-	z_actor_play_sfx2(&en->actor, NA_SE_EN_NUTS_DOWN);
+	z_actor_play_sfx2(&en->actor, SOUND_BURROW);
 	en->machine_state = (z64_actorfunc_t*)data_809EA0C4;
 }
 
@@ -261,7 +261,7 @@ static void func_809E9B48(entity_t* en)
 	z_skelanime_change_anim_inst(&en->skelanime, ANIM_DEAD_FALL, en);
 	en->machine_state = (z64_actorfunc_t*)spawn_death_fx;
 	(en->actor).xz_speed = 0.0f;
-	z_actor_play_sfx2(&en->actor, NA_SE_EN_NUTS_DEAD);
+	z_actor_play_sfx2(&en->actor, SOUND_KILLED);
 }
 
 static void func_809E98B4(entity_t *en) /* 0 internal, 2 external, 27 lines */
@@ -271,7 +271,7 @@ static void func_809E98B4(entity_t *en) /* 0 internal, 2 external, 27 lines */
 	z_skelanime_change_anim_trate(&en->skelanime, ANIM_JUMP, -3.0f);
 	(en->collider).height = 0x25;
 	(en->actor).mass = 0x32;
-	z_actor_play_sfx2(&en->actor, NA_SE_EN_NUTS_DAMAGE); /*	NA_SE_EN_NUTS_DAMAGE */
+	z_actor_play_sfx2(&en->actor, SOUND_DAMAGE);
 	col_flags = (en->collider).base.collide_flags;
 	en->machine_state = (z64_actorfunc_t*)data_809EA1D8;
 	(en->collider).base.collide_flags = col_flags & 0xFE;
@@ -305,7 +305,7 @@ static void is_stunned(entity_t *en) /* 0 internal, 4 external, 37 lines */
 	en->inst0196 = 5; /* Stun Timer, Animation is played this many times. */
 	en->machine_state = (z64_actorfunc_t*)data_809EA534;
 	(en->actor).xz_speed = 0.0f;
-	z_actor_play_sfx2(&en->actor, NA_SE_EN_GOMA_JR_FREEZE);
+	z_actor_play_sfx2(&en->actor, SOUND_STUN);
 	z_actor_damage_color(&en->actor, 0, 0xFF, 0, (z_skelanime_anim_nframes(ANIM_STUN_SPIN) * en->inst0196));
 }
 
@@ -326,8 +326,8 @@ static void func_809E99D8(entity_t* en) /* 0 internal, 5 external, 57 lines */
 	(en->collider).base.collide_flags &= 0xFE;
 	en->machine_state = (z64_actorfunc_t*)data_809EA4E8;
 	(en->actor).xz_speed = 10.0f;
-	z_actor_play_sfx2(&en->actor, NA_SE_EN_NUTS_DAMAGE);
-	z_actor_play_sfx2(&en->actor, NA_SE_EN_STAL_DEAD);
+	z_actor_play_sfx2(&en->actor, SOUND_DAMAGE);
+	z_actor_play_sfx2(&en->actor, SOUND_DEATH_STAL);
 	z_actor_damage_color(&en->actor, 0x4000, 0xFF, 0, z_skelanime_anim_nframes(ANIM_STUN_SPIN));
 }
 
@@ -526,7 +526,7 @@ static void spawn_deku_nut(entity_t* en, z64_global_t* gl)
 				, 0x0000
 			);
       if (deku_nut)
-        z_actor_play_sfx2(&en->actor, NA_SE_EN_NUTS_THROW);
+        z_actor_play_sfx2(&en->actor, SOUND_SPIT);
     }
   }
   else
@@ -543,7 +543,7 @@ static void data_809EA534(entity_t* en)
     else if (!en->inst0196)
       func_809E9920(en);
     else
-      z_actor_play_sfx2(&en->actor, NA_SE_EN_NUTS_FAINT);
+      z_actor_play_sfx2(&en->actor, SOUND_FAINT);
   }
 }
 
@@ -625,7 +625,7 @@ static void data_809EA240(entity_t* en) /* 2 internal, 7 external, 158 lines */
 	}
 	else
 	{
-		z_actor_play_sfx2(&en->actor, NA_SE_EN_NUTS_WALK);
+		z_actor_play_sfx2(&en->actor, SOUND_WALK);
 		en->inst0194 = 0;
 	}
 	iVar3 = z_lib_approx_f(&(en->actor).xz_speed, 7.5f, 1.0f);
@@ -734,7 +734,7 @@ static void data_809E9B98(entity_t* en) /* 3 internal, 3 external, 169 lines */
 		iVar2 = z_skelanime_frame_index_test(&en->skelanime, 8.0f);
 		if (iVar2 != 0)
 		{
-			z_actor_play_sfx2(&en->actor, NA_SE_EN_NUTS_UP);
+			z_actor_play_sfx2(&en->actor, SOUND_EMERGE);
 		}
 	}
 	else
