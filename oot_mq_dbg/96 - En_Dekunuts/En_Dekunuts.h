@@ -1,3 +1,5 @@
+#include <z64ovl/oot/sfx.h>
+
 /*** object documentation ***/
 #define OBJ_ID 							74 /* object_dekunuts */
 #define SKL 								0x06003268 /* Skeleton */
@@ -51,7 +53,7 @@
 #define	L_RTHIGH						24
 #define LIMB_TOTAL 					24
 /* Sound Effects */
-#define NA_SE_EN_STAL_DEAD 			0x393B
+/*#define NA_SE_EN_STAL_DEAD 			0x393B
 #define NA_SE_EN_NUTS_UP 				0x387C
 #define NA_SE_EN_NUTS_DOWN 			0x387D
 #define NA_SE_EN_NUTS_THROW 		0x387E
@@ -59,4 +61,4 @@
 #define NA_SE_EN_NUTS_DAMAGE 		0x3880
 #define NA_SE_EN_NUTS_DEAD 			0x3881
 #define NA_SE_EN_NUTS_FAINT 		0x3882
-#define NA_SE_EN_GOMA_JR_FREEZE 0x389E
+#define NA_SE_EN_GOMA_JR_FREEZE 0x389E*/
