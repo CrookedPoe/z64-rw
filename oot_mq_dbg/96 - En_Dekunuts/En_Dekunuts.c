@@ -82,39 +82,40 @@ typedef struct {
 
 
 /*** function prototypes ***/
-static void dest_809E96C8(entity_t* en, z64_global_t* gl); /* Rewritten; Working */
-static void func_809E9770(entity_t* en); /* Rewritten; Working */
-static void func_809E97B8(entity_t* en); /* Rewritten; Working */
-static void func_809E9920(entity_t* en); /* Rewritten; Working */
-static void func_809E9978(entity_t* en); /* Rewritten; Working */
-static void func_809E9800(entity_t* en); /* Rewritten; Working */
-static int32_t callback_809EA98C(z64_global_t* gl, int32_t limb, uint32_t* dlist, vec3f_t* translation, vec3s_t* rotation, void* _en); /* Rewritten; Working */
-static void func_809E9868(entity_t* en); /* Rewritten; Working */
-static void func_809E9B48(entity_t* en); /* Rewritten; Working */
-static void func_809E98B4(entity_t *en); /* Rewritten; Working */
-static void draw_809EAAC4(entity_t* en, z64_global_t* gl); /* Rewritten; Working */
-static void func_809E96FC(entity_t* en);  /* Rewritten; Working */
-static void func_809E9AB4(entity_t *en); /* Rewritten; Working */
-static void func_809E99D8(entity_t* en); /* Rewritten; Working */
-static void data_809EA5B0(entity_t* en, z64_global_t* gl); /* Rewritten; Working */
-static void data_809EA4E8(entity_t *en); /* Rewritten; Working */
-static void data_809EA1D8(entity_t* en); /* Rewritten; Working */
-static void data_809EA480(entity_t* en); /* Rewritten; Working */
-static void data_809E9DFC(entity_t* en); /* Rewritten; Working */
-static void init_809E9560(entity_t* en, z64_global_t* gl); /* Rewritten; Working */
-static void data_809EA0C4(entity_t* en); /* Rewritten; Working */
-static void data_809E9F6C(entity_t* en, z64_global_t* gl); /* Rewritten; Working */
-static void data_809EA534(entity_t* en); /* Rewritten; Working */
-static void data_809E9E80(entity_t* en); /* Rewritten; Working */
-static void main_809EA82C(entity_t* en, z64_global_t* gl); /* Rewritten; Working */
-static void data_809EA240(entity_t* en); /* Rewritten; Working */
-static void data_809E9B98(entity_t* en); /* Rewritten; Working */
-static void func_809EA70C(entity_t* en, z64_global_t *gl); /* Rewritten; Working */
+static void init(entity_t* en, z64_global_t* gl);
+static void dest(entity_t* en, z64_global_t* gl);
+static void update(entity_t* en, z64_global_t* gl);
+static void draw(entity_t* en, z64_global_t* gl);
+static int32_t scale_limb(z64_global_t* gl, int32_t limb, uint32_t* dlist, vec3f_t* translation, vec3s_t* rotation, void* _en);
+static void test_player_distance(entity_t* en);
+static void peek_above_ground(entity_t* en);
+static void look_around_above_ground(entity_t* en);
+static void burrow_into_ground(entity_t* en);
+static void func_809E9920(entity_t* en);
+static void func_809E9978(entity_t* en);
+static void func_809E9800(entity_t* en);
+static void func_809E9B48(entity_t* en);
+static void func_809E98B4(entity_t* en);
+static void func_809E96FC(entity_t* en);
+static void is_stunned(entity_t* en);
+static void func_809E99D8(entity_t* en);
+static void data_809EA4E8(entity_t* en);
+static void data_809EA1D8(entity_t* en);
+static void data_809EA480(entity_t* en);
+static void data_809EA0C4(entity_t* en);
+static void data_809EA534(entity_t* en);
+static void data_809EA240(entity_t* en);
+static void data_809E9B98(entity_t* en);
+static void shoot_deku_nut(entity_t* en);
+static void spawn_deku_nut(entity_t* en, z64_global_t* gl);
+static void spawn_death_fx(entity_t* en, z64_global_t* gl);
+static void set_damage_fx(entity_t* en, z64_global_t *gl);
 
 /*** Bugs ***/
+/* When being stunned, the actor continues to move in a direction. */
+/* Also while stunned, a sound effect is not played. */
 
 /*** variables ***/
-
 typedef enum {
 	NONE,
 	STUN,
@@ -153,6 +154,42 @@ const z64_collider_cylinder_init_t collider_data = {
     }
 };
 
+z64_damagechart_init_t damage_chart = {
+.nut = Z_DAMAGE(0, STUN)
+, .entry01 = Z_DAMAGE(2, NONE) /* Deku Stick and Vase / Rock*/
+, .slingshot = Z_DAMAGE(1, NONE)
+, .explode = Z_DAMAGE(2, NONE)
+, .boomerang = Z_DAMAGE(1, NONE)
+, .hookshot = Z_DAMAGE(2, NONE)
+, .slash.sword0 = Z_DAMAGE(1, NONE)
+, .slash.sword1 = Z_DAMAGE(2, NONE)
+, .slash.sword2 = Z_DAMAGE(4, NONE)
+, .arrow = Z_DAMAGE(2, NONE)
+, .magic_arrow.fire = Z_DAMAGE(4, FIRE)
+, .magic_arrow.ice = Z_DAMAGE(2, NONE)
+, .magic_arrow.light = Z_DAMAGE(2, NONE)
+, .magic_arrow.wind = Z_DAMAGE(2, NONE)
+, .magic_arrow.spirit = Z_DAMAGE(2, NONE)
+, .magic_arrow.shadow = Z_DAMAGE(2, NONE)
+, .magic.fire = Z_DAMAGE(4, FIRE)
+, .littlespin.sword0 = Z_DAMAGE(1, NONE)
+, .littlespin.sword1 = Z_DAMAGE(2, NONE)
+, .littlespin.sword2 = Z_DAMAGE(4, NONE)
+, .entry19 = Z_DAMAGE(2, NONE)
+/* Kokiri Sword Jump Attack */
+/* Kokiri Sword Spin Attack (Full Charge) */
+/* Broken Giant's Knife Jump Attack */
+/* Broken Giant's Knife Spin Attack (Full Charge) */
+, .entry1A = Z_DAMAGE(8, NONE)
+/* Biggoron Sword and Giant's Knife Jump Attack */
+/* Biggoron Sword and Giant's Knife Spin Attack (Full Charge) */
+, .entry1B = Z_DAMAGE(4, NONE)
+/* Master Sword Jump Attack */
+/* Master Sword Spin Attack (Full Charge) */
+, .hammer_swing = Z_DAMAGE(2, NONE)
+, .hammer_jump = Z_DAMAGE(4, NONE)
+};
+
 /*
 .littlespin.sword2 = 0x01;
 .magic_arrow.shadow = 0x00;
@@ -167,17 +204,6 @@ const uint32_t damage_chart_a2[] =
 	0x0020FF00
 };
 
-z64_damagechart_init_t damage_chart = {
-.nut = Z_DAMAGE(0, STUN), .entry01 = 0x02, .slingshot = 0x01, .explode = 0x02,
-.boomerang = 0x01, .arrow = 0x02, .hammer_swing = 0x02, .hookshot = 0x02,
-.slash.sword0 = 0x01, .slash.sword1 = 0x02, .slash.sword2 = 0x04, .magic_arrow.fire = Z_DAMAGE(4, FIRE),
-.magic_arrow.ice = 0x02, .magic_arrow.light = 0x02, .magic_arrow.wind = 0x02, .magic_arrow.spirit = 0x02,
-.magic_arrow.shadow = 0x02, .magic.fire = Z_DAMAGE(4, FIRE), .magic.ice = 0x00, .magic.light = 0x00,
-.unk_00 = 0x00, .unk_01= 0x00, .littlespin.sword0 = 0x01, .littlespin.sword2 = 0x04,
-.littlespin.sword1 = 0x02, .entry19 = 0x02, .entry1A = 0x08, .entry1B = 0x04,
-.unk_02 = 0x00, .unk_03 = 0x00, .hammer_jump = 0x04, .unk_04 = 0x00
-};
-
 const uint32_t ichain[] =
 {
     ICHAIN(ICHAIN_S8, navi_enemy_text_id, 0x4D)
@@ -186,23 +212,26 @@ const uint32_t ichain[] =
 };
 
 /*** functions ***/
-static void dest_809E96C8(entity_t* en, z64_global_t* gl) /* 0 internal, 1 external, 14 lines */
+/* Main Destructor */
+static void dest(entity_t* en, z64_global_t* gl)
 {
 	if ((en->actor).variable != 0x000A)
 		z_collider_cylinder_free(gl, &en->collider);
 }
 
-static void func_809E9770(entity_t* en) /* 0 internal, 1 external, 18 lines */
+/* Transition to Looking Around State */
+static void peek_above_ground(entity_t* en)
 {
 	z_skelanime_anim_set(&en->skelanime, ANIM_LOOK_AROUND);
 	en->inst0196 = 2;
-	en->machine_state = (z64_actorfunc_t*)data_809E9DFC;
+	en->machine_state = (z64_actorfunc_t*)look_around_above_ground;
 }
 
-static void func_809E97B8(entity_t* en) /* 0 internal, 1 external, 18 lines */
+/* Transition to Deku Nut Shooting State */
+static void shoot_deku_nut(entity_t* en)
 {
 	z_skelanime_change_anim_inst(&en->skelanime, ANIM_SHOOT_DEKU_NUT, en);
-	en->machine_state = (z64_actorfunc_t*)data_809E9F6C;
+	en->machine_state = (z64_actorfunc_t*)spawn_deku_nut;
 	en->inst0196 = en->inst019A;
 }
 
@@ -234,14 +263,15 @@ static void func_809E9978(entity_t* en) /* 0 internal, 1 external, 25 lines */
 static void func_809E9800(entity_t* en) /* 0 internal, 1 external, 28 lines */
 {
 	z_skelanime_change_frame_count(&en->skelanime, ANIM_IDLE, -3.0f);
-	if (en->machine_state == (z64_actorfunc_t*)data_809E9F6C)
+	if (en->machine_state == (z64_actorfunc_t*)spawn_deku_nut)
 		en->inst0196 = 0x1002;
 	else
 		en->inst0196 = 1;
-	en->machine_state = (z64_actorfunc_t*)data_809E9E80;
+	en->machine_state = (z64_actorfunc_t*)test_player_distance;
 }
 
-static int32_t callback_809EA98C(z64_global_t* gl, int32_t limb, uint32_t* dlist, vec3f_t* translation, vec3s_t* rotation, void* _en) /* 0 internal, 1 external, 84 lines */
+/* Used to scale the snout limb when shooting a deku nut. */
+static int32_t scale_limb(z64_global_t* gl, int32_t limb, uint32_t* dlist, vec3f_t* translation, vec3s_t* rotation, void* _en)
 {
 	entity_t* en = _en;
 	float frame_now;
@@ -249,7 +279,7 @@ static int32_t callback_809EA98C(z64_global_t* gl, int32_t limb, uint32_t* dlist
 	float y;
 
 	/* If Limb 7 and Shooting a Deku Nut */
-	if ((limb == (L_SNOUT)) && (en->machine_state == (z64_actorfunc_t*)data_809E9F6C))
+	if ((limb == (L_SNOUT)) && (en->machine_state == (z64_actorfunc_t*)spawn_deku_nut))
 	{
 		frame_now = (en->skelanime).anim_current_frame;
 		if (frame_now <= 6.0f)
@@ -278,17 +308,19 @@ static int32_t callback_809EA98C(z64_global_t* gl, int32_t limb, uint32_t* dlist
 	return 0;
 }
 
-static void func_809E9868(entity_t* en) /* 0 internal, 2 external, 19 lines */
+/* Transition to Burrowing State */
+static void burrow_into_ground(entity_t* en)
 {
 	z_skelanime_change_anim_trate(&en->skelanime, ANIM_BURROW, -5.0f);
 	z_actor_play_sfx2(&en->actor, NA_SE_EN_NUTS_DOWN);
 	en->machine_state = (z64_actorfunc_t*)data_809EA0C4;
 }
 
-static void func_809E9B48(entity_t* en) /* 0 internal, 2 external, 20 lines */
+/* Transition to the `z_actor_kill` process. */
+static void func_809E9B48(entity_t* en)
 {
 	z_skelanime_change_anim_inst(&en->skelanime, ANIM_DEAD_FALL, en);
-	en->machine_state = (z64_actorfunc_t*)data_809EA5B0;
+	en->machine_state = (z64_actorfunc_t*)spawn_death_fx;
 	(en->actor).xz_speed = 0.0f;
 	z_actor_play_sfx2(&en->actor, NA_SE_EN_NUTS_DEAD);
 }
@@ -306,24 +338,18 @@ static void func_809E98B4(entity_t *en) /* 0 internal, 2 external, 27 lines */
 	(en->collider).base.collide_flags = col_flags & 0xFE;
 }
 
-static void draw_809EAAC4(entity_t* en, z64_global_t* gl) /* 0 internal, 2 external, 29 lines */
+/* Main Draw Function */
+static void draw(entity_t* en, z64_global_t* gl)
 {
 	if ((en->actor).variable == 0x000A)
 		z_cheap_proc_draw_opa(gl, DL_FLOWER);
 	else
 	{
-		z_skelanime_draw(
-			gl
-			, (en->skelanime).limb_index
-			, (en->skelanime).draw_table_rot
-			, &callback_809EA98C
-			, 0
-			, &en->actor
-		);
+		z_skelanime_draw(gl, 0, en, &en->skelanime, &scale_limb, 0);
 	}
 }
 
-static void func_809E96FC(entity_t* en) /* 0 internal, 3 external, 29 lines */
+static void func_809E96FC(entity_t* en)
 {
 	z_skelanime_change_anim_bframe(&en->skelanime, ANIM_RISE, 0);
 	en->inst0196 = z_lib_math_rand_s16_offset(100, 50);
@@ -333,7 +359,8 @@ static void func_809E96FC(entity_t* en) /* 0 internal, 3 external, 29 lines */
 	en->machine_state = (z64_actorfunc_t*)data_809E9B98;
 }
 
-static void func_809E9AB4(entity_t *en) /* 0 internal, 4 external, 37 lines */
+/* Transition to Stunned State */
+static void is_stunned(entity_t *en) /* 0 internal, 4 external, 37 lines */
 {
 	z_skelanime_change_frame_count(&en->skelanime, ANIM_STUN_SPIN, -3.0);
 	en->inst0196 = 5; /* Stun Timer, Animation is played this many times. */
@@ -365,7 +392,7 @@ static void func_809E99D8(entity_t* en) /* 0 internal, 5 external, 57 lines */
 	z_actor_damage_color(&en->actor, 0x4000, 0xFF, 0, z_skelanime_anim_nframes(ANIM_STUN_SPIN));
 }
 
-static void data_809EA5B0(entity_t* en, z64_global_t* gl) /* 0 internal, 6 external, 89 lines */
+static void spawn_death_fx(entity_t* en, z64_global_t* gl)
 {
 	z64_actor_t *attach = (en->actor).attached_b;
 	vec3f_t effect_coordinates = (en->actor).pos_2;
@@ -417,7 +444,8 @@ static void data_809EA5B0(entity_t* en, z64_global_t* gl) /* 0 internal, 6 exter
 	}
 }
 
-static void data_809EA4E8(entity_t *en) /* 1 internal, 2 external, 20 lines */
+/* Stop moving and transition to death state. */
+static void data_809EA4E8(entity_t *en)
 {
   z_lib_approx_f(&(en->actor).xz_speed, 0.0f, 1.0f);
   if (z_skelanime_draw_table(&en->skelanime))
@@ -444,16 +472,19 @@ static void data_809EA480(entity_t* en) /* 1 internal, 2 external, 28 lines */
     func_809E9920(en);
 }
 
-static void data_809E9DFC(entity_t* en) /* 1 internal, 2 external, 36 lines */
+/* The actor looks above ground for one iteration of the `ANIM_LOOK_AROUND` animation.
+If Link is too close, or the animation has finished playing, the actor burrows into the ground.*/
+static void look_around_above_ground(entity_t* en)
 {
 	z_skelanime_draw_table(&en->skelanime);
 	if ((z_skelanime_frame_index_test(&en->skelanime, 0)) && (en->inst0196))
 		en->inst0196--;
 	if (((en->actor).dist_from_link_xz < 120.0f) || (!en->inst0196))
-		func_809E9868(en);
+		burrow_into_ground(en);
 }
 
-static void init_809E9560(entity_t* en, z64_global_t* gl) /* 1 internal, 7 external, 94 lines */
+/* Main Initialization Function / Constructor */
+static void init(entity_t* en, z64_global_t* gl)
 {
 	z64_actor_t* flower_pad;
 
@@ -463,7 +494,7 @@ static void init_809E9560(entity_t* en, z64_global_t* gl) /* 1 internal, 7 exter
 	else
 	{
 		z_actor_shadow_init(&(en->actor).rot_2, 0, &Z_SHADOW_CIRCLE, 35.0f);
-		z_skelanime_init(gl, &en->skelanime, SKL, ANIM_IDLE, en->dt_rot, en->dt_pos, (LIMB_TOTAL + 1));
+		_z_skelanime_init(gl, &en->skelanime, SKL, ANIM_IDLE, en->dt_rot, en->dt_pos, (LIMB_TOTAL + 1));
 		z_collider_cylinder_alloc(gl, &en->collider);
 		z_collider_cylinder_init(gl, &en->collider, &en->actor, &collider_data);
 		z_actor_damage_table_init(&(en->actor).damage_table, &damage_chart, damage_chart_a2);
@@ -488,7 +519,7 @@ static void init_809E9560(entity_t* en, z64_global_t* gl) /* 1 internal, 7 exter
 	}
 }
 
-static void data_809EA0C4(entity_t* en) /* 1 internal, 3 external, 75 lines */
+static void data_809EA0C4(entity_t* en)
 {
 	int32_t iVar1;
 	int32_t iVar2;
@@ -524,7 +555,8 @@ static void data_809EA0C4(entity_t* en) /* 1 internal, 3 external, 75 lines */
 	z_lib_smooth_scale_max_f(&(en->actor).pos_2.z, (en->actor).pos_1.z, 0.5f, 3.0f);
 }
 
-static void data_809E9F6C(entity_t* en, z64_global_t* gl) /* 1 internal, 8 external, 90 lines */
+/* Spawn En_Nutsball Projectile */
+static void spawn_deku_nut(entity_t* en, z64_global_t* gl)
 {
   z64_actor_t *deku_nut;
 
@@ -562,7 +594,7 @@ static void data_809E9F6C(entity_t* en, z64_global_t* gl) /* 1 internal, 8 exter
     func_809E9800(en);
 }
 
-static void data_809EA534(entity_t* en) /* 1 internal, 3 external, 35 lines */
+static void data_809EA534(entity_t* en)
 {
   z_skelanime_draw_table(&en->skelanime);
   if (z_skelanime_frame_index_test(&en->skelanime, 0))
@@ -576,7 +608,8 @@ static void data_809EA534(entity_t* en) /* 1 internal, 3 external, 35 lines */
   }
 }
 
-static void data_809E9E80(entity_t* en) /* 2 internal, 3 external, 65 lines */
+/* Check to see how close you are. If you are too close or too far away, the actor hides underground. */
+static void test_player_distance(entity_t* en)
 {
   z_skelanime_draw_table(&en->skelanime);
   if ((z_skelanime_frame_index_test(&en->skelanime, 0)) && (en->inst0196))
@@ -586,22 +619,23 @@ static void data_809E9E80(entity_t* en) /* 2 internal, 3 external, 65 lines */
   if (en->inst0196 == 0x1000)
 	{
     if ((480.0f < (en->actor).dist_from_link_xz) || ((en->actor).dist_from_link_xz < 120.0f))
-      func_809E9868(en);
+      burrow_into_ground(en);
     else
-      func_809E97B8(en);
+      shoot_deku_nut(en);
   }
   else if (en->inst0196 == 0)
-      func_809E97B8(en);
+      shoot_deku_nut(en);
 }
 
-static void main_809EA82C(entity_t* en, z64_global_t* gl) /* 1 internal, 7 external, 93 lines */
+/* Main Behavior Function */
+static void update(entity_t* en, z64_global_t* gl)
 {
 	int32_t iVar1;
 	z64_actorfunc_t* state_func = en->machine_state;
 
   if ((en->actor).variable != 0x000A)
 	{
-    func_809EA70C(en, gl);
+    set_damage_fx(en, gl);
 		state_func(en, gl);
     z_actor_move_dir_vel(&en->actor);
     z_actor_find_bounds(gl, &en->actor, 20.0f, (en->collider).radius, (en->collider).height, 0x1D);
@@ -652,7 +686,7 @@ static void data_809EA240(entity_t* en) /* 2 internal, 7 external, 158 lines */
 	}
 	else
 	{
-		z_actor_play_sfx2(&en->actor, NA_SE_EN_NUTS_WALK );
+		z_actor_play_sfx2(&en->actor, NA_SE_EN_NUTS_WALK);
 		en->inst0194 = 0;
 	}
 	iVar3 = z_lib_approx_f(&(en->actor).xz_speed, 7.5f, 1.0f);
@@ -723,7 +757,7 @@ static void data_809EA240(entity_t* en) /* 2 internal, 7 external, 158 lines */
 			{
 				(en->actor).mass = -1;
 				(en->actor).xz_speed = 0.0f;
-				func_809E9868(en);
+				burrow_into_ground(en);
 				return;
 			}
 			uVar4 = en->inst0196;
@@ -789,7 +823,7 @@ static void data_809E9B98(entity_t* en) /* 3 internal, 3 external, 169 lines */
 			fVar4 = (en->actor).dist_from_link_xz;
 			if (fVar4 < 120.0f)
 			{
-				func_809E9868(en);
+				burrow_into_ground(en);
 			}
 			else
 			{
@@ -799,14 +833,14 @@ static void data_809E9B98(entity_t* en) /* 3 internal, 3 external, 169 lines */
 				}
 				else
 				{
-					func_809E9770(en);
+					peek_above_ground(en);
 				}
 			}
 		}
 	}
 	else
 	{
-		func_809E9868(en);
+		burrow_into_ground(en);
 	}
 	if ((((bVar1) &&
 			(fVar4 = (en->actor).dist_from_link_xz, 160.0f < fVar4)) &&
@@ -817,7 +851,7 @@ static void data_809E9B98(entity_t* en) /* 3 internal, 3 external, 169 lines */
 			}
 }
 
-static void func_809EA70C(entity_t* en, z64_global_t *gl) /* 3 internal, 4 external, 79 lines */
+static void set_damage_fx(entity_t* en, z64_global_t *gl)
 {
 	uint8_t damage_fx;
   uint32_t uVar1;
@@ -843,7 +877,7 @@ static void func_809EA70C(entity_t* en, z64_global_t *gl) /* 3 internal, 4 exter
 				{
           if (en->machine_state != (z64_actorfunc_t*)data_809EA534)
 					{
-            func_809E9AB4(en);
+            is_stunned(en);
           }
         }
         else
@@ -875,8 +909,8 @@ const z64_actor_init_t init_vars = {
 	.flags = 0x00000005,
 	.object = OBJ_ID,
 	.instance_size = sizeof(entity_t),
-	.init = init_809E9560,
-	.dest = dest_809E96C8,
-	.main = main_809EA82C,
-	.draw = draw_809EAAC4
+	.init = init,
+	.dest = dest,
+	.main = update,
+	.draw = draw
 };
