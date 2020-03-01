@@ -52,12 +52,12 @@
 #define LIMB_TOTAL 					24
 
 /* Sound Effects */
-#define  SOUND_DEATH_STAL    NA_SE_EN_STAL_DEAD       /* stalfos killed */
+#define  SOUND_SLASHED       NA_SE_EN_NUTS_CUTBODY    /* killed */
 #define  SOUND_EMERGE        NA_SE_EN_NUTS_UP         /* emerging sound */
 #define  SOUND_BURROW        NA_SE_EN_NUTS_DOWN       /* burrowing sound */
 #define  SOUND_SPIT          NA_SE_EN_NUTS_THROW      /* spit deku nut */
 #define  SOUND_WALK          NA_SE_EN_NUTS_WALK       /* walk sound */
 #define  SOUND_DAMAGE        NA_SE_EN_NUTS_DAMAGE     /* hurt by Link */
-#define 	SOUND_KILLED        NA_SE_EN_NUTS_DEAD       /* last hit */
+#define  SOUND_KILLED        NA_SE_EN_NUTS_DEAD       /* last hit */
 #define  SOUND_FAINT         NA_SE_EN_NUTS_FAINT      /* TODO describe this better */
 #define  SOUND_STUN          NA_SE_EN_GOMA_JR_FREEZE  /* stunned by thrown deku nut */

@@ -8,7 +8,7 @@ typedef struct {
 	/* uint8_t[16] debug_ex; */
 	z64_skelanime_t skelanime;
 	uint8_t dekunuts_ex_0[4];
-	z64_actorfunc_t* machine_state;
+	z64_actorfunc_t* state;
 	uint8_t inst0194;
 	uint8_t inst0195;
 	uint16_t inst0196;
@@ -51,8 +51,7 @@ static void spawn_death_fx(entity_t* en, z64_global_t* gl);
 static void set_damage_fx(entity_t* en, z64_global_t *gl);
 
 /*** Bugs ***/
-/* When being stunned, the actor continues to move in a direction. */
-/* Also while stunned, a sound effect is not played. */
+/* When being stunned, the actor continues to move in a direction. The actor should be stunned in place without movement. */
 
 /*** variables ***/
 typedef enum {
@@ -163,50 +162,44 @@ static void peek_above_ground(entity_t* en)
 {
 	z_skelanime_anim_set(&en->skelanime, ANIM_LOOK_AROUND);
 	en->inst0196 = 2;
-	en->machine_state = (z64_actorfunc_t*)look_around_above_ground;
+	en->state = (z64_actorfunc_t*)look_around_above_ground;
 }
 
 /* Transition to Deku Nut Shooting State */
 static void shoot_deku_nut(entity_t* en)
 {
 	z_skelanime_change_anim_inst(&en->skelanime, ANIM_SHOOT_DEKU_NUT, en);
-	en->machine_state = (z64_actorfunc_t*)spawn_deku_nut;
+	en->state = (z64_actorfunc_t*)spawn_deku_nut;
 	en->inst0196 = en->inst019A;
 }
 
 static void func_809E9920(entity_t* en) /* 0 internal, 1 external, 22 lines */
 {
-	uint8_t col_flags;
-
 	z_skelanime_anim_set(&en->skelanime, ANIM_FLAIL);
-	col_flags = (en->collider).base.collide_flags;
 	en->inst0196 = 2;
 	en->inst0194 = 0;
-	(en->collider).base.collide_flags = col_flags | 1;
-	en->machine_state = (z64_actorfunc_t*)data_809EA240;
+	(en->collider).base.collide_flags |= 1;
+	en->state = (z64_actorfunc_t*)data_809EA240;
 }
 
 static void func_809E9978(entity_t* en) /* 0 internal, 1 external, 25 lines */
 {
-	uint8_t uVar1;
-
 	z_skelanime_anim_set(&en->skelanime, ANIM_FLINCHING);
-	uVar1 = en->inst0195;
 	en->inst0196 = 3;
 	(en->actor).xz_speed = 0.0f;
-	if (uVar1 != 0)
-		en->inst0195 = uVar1 - 1;
-	en->machine_state = (z64_actorfunc_t*)data_809EA480;
+	if (en->inst0195)
+		en->inst0195--;
+	en->state = (z64_actorfunc_t*)data_809EA480;
 }
 
 static void func_809E9800(entity_t* en) /* 0 internal, 1 external, 28 lines */
 {
 	z_skelanime_change_frame_count(&en->skelanime, ANIM_IDLE, -3.0f);
-	if (en->machine_state == (z64_actorfunc_t*)spawn_deku_nut)
+	if (en->state == (z64_actorfunc_t*)spawn_deku_nut)
 		en->inst0196 = 0x1002;
 	else
 		en->inst0196 = 1;
-	en->machine_state = (z64_actorfunc_t*)test_player_distance;
+	en->state = (z64_actorfunc_t*)test_player_distance;
 }
 
 /* Used to scale the snout limb when shooting a deku nut. */
@@ -218,7 +211,7 @@ static int32_t scale_limb(z64_global_t* gl, int32_t limb, uint32_t* dlist, vec3f
 	float y;
 
 	/* If Limb 7 and Shooting a Deku Nut */
-	if ((limb == (L_SNOUT)) && (en->machine_state == (z64_actorfunc_t*)spawn_deku_nut))
+	if ((limb == (L_SNOUT)) && (en->state == (z64_actorfunc_t*)spawn_deku_nut))
 	{
 		frame_now = (en->skelanime).anim_current_frame;
 		if (frame_now <= 6.0f)
@@ -252,29 +245,26 @@ static void burrow_into_ground(entity_t* en)
 {
 	z_skelanime_change_anim_trate(&en->skelanime, ANIM_BURROW, -5.0f);
 	z_actor_play_sfx2(&en->actor, SOUND_BURROW);
-	en->machine_state = (z64_actorfunc_t*)data_809EA0C4;
+	en->state = (z64_actorfunc_t*)data_809EA0C4;
 }
 
 /* Transition to the `z_actor_kill` process. */
 static void func_809E9B48(entity_t* en)
 {
 	z_skelanime_change_anim_inst(&en->skelanime, ANIM_DEAD_FALL, en);
-	en->machine_state = (z64_actorfunc_t*)spawn_death_fx;
+	en->state = (z64_actorfunc_t*)spawn_death_fx;
 	(en->actor).xz_speed = 0.0f;
 	z_actor_play_sfx2(&en->actor, SOUND_KILLED);
 }
 
 static void func_809E98B4(entity_t *en) /* 0 internal, 2 external, 27 lines */
 {
-	uint8_t col_flags;
-
 	z_skelanime_change_anim_trate(&en->skelanime, ANIM_JUMP, -3.0f);
 	(en->collider).height = 0x25;
 	(en->actor).mass = 0x32;
 	z_actor_play_sfx2(&en->actor, SOUND_DAMAGE);
-	col_flags = (en->collider).base.collide_flags;
-	en->machine_state = (z64_actorfunc_t*)data_809EA1D8;
-	(en->collider).base.collide_flags = col_flags & 0xFE;
+	en->state = (z64_actorfunc_t*)data_809EA1D8;
+	(en->collider).base.collide_flags &= 0xFE;
 }
 
 /* Main Draw Function */
@@ -295,7 +285,7 @@ static void func_809E96FC(entity_t* en)
 	(en->collider).height = 5;
 	z_lib_vec3f_copy(&(en->actor).pos_2, &(en->actor).pos_1);
 	(en->collider).base.collide_flags &= 0xFE;
-	en->machine_state = (z64_actorfunc_t*)data_809E9B98;
+	en->state = (z64_actorfunc_t*)data_809E9B98;
 }
 
 /* Transition to Stunned State */
@@ -303,7 +293,7 @@ static void is_stunned(entity_t *en) /* 0 internal, 4 external, 37 lines */
 {
 	z_skelanime_change_frame_count(&en->skelanime, ANIM_STUN_SPIN, -3.0);
 	en->inst0196 = 5; /* Stun Timer, Animation is played this many times. */
-	en->machine_state = (z64_actorfunc_t*)data_809EA534;
+	en->state = (z64_actorfunc_t*)data_809EA534;
 	(en->actor).xz_speed = 0.0f;
 	z_actor_play_sfx2(&en->actor, SOUND_STUN);
 	z_actor_damage_color(&en->actor, 0, 0xFF, 0, (z_skelanime_anim_nframes(ANIM_STUN_SPIN) * en->inst0196));
@@ -324,10 +314,10 @@ static void func_809E99D8(entity_t* en) /* 0 internal, 5 external, 57 lines */
 		(en->actor).xz_dir = ((en->collider).base.unk_actor_2)->xz_dir;
 
 	(en->collider).base.collide_flags &= 0xFE;
-	en->machine_state = (z64_actorfunc_t*)data_809EA4E8;
+	en->state = (z64_actorfunc_t*)data_809EA4E8;
 	(en->actor).xz_speed = 10.0f;
 	z_actor_play_sfx2(&en->actor, SOUND_DAMAGE);
-	z_actor_play_sfx2(&en->actor, SOUND_DEATH_STAL);
+	z_actor_play_sfx2(&en->actor, SOUND_SLASHED);
 	z_actor_damage_color(&en->actor, 0x4000, 0xFF, 0, z_skelanime_anim_nframes(ANIM_STUN_SPIN));
 }
 
@@ -464,32 +454,21 @@ static void data_809EA0C4(entity_t* en)
 	int32_t iVar2;
 	float frame;
 
-	iVar1 = z_skelanime_draw_table(&en->skelanime);
-	if (iVar1 == 0)
+	if (!(z_skelanime_draw_table(&en->skelanime)))
 	{
 	  frame = (en->skelanime).anim_current_frame;
 	  if (frame < 1.0f)
-	  {
 	    frame = 1.0f;
-	  }
-	  else
-	  {
-	    if (3.0f < frame)
-	    {
+	  else if (3.0f < frame)
 	      frame = 3.0f;
-	    }
-	  }
 	  (en->collider).height = (3.0f - frame) * 12.0f + 5.0f;
 	}
 	else
-	{
 	  func_809E96FC(en);
-	}
-	iVar2 = z_skelanime_frame_index_test(&en->skelanime, 4.0f);
-	if (iVar2 != 0)
-	{
+
+	if (z_skelanime_frame_index_test(&en->skelanime, 4.0f))
 	  (en->collider).base.collide_flags &= 0xFE;
-	}
+
 	z_lib_smooth_scale_max_f(&(en->actor).pos_2.x, (en->actor).pos_1.x, 0.5f, 3.0f);
 	z_lib_smooth_scale_max_f(&(en->actor).pos_2.z, (en->actor).pos_1.z, 0.5f, 3.0f);
 }
@@ -536,15 +515,17 @@ static void spawn_deku_nut(entity_t* en, z64_global_t* gl)
 static void data_809EA534(entity_t* en)
 {
   z_skelanime_draw_table(&en->skelanime);
-  if (z_skelanime_frame_index_test(&en->skelanime, 0))
+	if (z_skelanime_frame_index_test(&en->skelanime, 0))
 	{
-    if (en->inst0196)
-      en->inst0196--;
-    else if (!en->inst0196)
-      func_809E9920(en);
-    else
-      z_actor_play_sfx2(&en->actor, SOUND_FAINT);
-  }
+		if (en->inst0196)
+		{
+			en->inst0196--;
+		}
+		if (!(en->inst0196))
+			func_809E9920(en);
+		else
+			z_actor_play_sfx2(&en->actor, SOUND_FAINT);
+	}
 }
 
 /* Check to see how close you are. If you are too close or too far away, the actor hides underground. */
@@ -569,8 +550,7 @@ static void test_player_distance(entity_t* en)
 /* Main Behavior Function */
 static void update(entity_t* en, z64_global_t* gl)
 {
-	int32_t iVar1;
-	z64_actorfunc_t* state_func = en->machine_state;
+	z64_actorfunc_t* state_func = en->state;
 
   if ((en->actor).variable != 0x000A)
 	{
@@ -579,25 +559,17 @@ static void update(entity_t* en, z64_global_t* gl)
     z_actor_move_dir_vel(&en->actor);
     z_actor_find_bounds(gl, &en->actor, 20.0f, (en->collider).radius, (en->collider).height, 0x1D);
     z_collider_cylinder_update(&en->actor, &en->collider);
-    if (((en->collider).base.collide_flags & 1) != 0)
-		{
+    if (((en->collider).base.collide_flags & 1))
       z_collider_set_ac(gl, &gl->hit_ctxt, &en->collider);
-    }
     z_collider_set_ot(gl, &gl->hit_ctxt, &en->collider);
-    if (en->machine_state == (z64_actorfunc_t*)data_809E9B98)
-		{
+    if (en->state == (z64_actorfunc_t*)data_809E9B98)
       z_actor_set_height(&en->actor, (en->skelanime).anim_current_frame);
-    }
     else
 		{
-      if (en->machine_state == (z64_actorfunc_t*)data_809EA0C4)
-			{
-        iVar1 = z_skelanime_anim_nframes(ANIM_BURROW);
-        z_actor_set_height(&en->actor, 20.0f - ((en->skelanime).anim_current_frame * 20.0f) / iVar1);
-      }
-      else {
+      if (en->state == (z64_actorfunc_t*)data_809EA0C4)
+        z_actor_set_height(&en->actor, 20.0f - ((en->skelanime).anim_current_frame * 20.0f) / z_skelanime_anim_nframes(ANIM_BURROW));
+      else
         z_actor_set_height(&en->actor, 20.0f);
-      }
     }
   }
 }
@@ -814,7 +786,7 @@ static void set_damage_fx(entity_t* en, z64_global_t *gl)
 			{
         if (damage_fx == STUN)
 				{
-          if (en->machine_state != (z64_actorfunc_t*)data_809EA534)
+          if (en->state != (z64_actorfunc_t*)data_809EA534)
 					{
             is_stunned(en);
           }
