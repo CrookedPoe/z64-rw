@@ -307,11 +307,11 @@ static void func_809E99D8(entity_t* en) /* 0 internal, 5 external, 57 lines */
 
 	if (((uint32_t)(en->collider).body.colliding & 0x1F824) == 0)
 	{
-		yaw = z_actor_math_yaw_actor(&en->actor, (en->collider).base.unk_actor_2);
+		yaw = z_actor_math_yaw_actor(&en->actor, (en->collider).base.colliding_actor);
 		(en->actor).xz_dir = yaw + -0x8000;
 	}
 	else
-		(en->actor).xz_dir = ((en->collider).base.unk_actor_2)->xz_dir;
+		(en->actor).xz_dir = ((en->collider).base.colliding_actor)->xz_dir;
 
 	(en->collider).base.collide_flags &= 0xFE;
 	en->state = (z64_actorfunc_t*)data_809EA4E8;
