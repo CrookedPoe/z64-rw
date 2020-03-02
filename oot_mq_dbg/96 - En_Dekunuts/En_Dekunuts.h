@@ -61,3 +61,6 @@
 #define  SOUND_KILLED        NA_SE_EN_NUTS_DEAD       /* last hit */
 #define  SOUND_FAINT         NA_SE_EN_NUTS_FAINT      /* TODO describe this better */
 #define  SOUND_STUN          NA_SE_EN_GOMA_JR_FREEZE  /* stunned by thrown deku nut */
+
+/* Variables */
+#define VAR_FLOWER          0x000A /* Usually a single flower pad is spawned when the actor uses this variable. */

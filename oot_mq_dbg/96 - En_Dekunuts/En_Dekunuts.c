@@ -153,7 +153,7 @@ const uint32_t ichain[] =
 /* Main Destructor */
 static void dest(entity_t* en, z64_global_t* gl)
 {
-	if ((en->actor).variable != 0x000A)
+	if ((en->actor).variable != VAR_FLOWER)
 		z_collider_cylinder_free(gl, &en->collider);
 }
 
@@ -270,7 +270,7 @@ static void func_809E98B4(entity_t *en) /* 0 internal, 2 external, 27 lines */
 /* Main Draw Function */
 static void draw(entity_t* en, z64_global_t* gl)
 {
-	if ((en->actor).variable == 0x000A)
+	if ((en->actor).variable == VAR_FLOWER)
 		z_cheap_proc_draw_opa(gl, DL_FLOWER);
 	else
 	{
@@ -416,14 +416,14 @@ static void look_around_above_ground(entity_t* en)
 static void init(entity_t* en, z64_global_t* gl)
 {
 
-	/* Instance */
+	/* Instance Debugging; Temporary */
 	uint32_t* _en = (uint32_t*)0x80600000;
 	*_en = (uint32_t)en;
 
 	z64_actor_t* flower_pad;
 
 	z_lib_ichain_init(&en->actor, ichain);
-	if ((en->actor).variable == 0x000A)
+	if ((en->actor).variable == VAR_FLOWER)
 		(en->actor).flags &= 0xFFFFFFFA;
 	else
 	{
@@ -448,7 +448,7 @@ static void init(entity_t* en, z64_global_t* gl)
 			, 0
 			, (en->actor).xz_dir
 			, 0
-			, 0x000A
+			, VAR_FLOWER
 		);
 	}
 }
@@ -519,7 +519,6 @@ static void spawn_deku_nut(entity_t* en, z64_global_t* gl)
 
 static void data_809EA534(entity_t* en)
 {
-	uint16_t anim_iter;
   z_skelanime_draw_table(&en->skelanime);
 	if (z_skelanime_frame_index_test(&en->skelanime, 0))
 	{
@@ -558,7 +557,7 @@ static void update(entity_t* en, z64_global_t* gl)
 {
 	z64_actorfunc_t* state_func = en->state;
 
-  if ((en->actor).variable != 0x000A)
+  if ((en->actor).variable != VAR_FLOWER)
 	{
     set_damage_fx(en, gl);
 		state_func(en, gl);
@@ -583,23 +582,19 @@ static void update(entity_t* en, z64_global_t* gl)
 static void data_809EA240(entity_t* en) /* 2 internal, 7 external, 158 lines */
 {
 	uint8_t bVar1;
-	int16_t sVar2;
+	int16_t xz_dir;
 	int32_t xz_vel_approx;
 	uint16_t uVar4;
-	uint16_t uVar5;
+	uint16_t bg_chk;
 	int32_t iVar6;
 	int32_t iVar7;
 	float fVar8;
 
 	z_skelanime_draw_table(&en->skelanime);
 	if ((z_skelanime_frame_index_test(&en->skelanime, 0)) && (en->inst0196))
-	{
 		en->inst0196--;
-	}
 	if (!(en->inst0194))
-	{
 		en->inst0194 = 1;
-	}
 	else
 	{
 		z_actor_play_sfx2(&en->actor, SOUND_WALK);
@@ -609,16 +604,15 @@ static void data_809EA240(entity_t* en) /* 2 internal, 7 external, 158 lines */
 	z_lib_smooth_scale_max_min_s(&(en->actor).xz_dir, en->inst0198, 1, 0xE38, 0xB6);
 	if (xz_vel_approx == 0)
 	{
-		uVar5 = (en->actor).bgcheck_flags;
-		if ((uVar5 & 0x20) == 0)
+		bg_chk = (en->actor).bgcheck_flags;
+		if ((bg_chk & 0x20) == 0)
 		{
-			if ((uVar5 & 8) == 0)
+			if ((bg_chk & 8) == 0)
 			{
 				if (en->inst0195 == 0)
 				{
-					uVar5 = z_actor_math_yaw_vec3f(&en->actor, &(en->actor).pos_1);
 					iVar7 = (en->actor).rot_toward_link_y;
-					iVar6 = (uVar5 - iVar7) * 0x10000 >> 0x10;
+					iVar6 = ((z_actor_math_yaw_vec3f(&en->actor, &(en->actor).pos_1)) - iVar7) * 0x10000 >> 0x10;
 					xz_vel_approx = -iVar6;
 					if (-1 < iVar6)
 					{
@@ -637,33 +631,22 @@ static void data_809EA240(entity_t* en) /* 2 internal, 7 external, 158 lines */
 						en->inst0198 = fVar8 * -8192.0f + iVar7;
 					}
 					else
-					{
-						en->inst0198 = uVar5;
-					}
+						en->inst0198 = z_actor_math_yaw_vec3f(&en->actor, &(en->actor).pos_1);
 				}
 				else
-				{
 					en->inst0198 = (en->actor).rot_toward_link_y + 0x8000;
-				}
 			}
 			else
-			{
 				en->inst0198 = (en->actor).wall_rot;
-			}
 		}
 		else
-		{
-			uVar4 = z_actor_math_yaw_vec3f(&en->actor, &(en->actor).pos_1);
-			en->inst0198 = uVar4;
-		}
-		sVar2 = (en->actor).xz_dir;
+			en->inst0198 = z_actor_math_yaw_vec3f(&en->actor, &(en->actor).pos_1);
+		xz_dir = (en->actor).xz_dir;
 	}
 	else
-	{
-		sVar2 = (en->actor).xz_dir;
-	}
+		xz_dir = (en->actor).xz_dir;
 	bVar1 = en->inst0195;
-	(en->actor).rot_2.y = sVar2 + -0x8000;
+	(en->actor).rot_2.y = xz_dir + -0x8000;
 	if (bVar1 == 0)
 	{
 		fVar8 = z_actor_math_dist_xz_vec3f(&en->actor, &(en->actor).pos_1);
@@ -695,82 +678,49 @@ static void data_809EA240(entity_t* en) /* 2 internal, 7 external, 158 lines */
 
 static void data_809E9B98(entity_t* en) /* 3 internal, 3 external, 169 lines */
 {
-	int32_t bVar1;
-	int32_t iVar2;
-	int32_t iVar3;
-	float fVar4;
 
-	bVar1 = (en->skelanime).anim_playback_speed < 0.5f;
-	if ((bVar1) && (en->inst0196 != 0))
-	{
-		en->inst0196 = en->inst0196 - 1;
-	}
-	iVar2 = z_skelanime_frame_index_test(&en->skelanime, 9.0f);
-	if (iVar2 == 0)
-	{
-		iVar2 = z_skelanime_frame_index_test(&en->skelanime, 8.0f);
-		if (iVar2 != 0)
-		{
+	float frame_now = (en->skelanime).anim_current_frame;
+
+	if (((en->skelanime).anim_playback_speed < 0.5f) && (en->inst0196))
+		en->inst0196--;
+	if (!(z_skelanime_frame_index_test(&en->skelanime, 9.0f)) && (z_skelanime_frame_index_test(&en->skelanime, 8.0f)))
 			z_actor_play_sfx2(&en->actor, SOUND_EMERGE);
-		}
-	}
 	else
-	{
 		(en->collider).base.collide_flags |= 1;
-	}
-	fVar4 = (en->skelanime).anim_current_frame;
-	if (fVar4 < 9.0f)
+	if (frame_now < 9.0f)
+		frame_now = 9.0f;
+	else if (12.0f < frame_now)
+		frame_now = 12.0f;
+	(en->collider).height = (frame_now - 9.0f) * 9.0f + 5.0f;
+	if (((en->skelanime).anim_playback_speed < 0.5f) || ((en->actor).dist_from_link_xz >= 120.0f))
 	{
-		fVar4 = 9.0f;
-	}
-	else
-	{
-		if (12.0f < fVar4)
+		if (z_skelanime_draw_table(&en->skelanime))
 		{
-			fVar4 = 12.0f;
-		}
-	}
-	(en->collider).height = (fVar4 - 9.0f) * 9.0f + 5.0f;
-	if ((bVar1) || (120.0f <= (en->actor).dist_from_link_xz))
-	{
-		iVar3 = z_skelanime_draw_table(&en->skelanime);
-		if (iVar3 != 0)
-		{
-			fVar4 = (en->actor).dist_from_link_xz;
-			if (fVar4 < 120.0f)
-			{
+			if ((en->actor).dist_from_link_xz < 120.0f)
 				burrow_into_ground(en);
-			}
 			else
 			{
-				if ((en->inst0196 != 0) || (fVar4 <= 320.0f))
-				{
+				if ((en->inst0196 != 0) || ((en->actor).dist_from_link_xz <= 320.0f))
 					func_809E9800(en);
-				}
 				else
-				{
 					peek_above_ground(en);
-				}
 			}
 		}
 	}
 	else
-	{
 		burrow_into_ground(en);
-	}
-	if ((((bVar1) &&
-			(fVar4 = (en->actor).dist_from_link_xz, 160.0f < fVar4)) &&
-			(ABS((en->actor).dist_from_link_y) < 120.0f)) &&
-		 	((en->inst0196 == 0 || (fVar4 < 480.0f))))
-			{
-				(en->skelanime).anim_playback_speed = 1.0f;
+
+	if ((en->skelanime).anim_playback_speed < 0.5f &&
+			((en->actor).dist_from_link_xz > 160.0f) &&
+			(ABS((en->actor).dist_from_link_y) < 120.0f) &&
+			(!(en->inst0196) || (en->actor).dist_from_link_xz < 480.0f)) {
+					(en->skelanime).anim_playback_speed = 1.0f;
 			}
 }
 
 static void set_damage_fx(entity_t* en, z64_global_t *gl)
 {
-	uint8_t damage_fx;
-  uint32_t uVar1;
+	uint8_t damage_fx = (en->actor).damage_effect;
 
   if (((en->collider).base.collide_flags & 2) == 0)
 	{
@@ -785,8 +735,6 @@ static void set_damage_fx(entity_t* en, z64_global_t *gl)
     external_func_80035650(&en->actor, &(en->collider).body, 1);
     if ((en->actor).mass == 0x32)
 		{
-      damage_fx = (en->actor).damage_effect;
-      uVar1 = damage_fx;
       if ((damage_fx != NONE) || ((en->actor).damage != 0))
 			{
         if (damage_fx == STUN)
@@ -804,7 +752,7 @@ static void set_damage_fx(entity_t* en, z64_global_t *gl)
           }
           func_809E99D8(en);
           z_actor_update_health(&en->actor);
-          if (uVar1 == NONE)
+          if (damage_fx == NONE)
 					{
             z_actor_play_sound_defeated(gl, &en->actor);
           }
@@ -812,9 +760,7 @@ static void set_damage_fx(entity_t* en, z64_global_t *gl)
       }
     }
     else
-		{
       func_809E98B4(en);
-    }
   }
 }
 
