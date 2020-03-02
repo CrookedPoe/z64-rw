@@ -11,7 +11,7 @@
 #define	DL_LFOOT 						0x06001DA8
 #define	DL_HAT 							0x06001E58
 #define	DL_HAT_TIP 					0x06001F50
-#define	DL_LEAF 						0x06002028
+#define	DL_DEKU_NUT 				0x06002028 /* Used by En_Nutsball */
 #define	DL_FLOWER 					0x06002298
 /* Animations */
 #define ANIM_SHOOT_DEKU_NUT 0x060001C4
