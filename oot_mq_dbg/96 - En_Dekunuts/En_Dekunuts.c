@@ -415,6 +415,11 @@ static void look_around_above_ground(entity_t* en)
 /* Main Initialization Function / Constructor */
 static void init(entity_t* en, z64_global_t* gl)
 {
+
+	/* Instance */
+	uint32_t* _en = (uint32_t*)0x80600000;
+	*_en = (uint32_t)en;
+
 	z64_actor_t* flower_pad;
 
 	z_lib_ichain_init(&en->actor, ichain);
@@ -514,6 +519,7 @@ static void spawn_deku_nut(entity_t* en, z64_global_t* gl)
 
 static void data_809EA534(entity_t* en)
 {
+	uint16_t anim_iter;
   z_skelanime_draw_table(&en->skelanime);
 	if (z_skelanime_frame_index_test(&en->skelanime, 0))
 	{
@@ -578,7 +584,7 @@ static void data_809EA240(entity_t* en) /* 2 internal, 7 external, 158 lines */
 {
 	uint8_t bVar1;
 	int16_t sVar2;
-	int32_t iVar3;
+	int32_t xz_vel_approx;
 	uint16_t uVar4;
 	uint16_t uVar5;
 	int32_t iVar6;
@@ -586,12 +592,11 @@ static void data_809EA240(entity_t* en) /* 2 internal, 7 external, 158 lines */
 	float fVar8;
 
 	z_skelanime_draw_table(&en->skelanime);
-	iVar3 = z_skelanime_frame_index_test(&en->skelanime, 0);
-	if ((iVar3 != 0) && (en->inst0196 != 0))
+	if ((z_skelanime_frame_index_test(&en->skelanime, 0)) && (en->inst0196))
 	{
-		en->inst0196 = en->inst0196 - 1;
+		en->inst0196--;
 	}
-	if (en->inst0194 == 0)
+	if (!(en->inst0194))
 	{
 		en->inst0194 = 1;
 	}
@@ -600,9 +605,9 @@ static void data_809EA240(entity_t* en) /* 2 internal, 7 external, 158 lines */
 		z_actor_play_sfx2(&en->actor, SOUND_WALK);
 		en->inst0194 = 0;
 	}
-	iVar3 = z_lib_approx_f(&(en->actor).xz_speed, 7.5f, 1.0f);
+	xz_vel_approx = z_lib_approx_f(&(en->actor).xz_speed, 7.5f, 1.0f);
 	z_lib_smooth_scale_max_min_s(&(en->actor).xz_dir, en->inst0198, 1, 0xE38, 0xB6);
-	if (iVar3 == 0)
+	if (xz_vel_approx == 0)
 	{
 		uVar5 = (en->actor).bgcheck_flags;
 		if ((uVar5 & 0x20) == 0)
@@ -614,12 +619,12 @@ static void data_809EA240(entity_t* en) /* 2 internal, 7 external, 158 lines */
 					uVar5 = z_actor_math_yaw_vec3f(&en->actor, &(en->actor).pos_1);
 					iVar7 = (en->actor).rot_toward_link_y;
 					iVar6 = (uVar5 - iVar7) * 0x10000 >> 0x10;
-					iVar3 = -iVar6;
+					xz_vel_approx = -iVar6;
 					if (-1 < iVar6)
 					{
-						iVar3 = iVar6;
+						xz_vel_approx = iVar6;
 					}
-					if (iVar3 < 0x2001)
+					if (xz_vel_approx < 0x2001)
 					{
 						if (0.0f <= iVar6)
 						{
