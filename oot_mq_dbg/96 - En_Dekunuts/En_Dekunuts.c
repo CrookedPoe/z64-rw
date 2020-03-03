@@ -52,6 +52,7 @@ static void set_damage_fx(entity_t* en, z64_global_t *gl);
 
 /*** Bugs ***/
 /* When being stunned, the actor continues to move in a direction. The actor should be stunned in place without movement. */
+/* Delayed reaction to Link being up close? */
 
 /*** variables ***/
 typedef enum {
@@ -417,8 +418,8 @@ static void init(entity_t* en, z64_global_t* gl)
 {
 
 	/* Instance Debugging; Temporary */
-	uint32_t* _en = (uint32_t*)0x80600000;
-	*_en = (uint32_t)en;
+	//uint32_t* _en = (uint32_t*)0x80600000;
+	//*_en = (uint32_t)en;
 
 	z64_actor_t* flower_pad;
 

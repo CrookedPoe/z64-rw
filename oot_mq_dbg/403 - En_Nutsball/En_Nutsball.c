@@ -21,16 +21,16 @@ typedef struct {
 
 
 /*** function prototypes ***/
-void dest(entity_t* en, z64_global_t* gl); /* 0 internal, 1 external, 10 lines */
-void set_draw(entity_t* en, z64_global_t* gl); /* 0 internal, 1 external, 30 lines */
-void data_80ABBBA8(entity_t* en, z64_global_t* gl); /* 0 internal, 4 external, 124 lines */
-void init(entity_t* en, z64_global_t* gl); /* 0 internal, 5 external, 49 lines */
-void draw(entity_t* en, z64_global_t* gl); /* 0 internal, 6 external, 68 lines */
-void main(entity_t* en, z64_global_t* gl); /* 0 internal, 6 external, 73 lines */
+void dest(entity_t* en, z64_global_t* gl);
+void set_draw(entity_t* en, z64_global_t* gl);
+void handle_collider(entity_t* en, z64_global_t* gl);
+void init(entity_t* en, z64_global_t* gl);
+void draw(entity_t* en, z64_global_t* gl);
+void main(entity_t* en, z64_global_t* gl);
 
 
 /*** variables ***/
-const uint32_t data_80ABBFC0[] =
+const uint32_t collider_init[] =
 {
 	0x0A110939,
 	0x20010000,
@@ -40,12 +40,11 @@ const uint32_t data_80ABBFC0[] =
 	0xFFCFFFFF,
 	0x00000000,
 	0x11010100,
-	0x000D0000 /* 2 bytes, expanded to 4 for alignment */,
+	0x000D000D,
 	0x00000000,
-	0x00000000,
-	0x00000000 /* 2 bytes, expanded to 4 for alignment */
+	0x00000000
 };
-const uint16_t data_80ABBFEC[] =
+const uint16_t object_index[] =
 {
 	0x004A,
 	0x0164,
@@ -55,7 +54,7 @@ const uint16_t data_80ABBFEC[] =
 	0x0000
 };
 
-const uint32_t data_80ABBFF8[] =
+const uint32_t dlist_index[] =
 {
 	DEKUNUTS,
 	HINTNUTS,
@@ -65,38 +64,8 @@ const uint32_t data_80ABBFF8[] =
 	0x00000000
 };
 
-const uint32_t data_80ABC010[] =
-{
-	0x2E2E2F7A,
-	0x5F656E5F,
-	0x6E757473,
-	0x62616C6C,
-	0x2E630000
-};
-const uint32_t data_80ABC024[] =
-{
-	0x2E2E2F7A,
-	0x5F656E5F,
-	0x6E757473,
-	0x62616C6C,
-	0x2E630000
-};
-const uint32_t data_80ABC038[] =
-{
-	0x2E2E2F7A,
-	0x5F656E5F,
-	0x6E757473,
-	0x62616C6C,
-	0x2E630000
-};
-const uint32_t data_80ABC04C[] =
-{
-	0x38C90FDA
-};
-
-
 /*** functions ***/
-void dest(entity_t* en, z64_global_t* gl) /* 0 internal, 1 external, 10 lines */
+void dest(entity_t* en, z64_global_t* gl)
 {
 	asm(
 		".set at        \n"
@@ -106,7 +75,7 @@ void dest(entity_t* en, z64_global_t* gl) /* 0 internal, 1 external, 10 lines */
 	z_collider_cylinder_free(gl, &en->collider);
 }
 
-void set_draw(entity_t* en, z64_global_t* gl) /* 0 internal, 1 external, 30 lines */
+void set_draw(entity_t* en, z64_global_t* gl)
 {
 	asm(
 		".set at        \n"
@@ -119,18 +88,18 @@ void set_draw(entity_t* en, z64_global_t* gl) /* 0 internal, 1 external, 30 line
 		(en->actor).draw_proc = (void*)draw;
 		(en->actor).rot_2.y = 0;
 		en->timer = 30;
-		en->state = (z64_actorfunc_t*)data_80ABBBA8;
+		en->state = (z64_actorfunc_t*)handle_collider;
 		(en->actor).alloc_index = en->object_index;
 		(en->actor).xz_speed = 10.0f;
 	}
 }
 
-void data_80ABBBA8(entity_t* en, z64_global_t* gl) /* 0 internal, 4 external, 124 lines */
+void handle_collider(entity_t* en, z64_global_t* gl)
 {
 	asm(
 		".set at        \n"
 		".set reorder   \n"
-		".Ldata_80ABBBA8: \n"
+		".Lhandle_collider: \n"
 	);
 
 	z64_player_t* Link = zh_get_player(gl);
@@ -175,7 +144,7 @@ void data_80ABBBA8(entity_t* en, z64_global_t* gl) /* 0 internal, 4 external, 12
 		if ((((cldr_flags & 2) != 0) && ((cldr_flags & 0x10) != 0)) && ((cldr_flags & 4) != 0))
 		{
 			(en->collider).base.collider_flags &= 0xE9;
-			(en->collider).base.collider_flags &= 0xe9 | 8;
+			(en->collider).base.collider_flags &= 0xE9 | 8;
 			(en->collider).body.toucher.flags = 2;
 			external_func_800D20CC(&Link->floatA20, reflected_dir, 0);
 			(en->actor).xz_dir = reflected_dir[1] - 0x8000;
@@ -187,6 +156,7 @@ void data_80ABBBA8(entity_t* en, z64_global_t* gl) /* 0 internal, 4 external, 12
 	if (zh_link_is_adult)
 		effect_coords.y = ((en->actor).pos_2.y + 4.0f);
 
+	/* So far, this is the only part of this function that works like it should. */
 	z_effect_spawn_hahen_n(
 		gl
 		, &effect_coords
@@ -201,155 +171,28 @@ void data_80ABBBA8(entity_t* en, z64_global_t* gl) /* 0 internal, 4 external, 12
 	);
 	sound_play_position(gl, &(en->actor).pos_2, 0x14, 0x38C0);
 	z_actor_kill(&en->actor);
-	/*asm(
-		".set noat        \n"
-		".set noreorder   \n"
-		".Ldata_80ABBBA8: \n"
-	);
-	asm(
-		"addiu           $sp,$sp,-88                            \n"
-		"sw              $ra,52($sp)                            \n"
-		"sw              $s0,48($sp)                            \n"
-		"sw              $a1,92($sp)                            \n"
-		"lh              $t7,338($a0)                           \n"
-		"lw              $v1,7236($a1)                          \n"
-		"or              $s0,$a0,$zero                          \n"
-		"addiu           $t8,$t7,-1                             \n"
-		"sh              $t8,338($a0)                           \n"
-		"lh              $t9,338($a0)                           \n"
-		"lui             $at,0xBF80                             \n"
-		"bnel            $t9,$zero,.L000003                     \n"
-		"lh              $t0,24($s0)                            \n"
-		"mtc1            $at,$f4                                \n"
-		"nop                                                    \n"
-		"swc1            $f4,108($a0)                           \n"
-		"lh              $t0,24($s0)                            \n"
-		".L000003:                                              \n"
-		"lhu             $v0,136($s0)                           \n"
-		"addiu           $t1,$t0,10920                          \n"
-		"andi            $t2,$v0,0x8                            \n"
-		"bne             $t2,$zero,.L000004                     \n"
-		"sh              $t1,24($s0)                            \n"
-		"andi            $t3,$v0,0x1                            \n"
-		"bnel            $t3,$zero,.L000005                     \n"
-		"lb              $v0,334($v1)                           \n"
-		"lbu             $t4,356($s0)                           \n"
-		"andi            $t5,$t4,0x2                            \n"
-		"bnel            $t5,$zero,.L000005                     \n"
-		"lb              $v0,334($v1)                           \n"
-		"lbu             $t6,357($s0)                           \n"
-		"andi            $t7,$t6,0x2                            \n"
-		"bnel            $t7,$zero,.L000005                     \n"
-		"lb              $v0,334($v1)                           \n"
-		"lbu             $t8,358($s0)                           \n"
-		"andi            $t9,$t8,0x2                            \n"
-		"beql            $t9,$zero,.L000006                     \n"
-		"lh              $t6,338($s0)                           \n"
-		".L000004:                                              \n"
-		"lb              $v0,334($v1)                           \n"
-		".L000005:                                              \n"
-		"addiu           $at,$zero,1                            \n"
-		"beq             $v0,$at,.L000007                       \n"
-		"addiu           $at,$zero,2                            \n"
-		"bne             $v0,$at,.L000008                       \n"
-		"lui             $t0,0x8016                             \n"
-		"lw              $t0,-6556($t0)                         \n"
-		"bnel            $t0,$zero,.L000009                     \n"
-		"lwc1            $f6,36($s0)                            \n"
-		".L000007:                                              \n"
-		"lbu             $v0,356($s0)                           \n"
-		"andi            $t1,$v0,0x2                            \n"
-		"beq             $t1,$zero,.L000008                     \n"
-		"andi            $t2,$v0,0x10                           \n"
-		"beq             $t2,$zero,.L000008                     \n"
-		"andi            $t3,$v0,0x4                            \n"
-		"beq             $t3,$zero,.L000008                     \n"
-		"andi            $t5,$v0,0xffe9                         \n"
-		"sb              $t5,356($s0)                           \n"
-		"ori             $t6,$t5,0x8                            \n"
-		"addiu           $t7,$zero,2                            \n"
-		"sb              $t6,356($s0)                           \n"
-		"sw              $t7,364($s0)                           \n"
-		"addiu           $a0,$v1,2592                           \n"
-		"addiu           $a1,$sp,76                             \n"
-		"jal             0x800D20CC                 \n"
-		"or              $a2,$zero,$zero                        \n"
-		"lh              $t8,78($sp)                            \n"
-		"ori             $at,$zero,0x8000                       \n"
-		"addiu           $t0,$zero,30                           \n"
-		"addu            $t9,$t8,$at                            \n"
-		"sh              $t9,50($s0)                            \n"
-		"beq             $zero,$zero,.L000010                   \n"
-		"sh              $t0,338($s0)                           \n"
-		".L000008:                                              \n"
-		"lwc1            $f6,36($s0)                            \n"
-		".L000009:                                              \n"
-		"lui             $at,0x4080                             \n"
-		"mtc1            $at,$f10                               \n"
-		"swc1            $f6,64($sp)                            \n"
-		"lwc1            $f8,40($s0)                            \n"
-		"addiu           $t1,$zero,7                            \n"
-		"addiu           $t2,$zero,3                            \n"
-		"add.s           $f16,$f8,$f10                          \n"
-		"addiu           $t3,$zero,15                           \n"
-		"addiu           $t4,$zero,-1                           \n"
-		"addiu           $t5,$zero,10                           \n"
-		"swc1            $f16,68($sp)                           \n"
-		"lwc1            $f18,44($s0)                           \n"
-		"sw              $zero,36($sp)                          \n"
-		"sw              $t5,32($sp)                            \n"
-		"sw              $t4,28($sp)                            \n"
-		"sw              $t3,24($sp)                            \n"
-		"sw              $t2,20($sp)                            \n"
-		"sw              $t1,16($sp)                            \n"
-		"lw              $a0,92($sp)                            \n"
-		"addiu           $a1,$sp,64                             \n"
-		"lui             $a2,0x40C0                             \n"
-		"or              $a3,$zero,$zero                        \n"
-		"jal             0x800297A4                 \n"
-		"swc1            $f18,72($sp)                           \n"
-		"lw              $a0,92($sp)                            \n"
-		"addiu           $a1,$s0,36                             \n"
-		"addiu           $a2,$zero,20                           \n"
-		"jal             0x8006BAD8                 \n"
-		"addiu           $a3,$zero,14528                        \n"
-		"jal             0x8002D570                 \n"
-		"or              $a0,$s0,$zero                          \n"
-		"beq             $zero,$zero,.L000011                   \n"
-		"lw              $ra,52($sp)                            \n"
-		"lh              $t6,338($s0)                           \n"
-		".L000006:                                              \n"
-		"addiu           $at,$zero,-300                         \n"
-		"bnel            $t6,$at,.L000011                       \n"
-		"lw              $ra,52($sp)                            \n"
-		"jal             0x8002D570                 \n"
-		"or              $a0,$s0,$zero                          \n"
-		".L000010:                                              \n"
-		"lw              $ra,52($sp)                            \n"
-		".L000011:                                              \n"
-		"lw              $s0,48($sp)                            \n"
-		"addiu           $sp,$sp,88                             \n"
-		"jr              $ra                                    \n"
-		"nop                                                    \n"
-	);*/
 }
 
-void init(entity_t* en, z64_global_t* gl) /* 0 internal, 5 external, 49 lines */
+void init(entity_t* en, z64_global_t* gl)
 {
 	asm(
 		".set at        \n"
 		".set reorder   \n"
 		".Linit: \n"
 	);
+	/* Instance Debugging */
+	uint32_t* _en = (uint32_t*)0x80600000;
+	*_en = (uint32_t)&(zh_get_player(gl)->state_flags_1) - LINK;
 
+	/* Initialize the shadow rendering process and load the collider structure into memory. */
 	z_actor_shadow_init(&(en->actor).rot_2, 400.0f, &Z_SHADOW_CIRCLE, 13.0f);
 	z_collider_cylinder_alloc(gl, &en->collider);
-	z_collider_cylinder_init(gl, &en->collider, &en->actor, (z64_collider_cylinder_init_t*)data_80ABBFC0);
+	z_collider_cylinder_init(gl, &en->collider, &en->actor, (z64_collider_cylinder_init_t*)collider_init);
 
-	/* Grab the correct Scrub Object Index */
-	en->object_index = z_scene_object_get_index(&gl->obj_ctxt, data_80ABBFEC[(en->actor).variable]);
+	/* Grab the correct deku scrub object from the index list. */
+	en->object_index = z_scene_object_get_index(&gl->obj_ctxt, object_index[(en->actor).variable]);
 
-	/* If the object isn't loaded, kill the actor process. Otherwise, continue. */
+	/* If the object isn't loaded, kill the actor process; otherwise, continue. */
 	if (en->object_index < 0)
 		z_actor_kill(&en->actor);
 	else
@@ -371,9 +214,11 @@ void draw(entity_t* en, z64_global_t* gl) /* 0 internal, 6 external, 68 lines */
 	z_debug_graph_alloc(gfx_debug, gfx, "../z_en_nutsball.c", __LINE__);
 	z_rcp_append_preset(gfx);
 	z_matrixf_top_multiply(gl->unk_player_matrix, 1);
+	/* Rotate the display list on its Z axis. */
 	z_matrix_roll(((en->actor).rot_init.z * 0.000095873795f), 1);
 	gSPMatrix(opa->p++, z_matrix_alloc(gfx, "../z_en_nutsball.c"/*, __LINE__*/), G_MTX_LOAD);
-	gSPDisplayList(opa->p++, data_80ABBFF8[(en->actor).variable]);
+	/* Grab the display list pointer form the index, based on the variable.*/
+	gSPDisplayList(opa->p++, dlist_index[(en->actor).variable]);
 	z_debug_graph_write(gfx_debug, gfx, "../z_en_nutsball.c", __LINE__);
 }
 
@@ -385,8 +230,9 @@ void main(entity_t* en, z64_global_t* gl) /* 0 internal, 6 external, 73 lines */
 		".Lmain: \n"
 	);
 	z64_actorfunc_t* state_func;
+	z64_player_t* Link = zh_get_player(gl);
 
-	if (((int32_t)(gl->actor_list[2].first[5].scale.x) & 0x300000C0) == 0)
+	if (/*(Link->state_flags_1)*/AVAL(Link, uint32_t, 0x067C) & 0x300000C0 == 0) /* Bug: Currently causes the Deku Nut to draw and get frozen in place. */
 		state_func = en->state;
 	else
 	{
