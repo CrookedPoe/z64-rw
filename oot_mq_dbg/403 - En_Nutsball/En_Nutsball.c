@@ -128,6 +128,80 @@ void set_draw(entity_t* en, z64_global_t* gl) /* 0 internal, 1 external, 30 line
 void data_80ABBBA8(entity_t* en, z64_global_t* gl) /* 0 internal, 4 external, 124 lines */
 {
 	asm(
+		".set at        \n"
+		".set reorder   \n"
+		".Ldata_80ABBBA8: \n"
+	);
+
+	z64_player_t* Link = zh_get_player(gl);
+	uint16_t bg_chk = (en->actor).bgcheck_flags;
+	uint8_t cldr_flags = (en->collider).base.collider_flags;
+	int16_t reflected_dir[2];
+	vec3f_t effect_coords;
+
+	en->timer -= 1;
+
+	if (en->timer == 0)
+		(en->actor).gravity = -1.0f;
+	(en->actor).rot_init.z += 0x2AA8;
+
+	if ((bg_chk & 8) == 0)
+	{
+		if ((bg_chk & 1) == 0)
+		{
+			if (((en->collider).base.collider_flags & 2) == 0)
+			{
+				if (((en->collider).base.collide_flags & 2) == 0)
+				{
+					if (((en->collider).base.mask_a & 2) == 0)
+					{
+						if (en->timer != -300)
+							return;
+						z_actor_kill(&en->actor);
+						return;
+					}
+				}
+			}
+		}
+	}
+
+	effect_coords.x = (en->actor).pos_2.x;
+	effect_coords.y = (en->actor).pos_2.y;
+	effect_coords.z = (en->actor).pos_2.z;
+
+	/* Essentially, if not using Mirror Shield, do reflect logic */
+	if (Link->shield_idx == 1 || Link->shield_idx == 2)
+	{
+		if ((((cldr_flags & 2) != 0) && ((cldr_flags & 0x10) != 0)) && ((cldr_flags & 4) != 0))
+		{
+			(en->collider).base.collider_flags &= 0xE9;
+			(en->collider).base.collider_flags &= 0xe9 | 8;
+			(en->collider).body.toucher.flags = 2;
+			external_func_800D20CC(&Link->floatA20, reflected_dir, 0);
+			(en->actor).xz_dir = reflected_dir[1] - 0x8000;
+			en->timer = 30;
+			return;
+		}
+	}
+
+	if (zh_link_is_adult)
+		effect_coords.y = ((en->actor).pos_2.y + 4.0f);
+
+	z_effect_spawn_hahen_n(
+		gl
+		, &effect_coords
+		, 6.0f
+		, 0
+		, 7
+		, 3
+		, 0xF
+		, -1
+		, 10
+		, 0
+	);
+	sound_play_position(gl, &(en->actor).pos_2, 0x14, 0x38C0);
+	z_actor_kill(&en->actor);
+	/*asm(
 		".set noat        \n"
 		".set noreorder   \n"
 		".Ldata_80ABBBA8: \n"
@@ -257,7 +331,7 @@ void data_80ABBBA8(entity_t* en, z64_global_t* gl) /* 0 internal, 4 external, 12
 		"addiu           $sp,$sp,88                             \n"
 		"jr              $ra                                    \n"
 		"nop                                                    \n"
-	);
+	);*/
 }
 
 void init(entity_t* en, z64_global_t* gl) /* 0 internal, 5 external, 49 lines */
