@@ -26,7 +26,7 @@ void set_draw(entity_t* en, z64_global_t* gl);
 void handle_collider(entity_t* en, z64_global_t* gl);
 void init(entity_t* en, z64_global_t* gl);
 void draw(entity_t* en, z64_global_t* gl);
-void main(entity_t* en, z64_global_t* gl);
+void update(entity_t* en, z64_global_t* gl);
 
 
 /*** variables ***/
@@ -222,7 +222,7 @@ void draw(entity_t* en, z64_global_t* gl) /* 0 internal, 6 external, 68 lines */
 	z_debug_graph_write(gfx_debug, gfx, "../z_en_nutsball.c", __LINE__);
 }
 
-void main(entity_t* en, z64_global_t* gl) /* 0 internal, 6 external, 73 lines */
+void update(entity_t* en, z64_global_t* gl) /* 0 internal, 6 external, 73 lines */
 {
 	asm(
 		".set at        \n"
@@ -260,6 +260,6 @@ const z64_actor_init_t init_vars = {
 	.instance_size = sizeof(entity_t),
 	.init = init,
 	.dest = dest,
-	.main = main,
+	.main = update,
 	.draw = NULL
 };
