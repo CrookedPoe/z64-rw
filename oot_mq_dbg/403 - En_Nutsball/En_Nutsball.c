@@ -3,11 +3,17 @@
 
 #define OBJ_ID 1
 
-#define DEKUNUTS 0x06002028 /* En_Dekunuts; Mad Scrub */
-#define HINTNUTS 0x060012F0 /* En_Hintnuts; Tutorial Scrub (Deku Tree) */
-#define SHOPNUTS 0x06004008 /* En_Shopnuts; Business Scrub */
-#define DNS_NUTS 0x06002410 /* Mask Theatre Judge */
-#define DNK_NUTS 0x06001890 /* Mask Theatre Audience */
+#define DL_DEKUNUTS 0x06002028 /* En_Dekunuts; Mad Scrub */
+#define DL_HINTNUTS 0x060012F0 /* En_Hintnuts; Tutorial Scrub (Deku Tree) */
+#define DL_SHOPNUTS 0x06004008 /* En_Shopnuts; Business Scrub */
+#define DL_DNS_NUTS 0x06002410 /* Mask Theatre Judge */
+#define DL_DNK_NUTS 0x06001890 /* Mask Theatre Audience */
+
+#define OBJ_DEKUNUTS 0x004A
+#define OBJ_HINTNUTS 0x0164
+#define OBJ_SHOPNUTS 0x0168
+#define OBJ_DNS_NUTS 0x0171
+#define OBJ_DNK_NUTS 0x0172
 
 typedef struct {
 	z64_actor_t actor;
@@ -46,22 +52,22 @@ const uint32_t collider_init[] =
 };
 const uint16_t object_index[] =
 {
-	0x004A,
-	0x0164,
-	0x0168,
-	0x0171,
-	0x0172,
-	0x0000
+	OBJ_DEKUNUTS,
+	OBJ_HINTNUTS,
+	OBJ_SHOPNUTS,
+	OBJ_DNS_NUTS,
+	OBJ_DNK_NUTS,
+	0
 };
 
 const uint32_t dlist_index[] =
 {
-	DEKUNUTS,
-	HINTNUTS,
-	SHOPNUTS,
-	DNS_NUTS,
-	DNK_NUTS,
-	0x00000000
+	DL_DEKUNUTS,
+	DL_HINTNUTS,
+	DL_SHOPNUTS,
+	DL_DNS_NUTS,
+	DL_DNK_NUTS,
+	0
 };
 
 /*** functions ***/
