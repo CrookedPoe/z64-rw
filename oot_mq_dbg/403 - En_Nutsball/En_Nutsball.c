@@ -28,7 +28,7 @@ typedef struct {
 
 #define OK_80ABBB0C 1
 #define OK_80ABBB34 1
-#define OK_80ABBBA8 0
+#define OK_80ABBBA8 1
 #define OK_80ABBA50 1
 #define OK_80ABBE90 1
 #define OK_80ABBD74 1
@@ -156,6 +156,50 @@ void data_80ABBBA8(entity_t* en, z64_global_t* gl) /* 0 internal, 4 external, 12
 		".set reorder   \n"
 		".Ldata_80ABBBA8: \n"
 	);
+	z64_player_t* Link = zh_get_player(gl);
+	vec3f_t fx_pos;
+	int16_t _dir[2];
+
+	if (en->timer != 0) { goto L000003; }
+	(en->actor).gravity = -1.0f;
+L000003:
+	(en->actor).rot_init.z += 0x2AA8;
+	if (((en->actor).bgcheck_flags & 8) != 0) { goto L000004; }
+	if (((en->actor).bgcheck_flags & 1) != 0) { /*v0 = Link->shield_idx;*/ goto L000005; }
+	if (((en->collider).base.collider_flags & 2) != 0) { /*v0 = Link->shield_idx;*/ goto L000005; }
+	if (((en->collider).base.collide_flags & 2) != 0) { /*v0 = Link->shield_idx;*/ goto L000005; }
+	if (((en->collider).base.collide_flags & 2) == 0) { /*t6 = en->timer;*/ goto L000006; }
+L000004:
+L000005:
+	if (Link->shield_idx == 1) { goto L000007; }
+	if (Link->shield_idx != 2) { goto L000008; }
+	if (zh_link_is_child()) { /*f6 = (en->actor).pos_2.x;*/ goto L000009; }
+L000007:
+	if (((en->collider).base.collider_flags & 2) == 0) { goto L000008; }
+	if (((en->collider).base.collider_flags & 0x10) == 0) { goto L000008; }
+	if (((en->collider).base.collider_flags & 0x4) == 0) { goto L000008; }
+	(en->collider).base.collider_flags &= 0xFFE9;
+	(en->collider).base.collider_flags |= 8;
+	(en->collider).body.toucher.flags = 2;
+	external_func_800D20CC(&Link->floatA20, _dir, 0);
+	(en->actor).xz_dir = _dir[1] + 0x8000;
+	goto L000010;
+L000008:
+L000009:
+	fx_pos.x = (en->actor).pos_2.x;
+	fx_pos.y = (en->actor).pos_2.y + 4.0f;
+	fx_pos.z = (en->actor).pos_2.z;
+
+	z_effect_spawn_hahen_n(gl, &fx_pos, 6.0f, 0, 7, 3, 15, -1, 10, 0);
+	sound_play_position(gl, &(en->actor).pos_2, 0x14, 0x38C0);
+	z_actor_kill(&en->actor);
+L000006:
+	if (en->timer != -300)
+		goto L000011;
+	z_actor_kill(&en->actor);
+L000010:
+L000011:
+	return;
 }
 #else
 #include "asm/data_80ABBBA8.c"
