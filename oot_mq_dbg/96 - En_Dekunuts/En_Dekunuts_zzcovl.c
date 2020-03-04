@@ -1890,4 +1890,3 @@ const z64_actor_init_t init_vars = {
 	.main = data_809EA82C,
 	.draw = data_809EAAC4
 };
-

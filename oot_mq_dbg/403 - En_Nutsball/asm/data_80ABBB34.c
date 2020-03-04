@@ -1,0 +1,40 @@
+void data_80ABBB34(entity_t* en, z64_global_t* gl) /* 0 internal, 1 external, 30 lines */
+{
+	asm(
+		".set noat        \n"
+		".set noreorder   \n"
+		".Ldata_80ABBB34: \n"
+	);
+	asm(
+		"lui             $at,0x0001                             \n"
+		"addiu           $sp,$sp,-24                            \n"
+		"or              $a2,$a0,$zero                          \n"
+		"ori             $at,$at,0x17a4                         \n"
+		"sw              $ra,20($sp)                            \n"
+		"addu            $a0,$a1,$at                            \n"
+		"lb              $a1,336($a2)                           \n"
+		"jal             0x80098188                 \n"
+		"sw              $a2,24($sp)                            \n"
+		"beq             $v0,$zero,.L000002                     \n"
+		"lw              $a2,24($sp)                            \n"
+		"lui             $at,0x4120                             \n"
+		"lb              $t6,336($a2)                           \n"
+		"mtc1            $at,$f4                                \n"
+		"lui             $t7,%hi(data_80ABBE90)                 \n"
+		"lui             $t9,%hi(data_80ABBBA8)                 \n"
+		"addiu           $t7,$t7,%lo(data_80ABBE90)             \n"
+		"addiu           $t8,$zero,30                           \n"
+		"addiu           $t9,$t9,%lo(data_80ABBBA8)             \n"
+		"sw              $t7,308($a2)                           \n"
+		"sh              $zero,182($a2)                         \n"
+		"sh              $t8,338($a2)                           \n"
+		"sw              $t9,332($a2)                           \n"
+		"sb              $t6,30($a2)                            \n"
+		"swc1            $f4,104($a2)                           \n"
+		".L000002:                                              \n"
+		"lw              $ra,20($sp)                            \n"
+		"addiu           $sp,$sp,24                             \n"
+		"jr              $ra                                    \n"
+		"nop                                                    \n"
+	);
+}

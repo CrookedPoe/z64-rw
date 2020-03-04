@@ -258,6 +258,7 @@ static void func_809E9B48(entity_t* en)
 	z_actor_play_sfx2(&en->actor, SOUND_KILLED);
 }
 
+#ifdef 809E98B4_OK
 static void func_809E98B4(entity_t *en) /* 0 internal, 2 external, 27 lines */
 {
 	z_skelanime_change_anim_trate(&en->skelanime, ANIM_JUMP, -3.0f);
@@ -267,6 +268,9 @@ static void func_809E98B4(entity_t *en) /* 0 internal, 2 external, 27 lines */
 	en->state = (z64_actorfunc_t*)data_809EA1D8;
 	(en->collider).base.collide_flags &= 0xFE;
 }
+#else
+#include "/asm/func_809E98B4.c"
+#endif
 
 /* Main Draw Function */
 static void draw(entity_t* en, z64_global_t* gl)
