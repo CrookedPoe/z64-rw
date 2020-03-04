@@ -1,13 +1,20 @@
 #include <z64ovl/oot/debug.h>
 #include <z64ovl/oot/helpers.h>
+#include <z64ovl/oot/sfx.h>
 
 #define OBJ_ID 1
 
-#define DEKUNUTS 0x06002028 /* En_Dekunuts; Mad Scrub */
-#define HINTNUTS 0x060012F0 /* En_Hintnuts; Tutorial Scrub (Deku Tree) */
-#define SHOPNUTS 0x06004008 /* En_Shopnuts; Business Scrub */
-#define DNS_NUTS 0x06002410 /* Mask Theatre Judge */
-#define DNK_NUTS 0x06001890 /* Mask Theatre Audience */
+#define DL_DEKUNUTS 0x06002028 /* En_Dekunuts; Mad Scrub */
+#define DL_HINTNUTS 0x060012F0 /* En_Hintnuts; Tutorial Scrub (Deku Tree) */
+#define DL_SHOPNUTS 0x06004008 /* En_Shopnuts; Business Scrub */
+#define DL_DNS_NUTS 0x06002410 /* Mask Theatre Judge */
+#define DL_DNK_NUTS 0x06001890 /* Mask Theatre Audience */
+
+#define OBJ_DEKUNUTS 0x004A
+#define OBJ_HINTNUTS 0x0164
+#define OBJ_SHOPNUTS 0x0168
+#define OBJ_DNS_NUTS 0x0171
+#define OBJ_DNK_NUTS 0x0172
 
 typedef struct {
 	z64_actor_t actor;
@@ -46,22 +53,22 @@ const uint32_t collider_init[] =
 };
 const uint16_t object_index[] =
 {
-	0x004A,
-	0x0164,
-	0x0168,
-	0x0171,
-	0x0172,
-	0x0000
+	OBJ_DEKUNUTS,
+	OBJ_HINTNUTS,
+	OBJ_SHOPNUTS,
+	OBJ_DNS_NUTS,
+	OBJ_DNK_NUTS,
+	0
 };
 
 const uint32_t dlist_index[] =
 {
-	DEKUNUTS,
-	HINTNUTS,
-	SHOPNUTS,
-	DNS_NUTS,
-	DNK_NUTS,
-	0x00000000
+	DL_DEKUNUTS,
+	DL_HINTNUTS,
+	DL_SHOPNUTS,
+	DL_DNS_NUTS,
+	DL_DNK_NUTS,
+	0
 };
 
 /*** functions ***/
@@ -103,10 +110,7 @@ void handle_collider(entity_t* en, z64_global_t* gl)
 	);
 
 	z64_player_t* Link = zh_get_player(gl);
-	uint16_t bg_chk = (en->actor).bgcheck_flags;
-	uint8_t cldr_flags = (en->collider).base.collider_flags;
 	int16_t reflected_dir[2];
-	vec3f_t effect_coords;
 
 	en->timer -= 1;
 
@@ -114,63 +118,51 @@ void handle_collider(entity_t* en, z64_global_t* gl)
 		(en->actor).gravity = -1.0f;
 	(en->actor).rot_init.z += 0x2AA8;
 
-	if ((bg_chk & 8) == 0)
+	if (!((en->actor).bgcheck_flags & 8) && !((en->actor).bgcheck_flags & 1))
 	{
-		if ((bg_chk & 1) == 0)
+		if (!((en->collider).base.collider_flags & 2) && !(((en->collider).base.collide_flags) & 2))
 		{
-			if (((en->collider).base.collider_flags & 2) == 0)
+			if ((en->collider).base.mask_a)
 			{
-				if (((en->collider).base.collide_flags & 2) == 0)
+				if (Link->shield_idx == 2 && zh_link_is_child)
+					goto destroy;
+				else if (Link->shield_idx == 1 || Link->shield_idx == 2)
 				{
-					if (((en->collider).base.mask_a & 2) == 0)
+					if (((en->collider).base.collider_flags & 2) && ((en->collider).base.collider_flags & 0x10) && ((en->collider).base.collider_flags & 4))
 					{
-						if (en->timer != -300)
-							return;
-						z_actor_kill(&en->actor);
+						(en->collider).base.collider_flags &= 0xFFE9;
+						(en->collider).base.collider_flags |= 8;
+						(en->collider).body.toucher.flags = 2;
+						external_func_800D20CC(&Link->floatA20, reflected_dir, 0);
+						(en->actor).rot_2.x += 0x8000;
+						en->timer = 30;
 						return;
 					}
 				}
+
+				destroy:
+				z_effect_spawn_hahen_n(
+					gl
+					, &(en->actor).pos_2
+					, 6.0f /* y speed */
+					, 0
+					, 7 /* srand offset */
+					, 3 /* srand range */
+					, 15 /* Particles */
+					, -1
+					, 10
+					, 0
+				);
+				sound_play_position(gl, &(en->actor).pos_2, 0x14, NA_SE_EN_OCTAROCK_ROCK);
+				z_actor_kill(&en->actor);
+			}
+			else
+			{
+				if (en->timer == -300)
+					z_actor_kill(&en->actor);
 			}
 		}
 	}
-
-	effect_coords.x = (en->actor).pos_2.x;
-	effect_coords.y = (en->actor).pos_2.y;
-	effect_coords.z = (en->actor).pos_2.z;
-
-	/* Essentially, if not using Mirror Shield, do reflect logic */
-	if (Link->shield_idx == 1 || Link->shield_idx == 2)
-	{
-		if ((((cldr_flags & 2) != 0) && ((cldr_flags & 0x10) != 0)) && ((cldr_flags & 4) != 0))
-		{
-			(en->collider).base.collider_flags &= 0xE9;
-			(en->collider).base.collider_flags &= 0xE9 | 8;
-			(en->collider).body.toucher.flags = 2;
-			external_func_800D20CC(&Link->floatA20, reflected_dir, 0);
-			(en->actor).xz_dir = reflected_dir[1] - 0x8000;
-			en->timer = 30;
-			return;
-		}
-	}
-
-	if (zh_link_is_adult)
-		effect_coords.y = ((en->actor).pos_2.y + 4.0f);
-
-	/* So far, this is the only part of this function that works like it should. */
-	z_effect_spawn_hahen_n(
-		gl
-		, &effect_coords
-		, 6.0f
-		, 0
-		, 7
-		, 3
-		, 0xF
-		, -1
-		, 10
-		, 0
-	);
-	sound_play_position(gl, &(en->actor).pos_2, 0x14, 0x38C0);
-	z_actor_kill(&en->actor);
 }
 
 void init(entity_t* en, z64_global_t* gl)
@@ -227,20 +219,17 @@ void update(entity_t* en, z64_global_t* gl) /* 0 internal, 6 external, 73 lines 
 	asm(
 		".set at        \n"
 		".set reorder   \n"
-		".Lmain: \n"
+		".Lupdate: \n"
 	);
-	z64_actorfunc_t* state_func;
+
+	z64_actorfunc_t* state_func = en->state;
 	z64_player_t* Link = zh_get_player(gl);
 
-	if (/*(Link->state_flags_1)*/AVAL(Link, uint32_t, 0x067C) & 0x300000C0 == 0) /* Bug: Currently causes the Deku Nut to draw and get frozen in place. */
-		state_func = en->state;
-	else
-	{
-		if (en->state != (z64_actorfunc_t*)set_draw)
+	if ((Link->state_flags_1 & 0x300000C0) != 0 && state_func != (z64_actorfunc_t*)set_draw)
 			return;
-		state_func = en->state;
-	}
-	state_func(en, gl);
+
+	if (state_func)
+		state_func(en, gl);
 
 	z_actor_move_dir_vel(&en->actor);
 	z_actor_find_bounds(gl, &en->actor, 10.0f, /* collider_init.radius*/0x0D, /* collider_init.height*/0x0D, 5);
