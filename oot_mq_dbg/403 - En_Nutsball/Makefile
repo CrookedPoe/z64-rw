@@ -34,3 +34,9 @@ copy:
 
 build:
 	start "C:/Z64/tools/zzrtl.exe" --nowaiting "C:/Z64/mg_dbg_zzrtl/oot_build.rtl"
+
+routine:
+	make clean
+	make
+	make copy
+	make build
