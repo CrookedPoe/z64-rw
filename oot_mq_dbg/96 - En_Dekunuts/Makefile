@@ -24,3 +24,12 @@ clean:
 
 copy:
 	cp $(PROGRAM).zovl "C:/Z64/mg_dbg_zzrtl/actor/130 - En_Vase/actor.zovl"
+
+build:
+	start "C:/Z64/tools/zzrtl.exe" --nowaiting "C:/Z64/mg_dbg_zzrtl/oot_build.rtl"
+
+routine:
+	make clean
+	make
+	make copy
+	make build

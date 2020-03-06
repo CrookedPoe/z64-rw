@@ -139,7 +139,7 @@ LAB_deflect:
       en->collider.base.collider_flags &= 0xFFE9;
       en->collider.base.collider_flags |= 8;
       en->collider.body.toucher.flags = 2;
-      external_func_800D20CC(&Link->shield_mf, &_dir, 0);
+      z_vec3s_from_mtxf(&Link->shield_mf, &_dir, 0);
       en->actor.xz_dir = _dir.y + 0x8000;
       return;
   }

@@ -258,7 +258,6 @@ static void func_809E9B48(entity_t* en)
 	z_actor_play_sfx2(&en->actor, SOUND_KILLED);
 }
 
-#ifdef 809E98B4_OK
 static void func_809E98B4(entity_t *en) /* 0 internal, 2 external, 27 lines */
 {
 	z_skelanime_change_anim_trate(&en->skelanime, ANIM_JUMP, -3.0f);
@@ -268,9 +267,6 @@ static void func_809E98B4(entity_t *en) /* 0 internal, 2 external, 27 lines */
 	en->state = (z64_actorfunc_t*)data_809EA1D8;
 	(en->collider).base.collide_flags &= 0xFE;
 }
-#else
-#include "/asm/func_809E98B4.c"
-#endif
 
 /* Main Draw Function */
 static void draw(entity_t* en, z64_global_t* gl)
@@ -422,8 +418,12 @@ static void init(entity_t* en, z64_global_t* gl)
 {
 
 	/* Instance Debugging; Temporary */
-	//uint32_t* _en = (uint32_t*)0x80600000;
-	//*_en = (uint32_t)en;
+	/*float* _en = (float*)0x80600000;
+	_en[0] = external_func_800FD0C4(-2.0f);
+	_en[1] = external_func_800FD0C4(-1.0f);
+	_en[2] = external_func_800FD0C4(0.0f);
+	_en[3] = external_func_800FD0C4(1.0f);
+	_en[4] = external_func_800FD0C4(2.0f);*/
 
 	z64_actor_t* flower_pad;
 
