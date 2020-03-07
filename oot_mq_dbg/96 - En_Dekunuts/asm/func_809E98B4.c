@@ -1,4 +1,4 @@
-void func_809E98B4(void)
+void func_809E98B4(entity_t* en) /* 0 internal, 2 external, 27 lines */
 {
 	asm(
 		".set noat        \n"
