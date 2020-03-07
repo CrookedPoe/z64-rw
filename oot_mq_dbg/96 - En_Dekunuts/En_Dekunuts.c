@@ -21,62 +21,34 @@ typedef struct {
 
 
 /*** function prototypes ***/
-#define OK_809E96C8 1
-void data_809E96C8(entity_t* en, z64_global_t* gl); /* 0 internal, 1 external, 14 lines */
-#define OK_809E9770 1
-void func_809E9770(entity_t* en); /* 0 internal, 1 external, 18 lines */
-#define OK_809E97B8 1
-void func_809E97B8(entity_t* en); /* 0 internal, 1 external, 18 lines */
-#define OK_809E9920 1
-void func_809E9920(entity_t* en); /* 0 internal, 1 external, 22 lines */
-#define OK_809E9978 1
-void func_809E9978(entity_t* en); /* 0 internal, 1 external, 25 lines */
-#define OK_809E9800 1
-void func_809E9800(entity_t* en); /* 0 internal, 1 external, 28 lines */
-#define OK_809EA98C 1
-int32_t data_809EA98C(z64_global_t* gl, int32_t limb, uint32_t* dlist, vec3f_t* translation, vec3s_t* rotation, void* _en); /* 0 internal, 1 external, 84 lines */
-#define OK_809E9868 1
-void func_809E9868(entity_t* en); /* 0 internal, 2 external, 19 lines */
-#define OK_809E9B48 1
-void func_809E9B48(entity_t* en); /* 0 internal, 2 external, 20 lines */
-#define OK_809E98B4 1
-void func_809E98B4(entity_t* en); /* 0 internal, 2 external, 27 lines */
-#define OK_809EAAC4 1
-void data_809EAAC4(entity_t* en, z64_global_t* gl); /* 0 internal, 2 external, 29 lines */
-#define OK_809E96FC 1
-void func_809E96FC(entity_t* en); /* 0 internal, 3 external, 29 lines */
-#define OK_809E9AB4 1
-void func_809E9AB4(entity_t* en); /* 0 internal, 4 external, 37 lines */
-#define OK_809E99D8 1
-void func_809E99D8(entity_t* en); /* 0 internal, 5 external, 57 lines */
-#define OK_809EA5B0 1
-void data_809EA5B0(entity_t* en, z64_global_t* gl); /* 0 internal, 6 external, 89 lines */
-#define OK_809EA4E8 1
-void data_809EA4E8(entity_t* en); /* 1 internal, 2 external, 20 lines */
-#define OK_809EA1D8 1
-void data_809EA1D8(entity_t* en); /* 1 internal, 2 external, 27 lines */
-#define OK_809EA480 1
-void data_809EA480(entity_t* en); /* 1 internal, 2 external, 28 lines */
-#define OK_809E9DFC 1
-void data_809E9DFC(entity_t* en); /* 1 internal, 2 external, 36 lines */
-#define OK_809E9560 1
-void data_809E9560(entity_t* en, z64_global_t* gl); /* 1 internal, 7 external, 94 lines */
-#define OK_809EA0C4 1
-void data_809EA0C4(entity_t* en); /* 1 internal, 3 external, 75 lines */
-#define OK_809E9F6C 1
-void data_809E9F6C(entity_t* en, z64_global_t* gl); /* 1 internal, 8 external, 90 lines */
-#define OK_809EA534 1
-void data_809EA534(entity_t* en); /* 1 internal, 3 external, 35 lines */
-#define OK_809E9E80 1
-void data_809E9E80(entity_t* en); /* 2 internal, 3 external, 65 lines */
-#define OK_809EA82C 1
-void data_809EA82C(entity_t* en, z64_global_t* gl); /* 1 internal, 7 external, 93 lines */
-#define OK_809EA240 1
-void data_809EA240(entity_t* en); /* 2 internal, 7 external, 158 lines */
-#define OK_809E9B98 1
-void data_809E9B98(entity_t* en); /* 3 internal, 3 external, 169 lines */
-#define OK_809EA70C 1
-void func_809EA70C(entity_t* en, z64_global_t* gl); /* 3 internal, 4 external, 79 lines */
+static void data_809E96C8(entity_t* en, z64_global_t* gl); /* 0 internal, 1 external, 14 lines */
+static void func_809E9770(entity_t* en); /* 0 internal, 1 external, 18 lines */
+static void func_809E97B8(entity_t* en); /* 0 internal, 1 external, 18 lines */
+static void func_809E9920(entity_t* en); /* 0 internal, 1 external, 22 lines */
+static void func_809E9978(entity_t* en); /* 0 internal, 1 external, 25 lines */
+static void func_809E9800(entity_t* en); /* 0 internal, 1 external, 28 lines */
+static int32_t data_809EA98C(z64_global_t* gl, int32_t limb, uint32_t* dlist, vec3f_t* translation, vec3s_t* rotation, void* _en); /* 0 internal, 1 external, 84 lines */
+static void func_809E9868(entity_t* en); /* 0 internal, 2 external, 19 lines */
+static void func_809E9B48(entity_t* en); /* 0 internal, 2 external, 20 lines */
+static void func_809E98B4(entity_t* en); /* 0 internal, 2 external, 27 lines */
+static void data_809EAAC4(entity_t* en, z64_global_t* gl); /* 0 internal, 2 external, 29 lines */
+static void func_809E96FC(entity_t* en); /* 0 internal, 3 external, 29 lines */
+static void func_809E9AB4(entity_t* en); /* 0 internal, 4 external, 37 lines */
+static void func_809E99D8(entity_t* en); /* 0 internal, 5 external, 57 lines */
+static void data_809EA5B0(entity_t* en, z64_global_t* gl); /* 0 internal, 6 external, 89 lines */
+static void data_809EA4E8(entity_t* en); /* 1 internal, 2 external, 20 lines */
+static void data_809EA1D8(entity_t* en); /* 1 internal, 2 external, 27 lines */
+static void data_809EA480(entity_t* en); /* 1 internal, 2 external, 28 lines */
+static void data_809E9DFC(entity_t* en); /* 1 internal, 2 external, 36 lines */
+static void data_809E9560(entity_t* en, z64_global_t* gl); /* 1 internal, 7 external, 94 lines */
+static void data_809EA0C4(entity_t* en); /* 1 internal, 3 external, 75 lines */
+static void data_809E9F6C(entity_t* en, z64_global_t* gl); /* 1 internal, 8 external, 90 lines */
+static void data_809EA534(entity_t* en); /* 1 internal, 3 external, 35 lines */
+static void data_809E9E80(entity_t* en); /* 2 internal, 3 external, 65 lines */
+static void data_809EA82C(entity_t* en, z64_global_t* gl); /* 1 internal, 7 external, 93 lines */
+static void data_809EA240(entity_t* en); /* 2 internal, 7 external, 158 lines */
+static void data_809E9B98(entity_t* en); /* 3 internal, 3 external, 169 lines */
+static void func_809EA70C(entity_t* en, z64_global_t* gl); /* 3 internal, 4 external, 79 lines */
 
 
 /*** variables ***/
@@ -177,84 +149,37 @@ const uint32_t data_809EABA4[] =
 
 
 /*** functions ***/
-#if OK_809E96C8
-void data_809E96C8(entity_t* en, z64_global_t* gl)
+static void data_809E96C8(entity_t* en, z64_global_t* gl)
 {
-	asm(
-		".set at        \n"
-		".set reorder   \n"
-		".Ldata_809E96C8: \n"
-	);
-
 	if ((en->actor).variable != VAR_FLOWER)
 		z_collider_cylinder_free(gl, &en->collider);
 }
-#else
-#include "asm/data_809E96C8.c"
-#endif
 
-#if OK_809E9770
-void func_809E9770(entity_t* en)
+static void func_809E9770(entity_t* en)
 {
-	asm(
-		".set at        \n"
-		".set reorder   \n"
-		".Lfunc_809E9770: \n"
-	);
-
 	z_skelanime_anim_set(&en->skelanime, ANIM_LOOK_AROUND);
 	en->inst0196 = 2;
 	en->state = (z64_actorfunc_t*)data_809E9DFC;
 }
-#else
-#include "asm/func_809E9770.c"
-#endif
 
-#if OK_809E97B8
-void func_809E97B8(entity_t* en)
+static void func_809E97B8(entity_t* en)
 {
-	asm(
-		".set at        \n"
-		".set reorder   \n"
-		".Lfunc_809E97B8: \n"
-	);
-
 	z_skelanime_change_anim_inst(&en->skelanime, ANIM_SHOOT_DEKU_NUT, en);
 	en->state = (z64_actorfunc_t*)data_809E9F6C;
 	en->inst0196 = en->inst019A;
 }
-#else
-#include "asm/func_809E97B8.c"
-#endif
 
-#if OK_809E9920
-void func_809E9920(entity_t* en)
+static void func_809E9920(entity_t* en)
 {
-	asm(
-		".set at        \n"
-		".set reorder   \n"
-		".Lfunc_809E9920: \n"
-	);
-
 	z_skelanime_anim_set(&en->skelanime, ANIM_FLAIL);
 	en->inst0196 = 2;
 	en->inst0194 = 0;
 	(en->collider).base.collide_flags |= 1;
 	en->state = (z64_actorfunc_t*)data_809EA240;
 }
-#else
-#include "asm/func_809E9920.c"
-#endif
 
-#if OK_809E9978
-void func_809E9978(entity_t* en)
+static void func_809E9978(entity_t* en)
 {
-	asm(
-		".set at        \n"
-		".set reorder   \n"
-		".Lfunc_809E9978: \n"
-	);
-
 	z_skelanime_anim_set(&en->skelanime, ANIM_FLINCHING);
 	en->inst0196 = 3;
 	(en->actor).xz_speed = 0.0f;
@@ -262,19 +187,9 @@ void func_809E9978(entity_t* en)
 		en->inst0195--;
 	en->state = (z64_actorfunc_t*)data_809EA480;
 }
-#else
-#include "asm/func_809E9978.c"
-#endif
 
-#if OK_809E9800
-void func_809E9800(entity_t* en)
+static void func_809E9800(entity_t* en)
 {
-	asm(
-		".set at        \n"
-		".set reorder   \n"
-		".Lfunc_809E9800: \n"
-	);
-
 	z_skelanime_change_frame_count(&en->skelanime, ANIM_IDLE, -3.0f);
 	if (en->state == (z64_actorfunc_t*)data_809E9F6C)
 		en->inst0196 = 0x1002;
@@ -282,19 +197,9 @@ void func_809E9800(entity_t* en)
 		en->inst0196 = 1;
 	en->state = (z64_actorfunc_t*)data_809E9E80;
 }
-#else
-#include "asm/func_809E9800.c"
-#endif
 
-#if OK_809EA98C
-int32_t data_809EA98C(z64_global_t* gl, int32_t limb, uint32_t* dlist, vec3f_t* translation, vec3s_t* rotation, void* _en)
+static int32_t data_809EA98C(z64_global_t* gl, int32_t limb, uint32_t* dlist, vec3f_t* translation, vec3s_t* rotation, void* _en)
 {
-	asm(
-		".set at        \n"
-		".set reorder   \n"
-		".Ldata_809EA98C: \n"
-	);
-
 	entity_t* en = _en;
 	float frame_now;
 	float x;
@@ -329,54 +234,24 @@ int32_t data_809EA98C(z64_global_t* gl, int32_t limb, uint32_t* dlist, vec3f_t* 
 	}
 	return 0;
 }
-#else
-#include "asm/data_809EA98C.c"
-#endif
 
-#if OK_809E9868
-void func_809E9868(entity_t* en)
+static void func_809E9868(entity_t* en)
 {
-	asm(
-		".set at        \n"
-		".set reorder   \n"
-		".Lfunc_809E9868: \n"
-	);
-
 	z_skelanime_change_anim_trate(&en->skelanime, ANIM_BURROW, -5.0f);
 	z_actor_play_sfx2(&en->actor, SOUND_BURROW);
 	en->state = (z64_actorfunc_t*)data_809EA0C4;
 }
-#else
-#include "asm/func_809E9868.c"
-#endif
 
-#if OK_809E9B48
-void func_809E9B48(entity_t* en)
+static void func_809E9B48(entity_t* en)
 {
-	asm(
-		".set at        \n"
-		".set reorder   \n"
-		".Lfunc_809E9B48: \n"
-	);
-
 	z_skelanime_change_anim_inst(&en->skelanime, ANIM_DEAD_FALL, en);
 	en->state = (z64_actorfunc_t*)data_809EA5B0;
 	(en->actor).xz_speed = 0.0f;
 	z_actor_play_sfx2(&en->actor, SOUND_KILLED);
 }
-#else
-#include "asm/func_809E9B48.c"
-#endif
 
-#if OK_809E98B4
-void func_809E98B4(entity_t* en)
+static void func_809E98B4(entity_t* en)
 {
-	asm(
-		".set at        \n"
-		".set reorder   \n"
-		".Lfunc_809E98B4: \n"
-	);
-
 	z_skelanime_change_anim_trate(&en->skelanime, ANIM_JUMP, -3.0f);
 	(en->collider).height = 0x25;
 	(en->actor).mass = 0x32;
@@ -384,19 +259,9 @@ void func_809E98B4(entity_t* en)
 	en->state = (z64_actorfunc_t*)data_809EA1D8;
 	(en->collider).base.collide_flags &= 0xFE;
 }
-#else
-#include "asm/func_809E98B4.c"
-#endif
 
-#if OK_809EAAC4
-void data_809EAAC4(entity_t* en, z64_global_t* gl)
+static void data_809EAAC4(entity_t* en, z64_global_t* gl)
 {
-	asm(
-		".set at        \n"
-		".set reorder   \n"
-		".Ldata_809EAAC4: \n"
-	);
-
 	if ((en->actor).variable == VAR_FLOWER)
 		z_cheap_proc_draw_opa(gl, DL_FLOWER);
 	else
@@ -404,19 +269,9 @@ void data_809EAAC4(entity_t* en, z64_global_t* gl)
 		z_skelanime_draw(gl, 0, en, &en->skelanime, &data_809EA98C, 0);
 	}
 }
-#else
-#include "asm/data_809EAAC4.c"
-#endif
 
-#if OK_809E96FC
-void func_809E96FC(entity_t* en)
+static void func_809E96FC(entity_t* en)
 {
-	asm(
-		".set at        \n"
-		".set reorder   \n"
-		".Lfunc_809E96FC: \n"
-	);
-
 	z_skelanime_change_anim_bframe(&en->skelanime, ANIM_RISE, 0);
 	en->inst0196 = z_lib_math_rand_s16_offset(100, 50);
 	(en->collider).height = 5;
@@ -424,19 +279,9 @@ void func_809E96FC(entity_t* en)
 	(en->collider).base.collide_flags &= 0xFE;
 	en->state = (z64_actorfunc_t*)data_809E9B98;
 }
-#else
-#include "asm/func_809E96FC.c"
-#endif
 
-#if OK_809E9AB4
-void func_809E9AB4(entity_t* en)
+static void func_809E9AB4(entity_t* en)
 {
-	asm(
-		".set at        \n"
-		".set reorder   \n"
-		".Lfunc_809E9AB4: \n"
-	);
-
 	z_skelanime_change_frame_count(&en->skelanime, ANIM_STUN_SPIN, -3.0);
 	en->inst0196 = 5; /* Stun Timer, Animation is played this many times. */
 	en->state = (z64_actorfunc_t*)data_809EA534;
@@ -444,19 +289,9 @@ void func_809E9AB4(entity_t* en)
 	z_actor_play_sfx2(&en->actor, SOUND_STUN);
 	z_actor_damage_color(&en->actor, 0, 0xFF, 0, (z_skelanime_anim_nframes(ANIM_STUN_SPIN) * en->inst0196));
 }
-#else
-#include "asm/func_809E9AB4.c"
-#endif
 
-#if OK_809E99D8
-void func_809E99D8(entity_t* en)
+static void func_809E99D8(entity_t* en)
 {
-	asm(
-		".set at        \n"
-		".set reorder   \n"
-		".Lfunc_809E99D8: \n"
-	);
-
 	int16_t yaw;
 
 	z_skelanime_change_anim_trate(&en->skelanime, ANIM_STUN_SPIN, -3.0f);
@@ -476,19 +311,9 @@ void func_809E99D8(entity_t* en)
 	z_actor_play_sfx2(&en->actor, SOUND_SLASHED);
 	z_actor_damage_color(&en->actor, 0x4000, 0xFF, 0, z_skelanime_anim_nframes(ANIM_STUN_SPIN));
 }
-#else
-#include "asm/func_809E99D8.c"
-#endif
 
-#if OK_809EA5B0
-void data_809EA5B0(entity_t* en, z64_global_t* gl)
+static void data_809EA5B0(entity_t* en, z64_global_t* gl)
 {
-	asm(
-		".set at        \n"
-		".set reorder   \n"
-		".Ldata_809EA5B0: \n"
-	);
-
 	z64_actor_t *attach = (en->actor).attached_b;
 	vec3f_t effect_coordinates = (en->actor).pos_2;
 	vec3f_t data_809EABB0 = {0, 0, 0};
@@ -538,36 +363,16 @@ void data_809EA5B0(entity_t* en, z64_global_t* gl)
 		z_actor_kill(&en->actor);
 	}
 }
-#else
-#include "asm/data_809EA5B0.c"
-#endif
 
-#if OK_809EA4E8
-void data_809EA4E8(entity_t* en)
+static void data_809EA4E8(entity_t* en)
 {
-	asm(
-		".set at        \n"
-		".set reorder   \n"
-		".Ldata_809EA4E8: \n"
-	);
-
 	z_lib_approx_f(&(en->actor).xz_speed, 0.0f, 1.0f);
   if (z_skelanime_draw_table(&en->skelanime))
     func_809E9B48(en);
 }
-#else
-#include "asm/data_809EA4E8.c"
-#endif
 
-#if OK_809EA1D8
-void data_809EA1D8(entity_t* en)
+static void data_809EA1D8(entity_t* en)
 {
-	asm(
-		".set at        \n"
-		".set reorder   \n"
-		".Ldata_809EA1D8: \n"
-	);
-
 	if (z_skelanime_draw_table(&en->skelanime))
 	{
 		en->inst0195 = 3;
@@ -576,57 +381,27 @@ void data_809EA1D8(entity_t* en)
 	}
 	z_lib_smooth_scale_max_s(&(en->actor).rot_2.y, (en->actor).rot_toward_link_y, 2, 0xE38);
 }
-#else
-#include "asm/data_809EA1D8.c"
-#endif
 
-#if OK_809EA480
-void data_809EA480(entity_t* en)
+static void data_809EA480(entity_t* en)
 {
-	asm(
-		".set at        \n"
-		".set reorder   \n"
-		".Ldata_809EA480: \n"
-	);
-
 	z_skelanime_draw_table(&en->skelanime);
   if ((z_skelanime_frame_index_test(&en->skelanime, 0)) && (en->inst0196))
     en->inst0196--;
   if (!en->inst0196)
     func_809E9920(en);
 }
-#else
-#include "asm/data_809EA480.c"
-#endif
 
-#if OK_809E9DFC
-void data_809E9DFC(entity_t* en)
+static void data_809E9DFC(entity_t* en)
 {
-	asm(
-		".set at        \n"
-		".set reorder   \n"
-		".Ldata_809E9DFC: \n"
-	);
-
 	z_skelanime_draw_table(&en->skelanime);
 	if ((z_skelanime_frame_index_test(&en->skelanime, 0)) && (en->inst0196))
 		en->inst0196--;
 	if (((en->actor).dist_from_link_xz < 120.0f) || (!en->inst0196))
 		func_809E9868(en);
 }
-#else
-#include "asm/data_809E9DFC.c"
-#endif
 
-#if OK_809E9560
-void data_809E9560(entity_t* en, z64_global_t* gl)
+static void data_809E9560(entity_t* en, z64_global_t* gl)
 {
-	asm(
-		".set at        \n"
-		".set reorder   \n"
-		".Ldata_809E9560: \n"
-	);
-
 	z64_actor_t* flower_pad;
 
 	z_lib_ichain_init(&en->actor, data_809EABA4);
@@ -659,19 +434,9 @@ void data_809E9560(entity_t* en, z64_global_t* gl)
 		);
 	}
 }
-#else
-#include "asm/data_809E9560.c"
-#endif
 
-#if OK_809EA0C4
-void data_809EA0C4(entity_t* en)
+static void data_809EA0C4(entity_t* en)
 {
-	asm(
-		".set at        \n"
-		".set reorder   \n"
-		".Ldata_809EA0C4: \n"
-	);
-
 	int32_t iVar1;
 	int32_t iVar2;
 	float frame;
@@ -694,19 +459,9 @@ void data_809EA0C4(entity_t* en)
 	z_lib_smooth_scale_max_f(&(en->actor).pos_2.x, (en->actor).pos_1.x, 0.5f, 3.0f);
 	z_lib_smooth_scale_max_f(&(en->actor).pos_2.z, (en->actor).pos_1.z, 0.5f, 3.0f);
 }
-#else
-#include "asm/data_809EA0C4.c"
-#endif
 
-#if OK_809E9F6C
-void data_809E9F6C(entity_t* en, z64_global_t* gl)
+static void data_809E9F6C(entity_t* en, z64_global_t* gl)
 {
-	asm(
-		".set at        \n"
-		".set reorder   \n"
-		".Ldata_809E9F6C: \n"
-	);
-
 	z64_actor_t *deku_nut;
 
 	z_lib_smooth_scale_max_s(&(en->actor).rot_2.y, (en->actor).rot_toward_link_y, 2, 0xE38);
@@ -742,19 +497,9 @@ void data_809E9F6C(entity_t* en, z64_global_t* gl)
   else
     func_809E9800(en);
 }
-#else
-#include "asm/data_809E9F6C.c"
-#endif
 
-#if OK_809EA534
-void data_809EA534(entity_t* en)
+static void data_809EA534(entity_t* en)
 {
-	asm(
-		".set at        \n"
-		".set reorder   \n"
-		".Ldata_809EA534: \n"
-	);
-
 	z_skelanime_draw_table(&en->skelanime);
 	if (z_skelanime_frame_index_test(&en->skelanime, 0))
 	{
@@ -768,19 +513,9 @@ void data_809EA534(entity_t* en)
 			z_actor_play_sfx2(&en->actor, SOUND_FAINT);
 	}
 }
-#else
-#include "asm/data_809EA534.c"
-#endif
 
-#if OK_809E9E80
-void data_809E9E80(entity_t* en)
+static void data_809E9E80(entity_t* en)
 {
-	asm(
-		".set at        \n"
-		".set reorder   \n"
-		".Ldata_809E9E80: \n"
-	);
-
 	z_skelanime_draw_table(&en->skelanime);
   if ((z_skelanime_frame_index_test(&en->skelanime, 0)) && (en->inst0196))
     en->inst0196--;
@@ -796,19 +531,9 @@ void data_809E9E80(entity_t* en)
   else if (en->inst0196 == 0)
       func_809E97B8(en);
 }
-#else
-#include "asm/data_809E9E80.c"
-#endif
 
-#if OK_809EA82C
-void data_809EA82C(entity_t* en, z64_global_t* gl)
+static void data_809EA82C(entity_t* en, z64_global_t* gl)
 {
-	asm(
-		".set at        \n"
-		".set reorder   \n"
-		".Ldata_809EA82C: \n"
-	);
-
   if ((en->actor).variable != VAR_FLOWER)
 	{
     func_809EA70C(en,gl);
@@ -830,19 +555,10 @@ void data_809EA82C(entity_t* en, z64_global_t* gl)
     }
   }
 }
-#else
-#include "asm/data_809EA82C.c"
-#endif
 
-#if OK_809EA240
-void data_809EA240(entity_t* en)
+/* The NSA says hello. */
+static void data_809EA240(entity_t* en)
 {
-	asm(
-		".set at        \n"
-		".set reorder   \n"
-		".Ldata_809EA240: \n"
-	);
-
 	uint8_t bVar1;
 	int16_t xz_dir;
 	int32_t xz_vel_approx;
@@ -937,19 +653,9 @@ void data_809EA240(entity_t* en)
 		func_809E9978(en);
 	}
 }
-#else
-#include "asm/data_809EA240.c"
-#endif
 
-#if OK_809E9B98
-void data_809E9B98(entity_t* en)
+static void data_809E9B98(entity_t* en)
 {
-	asm(
-		".set at        \n"
-		".set reorder   \n"
-		".Ldata_809E9B98: \n"
-	);
-
 	float frame_now;
 
 	if (((en->skelanime).anim_playback_speed < 0.5f) && (en->inst0196 != 0))
@@ -990,19 +696,9 @@ void data_809E9B98(entity_t* en)
         if ((en->inst0196 == 0 || ((en->actor).dist_from_link_xz < 480.0f)))
           (en->skelanime).anim_playback_speed = 1.0f;
 }
-#else
-#include "asm/data_809E9B98.c"
-#endif
 
-#if OK_809EA70C
-void func_809EA70C(entity_t* en, z64_global_t* gl)
+static void func_809EA70C(entity_t* en, z64_global_t* gl)
 {
-	asm(
-		".set at        \n"
-		".set reorder   \n"
-		".Lfunc_809EA70C: \n"
-	);
-
 	uint8_t damage_fx = (en->actor).damage_effect;
 
   if (((en->collider).base.collide_flags & 2) == 0)
@@ -1046,9 +742,6 @@ void func_809EA70C(entity_t* en, z64_global_t* gl)
       func_809E98B4(en);
   }
 }
-#else
-#include "asm/func_809EA70C.c"
-#endif
 
 const z64_actor_init_t init_vars = {
 	.number = 0xDEAD, .padding = 0xBEEF, /* <-- magic values, do not change */

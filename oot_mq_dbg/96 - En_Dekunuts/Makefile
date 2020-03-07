@@ -1,4 +1,4 @@
-PROGRAM = En_Dekunuts_asm
+PROGRAM = En_Dekunuts
 OVLOUT = $(PROGRAM).zovl
 ADDRESS = 0x80800000
 PARTS = $(PROGRAM).o
