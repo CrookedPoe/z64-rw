@@ -177,7 +177,7 @@ void draw(entity_t* en, z64_global_t* gl) /* 0 internal, 6 external, 68 lines */
 	Gfx gfx_debug[3];
 
 	z_debug_graph_alloc(gfx_debug, gfx, "../z_en_nutsball.c", __LINE__);
-	z_rcp_append_preset(gfx);
+	z_rcp_append_preset_opa(gfx);
 	z_matrixf_top_multiply(gl->unk_player_matrix, 1);
 	/* Rotate the display list on its Z axis. */
 	z_matrix_roll(((en->actor).rot_init.z * 0.000095873795f), 1);

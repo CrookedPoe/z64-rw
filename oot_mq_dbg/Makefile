@@ -6,6 +6,9 @@ $(SUBDIRS):
 
 .PHONY: all $(SUBDIRS)
 
+En_Dekubaba:
+	cd "85 - En_Dekubaba" && $(MAKE) routine
+
 En_Dekunuts:
 	cd "96 - En_Dekunuts" && $(MAKE) routine
 
