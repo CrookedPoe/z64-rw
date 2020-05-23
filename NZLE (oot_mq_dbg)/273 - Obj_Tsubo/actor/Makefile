@@ -1,6 +1,6 @@
 PROGRAM = z_obj_tsubo
 OVLOUT = $(PROGRAM).zovl
-ADDRESS = 0x80800000
+ADDRESS = 0x80BA0D60
 OBJDUMP = mips64-objdump
 PARTS = $(PROGRAM).o
 

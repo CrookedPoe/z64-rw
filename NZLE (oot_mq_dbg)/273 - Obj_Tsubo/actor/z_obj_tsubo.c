@@ -452,6 +452,6 @@ const z64_actor_init_t init_vars = {
 	.instance_size = sizeof(z_obj_tsubo_t),
 	.init = constructor,
 	.dest = destructor,
-	.main = behvaior,
+	.main = behavior,
 	.draw = 0x00000000
 };

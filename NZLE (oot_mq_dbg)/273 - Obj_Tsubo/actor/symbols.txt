@@ -2,11 +2,11 @@
 z_obj_tsubo.elf:     file format elf32-bigmips
 
 SYMBOL TABLE:
-80800000 l    d  .text	00000000 .text
-80800080 l    d  .data	00000000 .data
-80800080 l    d  .rodata	00000000 .rodata
-808001a0 l    d  .MIPS.abiflags	00000000 .MIPS.abiflags
-808001b8 l    d  .bss	00000000 .bss
+80ba0d60 l    d  .text	00000000 .text
+80ba17a0 l    d  .data	00000000 .data
+80ba17a0 l    d  .rodata	00000000 .rodata
+80ba19b0 l    d  .MIPS.abiflags	00000000 .MIPS.abiflags
+80ba19c8 l    d  .bss	00000000 .bss
 00000000 l    d  .reginfo	00000000 .reginfo
 00000000 l    d  .pdr	00000000 .pdr
 00000000 l    d  .mdebug.abi32	00000000 .mdebug.abi32
@@ -712,41 +712,71 @@ SYMBOL TABLE:
 801010d0 l       *ABS*	00000000 guPerspectiveF
 80101300 l       *ABS*	00000000 guPerspective
 801064e0 l       *ABS*	00000000 guMtxF2L
-80800198 l       .rodata	00000000 $LC0
-8080010c g     O .rodata	00000006 vec3s_backward
-80800168 g     O .rodata	0000000c vec3f_forward
-808000e0 g     O .rodata	00000008 dl_pots
-8080015c g     O .rodata	0000000c vec3f_left
-80800080 g       .data	00000000 _gp
-80800000 g       .text	00000000 __text_start
-808001a0 g       .rodata	00000000 __rodata_end
-808000ac g     O .rodata	0000000c tsubo_dim
-80800000 g     F .text	00000074 vec3s_toDeg
-80800124 g     O .rodata	00000006 vec3s_forward
-80800134 g     O .rodata	00000006 vec3s_right
-808001b8 g       .bss	00000000 __bss_end
-80800150 g     O .rodata	0000000c vec3f_down
-808000f4 g     O .rodata	00000018 ichain
-808000ec g     O .rodata	00000008 damage_chart_unk
-808001b8 g       .bss	00000000 end
-80800080 g       .rodata	00000000 __rodata_start
-8080013c g     O .rodata	00000006 vec3s_zero
-80800080 g       .data	00000000 __data_end
-808000d0 g     O .rodata	00000006 tsubo_base
-80800080 g       .text	00000000 __text_end
-8080018c g     O .rodata	0000000c vec3f_zero
-808001b8 g       .bss	00000000 __bss_start
-808000b8 g     O .rodata	00000018 tsubo_body
-8080012c g     O .rodata	00000006 vec3s_up
-808000d8 g     O .rodata	00000008 dl_shards
-80800144 g     O .rodata	0000000c vec3f_backward
-808000e8 g     O .rodata	00000004 objs
-80800080 g     O .rodata	0000002c tsubo_collision
-8080011c g     O .rodata	00000006 vec3s_left
-80800180 g     O .rodata	0000000c vec3f_right
-80800080 g       .data	00000000 __data_start
-80800114 g     O .rodata	00000006 vec3s_down
-80800174 g     O .rodata	0000000c vec3f_up
-80800000 g       *ABS*	00000000 ENTRY_POINT
+80ba0d60 l     F .text	0000000c behavior
+80ba0d6c l     F .text	00000010 destructor
+80ba0d7c l     F .text	00000278 _break
+80ba0ff4 l     F .text	00000028 spawn_drop
+80ba101c l     F .text	00000054 state_is_thrown
+80ba1070 l     F .text	00000028 draw
+80ba1098 l     F .text	00000188 constructor
+80ba1220 l     F .text	0000006c check_object
+80ba13b0 l     F .text	00000374 func_80BA15BC
+80ba128c l     F .text	00000124 state_is_carry
+80ba197c l       .rodata	00000000 $LC4
+80ba1970 l       .rodata	00000000 $LC1
+80ba196c l       .rodata	00000000 $LC0
+80ba1974 l       .rodata	00000000 $LC2
+80ba1978 l       .rodata	00000000 $LC3
+80ba1980 l       .rodata	00000000 $LC5
+80ba1984 l       .rodata	00000000 $LC6
+80ba1988 l       .rodata	00000000 $LC7
+80ba198c l       .rodata	00000000 $LC8
+80ba1990 l       .rodata	00000000 $LC9
+80ba1994 l       .rodata	00000000 $LC10
+80ba18d8 l       .rodata	00000000 $LC11
+80ba18fc l       .rodata	00000000 $LC12
+80ba190c l       .rodata	00000000 $LC13
+80ba1944 l       .rodata	00000000 $LC14
+80ba1998 l       .rodata	00000000 $LC15
+80ba199c l       .rodata	00000000 $LC16
+80ba19a0 l       .rodata	00000000 $LC17
+80ba19a4 l       .rodata	00000000 $LC18
+80ba19a8 l       .rodata	00000000 $LC19
+80ba184c g     O .rodata	00000006 vec3s_backward
+80ba18a8 g     O .rodata	0000000c vec3f_forward
+80ba1820 g     O .rodata	00000008 dl_pots
+80ba189c g     O .rodata	0000000c vec3f_left
+80ba17a0 g       .data	00000000 _gp
+80ba0d60 g       .text	00000000 __text_start
+80ba19b0 g       .rodata	00000000 __rodata_end
+80ba17ec g     O .rodata	0000000c tsubo_dim
+80ba1724 g     F .text	00000074 vec3s_toDeg
+80ba1864 g     O .rodata	00000006 vec3s_forward
+80ba1874 g     O .rodata	00000006 vec3s_right
+80ba19c8 g       .bss	00000000 __bss_end
+80ba1890 g     O .rodata	0000000c vec3f_down
+80ba1834 g     O .rodata	00000018 ichain
+80ba182c g     O .rodata	00000008 damage_chart_unk
+80ba19c8 g       .bss	00000000 end
+80ba17a0 g       .rodata	00000000 __rodata_start
+80ba187c g     O .rodata	00000006 vec3s_zero
+80ba17a0 g       .data	00000000 __data_end
+80ba1810 g     O .rodata	00000006 tsubo_base
+80ba17a0 g     O .rodata	00000020 init_vars
+80ba17a0 g       .text	00000000 __text_end
+80ba18cc g     O .rodata	0000000c vec3f_zero
+80ba19c8 g       .bss	00000000 __bss_start
+80ba17f8 g     O .rodata	00000018 tsubo_body
+80ba186c g     O .rodata	00000006 vec3s_up
+80ba1818 g     O .rodata	00000008 dl_shards
+80ba1884 g     O .rodata	0000000c vec3f_backward
+80ba1828 g     O .rodata	00000004 objs
+80ba17c0 g     O .rodata	0000002c tsubo_collision
+80ba185c g     O .rodata	00000006 vec3s_left
+80ba18c0 g     O .rodata	0000000c vec3f_right
+80ba17a0 g       .data	00000000 __data_start
+80ba1854 g     O .rodata	00000006 vec3s_down
+80ba18b4 g     O .rodata	0000000c vec3f_up
+80ba0d60 g       *ABS*	00000000 ENTRY_POINT
 
 
