@@ -1,6 +1,9 @@
 # z64-rw
 
-5 / 23 / 2020
+5 / 24 / 2020
+
+* 87 - En_M_Thunder (Spin Attack Magic Effect)
+    * Confirmed Working
 
 * 130 - En_Vase (Unused Orange Pot)
     * Confirmed Working
