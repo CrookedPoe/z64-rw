@@ -6,7 +6,7 @@
     * Confirmed Working
 
 * 10 - En_Bom (Bomb)
-    * Confirmed Working
+    * Confirmed Working; Delayed Douse in Water
 
 * 87 - En_M_Thunder (Spin Attack Magic Effect)
     * Confirmed Working
@@ -18,4 +18,4 @@
     * Builds, Currently crashes on load. (PJ64)
 
 * 403 - En_Nutsball (Deku Scrub Projectile)
-    * Confirmed Working
+    * Confirmed Working; Collider problem?

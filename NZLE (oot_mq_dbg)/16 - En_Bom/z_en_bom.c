@@ -1,3 +1,9 @@
+/************
+ * z_en_bom.c faithfully rewritten by CrookedPoe <nickjs.site>
+ * This is meant to be a functionally equivalent rewrite, intended to be compiled with <https://github.com/z64me/z64ovl>
+ * This is working as of commit 94c9556d592130e4bf7f29accfaac4216f903cba
+*************/
+
 #include <z64ovl/oot/debug.h>
 #include <z64ovl/oot/helpers.h>
 #include <z64ovl/oot/sfx.h>
@@ -30,131 +36,93 @@ static void state_809C29F4(entity_t *en, z64_global_t *gl); /* Appears to determ
 
 
 /*** variables ***/
-const uint32_t data_809C3430[] =
-{
-	0x00002939,
-	0x20010000,
-	0x02000000,
-	0x00000000,
-	0x00000000,
-	0x0003F828,
-	0x00000000,
-	0x00010100,
-	0x0006000B,
-	0x000E0000,
-	0x00000000
+const z64_collider_init_t bomb_base = {
+	.type = COL_TYPE_UNK0
+	, .flags_at = 0x00
+	, .flags_ac = 0x29
+	, .mask_a = 0x39
+	, .mask_b = 0x20
+	, .shape = COL_SHAPE_CYLINDER
 };
-const uint32_t data_809C345C[] =
-{
-	0x00000000,
-	0x00000008,
-	0x00080000,
-	0x00000000,
-	0x00000000,
-	0x19000000,
-	0x00000000,
-	0x00000000,
-	0x00000064
+
+const z64_collider_body_init_t bomb_body = {
+	.flags_body = 0x02
+	, .toucher = {
+		.flags = 0x00000000
+		, .effect = 0x00
+		, .damage = 0x00
+	}
+	, .bumper = {
+		.flags = 0x0003F828
+		, .effect = 0x00
+		, .defense = 0x00
+	}
+	, .flags_toucher = 0x00
+	, .flags_bumper = 0x01
+	, .flags_body_2 = 0x01
 };
-const uint32_t data_809C3480[] =
-{
-	0x00390000,
-	0x00000000,
-	0x00000001,
-	(uint32_t)(void*)data_809C345C
+
+const z64_cylinder16_t bomb_dim = {
+	.radius = 6
+	, .height = 11
+	, .y_shift = 14
+	, .pos = {0, 0, 0}
 };
-const uint32_t data_809C3490[] =
+
+const z64_collider_cylinder_init_t bomb_cylinder = {
+	.base = bomb_base
+	, .body = bomb_body
+	, .dim = bomb_dim
+};
+
+z64_collider_jntsph_item_init_t jntsph_list =
+{
+	.body = {
+		.flags_body = 0x00
+		, .toucher = {
+			.flags = 0x00000008
+			, .effect = 0x00
+			, .damage = 0x08
+		}
+		, .bumper = {
+			.flags = 0x00000000
+			, .effect = 0x00
+			, .defense = 0x00
+		}
+		, .flags_toucher = 0x19
+		, .flags_bumper = 0x00
+		, .flags_body_2 = 0x00
+	}
+	, .dim = {
+		.joint = 0x00
+		, .sphere_model = {
+			.center = {0, 0, 0}
+			, .radius = 0
+		}
+		, .scale = 100
+	}
+};
+
+z64_collider_jntsph_init_t bomb_jntsph =
+{
+	.base = {
+		.type = 0x00
+		, .flags_at = 0x39
+		, .flags_ac = 0x00
+		, .mask_a = 0x00
+		, .mask_b = 0x00
+		, .shape = COL_SHAPE_JNTSPH
+	}
+	, .count = 1
+	, .list = &jntsph_list
+};
+
+const uint32_t ichain[] =
 {
 	0xC0500000,
 	0xB04C07D0,
 	0x386CF060
 };
-const uint32_t data_809C349C[] =
-{
-	0x00000000,
-	0x00000000,
-	0x00000000
-};
-const uint32_t data_809C34A8[] =
-{
-	0x00000000,
-	0x3DCCCCCD,
-	0x00000000
-};
-const uint32_t data_809C34B4[] =
-{
-	0x00000000,
-	0x00000000,
-	0x00000000
-};
-const uint32_t data_809C34C0[] =
-{
-	0x00000000,
-	0x3F19999A,
-	0x00000000
-};
-const uint32_t data_809C34CC[] =
-{
-	0xFFFFFFFF,
-};
-const uint32_t data_809C34D0[] =
-{
-	0x2E2E2F7A,
-	0x5F656E5F,
-	0x626F6D2E,
-	0x63000000
-};
-const uint32_t data_809C34E0[] =
-{
-	0x2E2E2F7A,
-	0x5F656E5F,
-	0x626F6D2E,
-	0x63000000
-};
-const uint32_t data_809C34F0[] =
-{
-	0x2E2E2F7A,
-	0x5F656E5F,
-	0x626F6D2E,
-	0x63000000
-};
-const uint32_t data_809C3500[] =
-{
-	0x2E2E2F7A,
-	0x5F656E5F,
-	0x626F6D2E,
-	0x63000000
-};
-const uint32_t data_809C3510[] =
-{
-	0x3F333333
-};
-const uint32_t data_809C3514[] =
-{
-	0xBE999999
-};
-const uint32_t data_809C3518[] =
-{
-	0xBF99999A
-};
-const uint32_t data_809C351C[] =
-{
-	0x3E4CCCCD
-};
-const uint32_t data_809C3520[] =
-{
-	0x3E4CCCCD
-};
-const uint32_t data_809C3524[] =
-{
-	0x3B03126F
-};
-const uint32_t data_809C3528[] =
-{
-	0x3C23D70A,
-	0x00000000
-};
-
 
 /*** functions ***/
 static void set_state(entity_t *en, z64_actorfunc_t *state) /* OK */
@@ -250,7 +218,7 @@ static void constructor(entity_t *en, z64_global_t *gl) /* OK */
 {
 	int16_t _zr;
 
-	z_lib_ichain_init(&en->actor, data_809C3490);
+	z_lib_ichain_init(&en->actor, ichain);
 	z_actor_shadow_init(
 		&(en->actor).rot
 		, 700.0f
@@ -266,9 +234,9 @@ static void constructor(entity_t *en, z64_global_t *gl) /* OK */
 
 	/* Collider Initialization */
 	z_collider_cylinder_alloc(gl, &en->collider_c);
-	z_collider_cylinder_init(gl, &en->collider_c, &en->actor, (z64_collider_cylinder_init_t*)data_809C3430);
+	z_collider_cylinder_init(gl, &en->collider_c, &en->actor, &bomb_cylinder);
 	z_collider_jntsph_alloc(gl, &en->collider_s);
-	z_collider_jntsph_init(gl, &en->collider_s, &en->actor, (z64_collider_jntsph_init_t*)data_809C3480, &en->collider_s_item);
+	z_collider_jntsph_init(gl, &en->collider_s, &en->actor, &bomb_jntsph, &en->collider_s_item);
 
 	(en->collider_s_item).body.toucher.damage += ((en->actor).rot.z >> 8);
 

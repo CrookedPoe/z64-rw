@@ -4,9 +4,9 @@ z_en_bom.elf:     file format elf32-bigmips
 SYMBOL TABLE:
 809c26d0 l    d  .text	00000000 .text
 809c33a0 l    d  .data	00000000 .data
-809c33a0 l    d  .rodata	00000000 .rodata
-809c35d0 l    d  .MIPS.abiflags	00000000 .MIPS.abiflags
-809c35e8 l    d  .bss	00000000 .bss
+809c33e0 l    d  .rodata	00000000 .rodata
+809c3570 l    d  .MIPS.abiflags	00000000 .MIPS.abiflags
+809c3588 l    d  .bss	00000000 .bss
 00000000 l    d  .reginfo	00000000 .reginfo
 00000000 l    d  .pdr	00000000 .pdr
 00000000 l    d  .mdebug.abi32	00000000 .mdebug.abi32
@@ -719,79 +719,66 @@ SYMBOL TABLE:
 809c2fb8 l     F .text	0000010c constructor
 809c30c4 l     F .text	00000214 handle_rebound
 809c32d8 l     F .text	00000050 state_809C29F4
-809c354c l       .rodata	00000000 $LC0
-809c3558 l       .rodata	00000000 $LC1
-809c355c l       .rodata	00000000 $LC2
-809c3560 l       .rodata	00000000 $LC3
-809c3564 l       .rodata	00000000 $LC4
-809c3568 l       .rodata	00000000 $LC5
-809c356c l       .rodata	00000000 $LC6
-809c3570 l       .rodata	00000000 $LC7
-809c3578 l       .rodata	00000000 $LC9
-809c3574 l       .rodata	00000000 $LC8
-809c357c l       .rodata	00000000 $LC10
-809c3580 l       .rodata	00000000 $LC11
-809c358c l       .rodata	00000000 $LC14
-809c3590 l       .rodata	00000000 $LC15
-809c3594 l       .rodata	00000000 $LC16
-809c3588 l       .rodata	00000000 $LC13
-809c3598 l       .rodata	00000000 $LC17
-809c35b8 l       .rodata	00000000 $LC18
-809c3584 l       .rodata	00000000 $LC12
-809c359c l       .rodata	00000000 $LC19
-809c35a0 l       .rodata	00000000 $LC20
-809c35c0 l       .rodata	00000000 $LC21
-809c35a4 l       .rodata	00000000 $LC22
-809c35a8 l       .rodata	00000000 $LC23
-809c35ac l       .rodata	00000000 $LC24
-809c35b0 l       .rodata	00000000 $LC25
-809c35b4 l       .rodata	00000000 $LC26
-809c34c0 g     O .rodata	00000006 vec3s_backward
-809c3494 g     O .rodata	0000002c data_809C3430
-809c351c g     O .rodata	0000000c vec3f_forward
-809c33dc g     O .rodata	00000004 data_809C3510
-809c3510 g     O .rodata	0000000c vec3f_left
-809c33a0 g       .data	00000000 _gp
+809c34f0 l       .rodata	00000000 $LC0
+809c34fc l       .rodata	00000000 $LC1
+809c3500 l       .rodata	00000000 $LC2
+809c3504 l       .rodata	00000000 $LC3
+809c3508 l       .rodata	00000000 $LC4
+809c350c l       .rodata	00000000 $LC5
+809c3510 l       .rodata	00000000 $LC6
+809c3514 l       .rodata	00000000 $LC7
+809c351c l       .rodata	00000000 $LC9
+809c3518 l       .rodata	00000000 $LC8
+809c3520 l       .rodata	00000000 $LC10
+809c3524 l       .rodata	00000000 $LC11
+809c3530 l       .rodata	00000000 $LC14
+809c3534 l       .rodata	00000000 $LC15
+809c3538 l       .rodata	00000000 $LC16
+809c352c l       .rodata	00000000 $LC13
+809c353c l       .rodata	00000000 $LC17
+809c3560 l       .rodata	00000000 $LC18
+809c3528 l       .rodata	00000000 $LC12
+809c3540 l       .rodata	00000000 $LC19
+809c3544 l       .rodata	00000000 $LC20
+809c3568 l       .rodata	00000000 $LC21
+809c3548 l       .rodata	00000000 $LC22
+809c354c l       .rodata	00000000 $LC23
+809c3550 l       .rodata	00000000 $LC24
+809c3554 l       .rodata	00000000 $LC25
+809c3558 l       .rodata	00000000 $LC26
+809c3464 g     O .rodata	00000006 vec3s_backward
+809c34c0 g     O .rodata	0000000c vec3f_forward
+809c3438 g     O .rodata	0000000c bomb_dim
+809c34b4 g     O .rodata	0000000c vec3f_left
+809c33d8 g       .data	00000000 _gp
 809c26d0 g       .text	00000000 __text_start
-809c33d0 g     O .rodata	00000004 data_809C351C
-809c35d0 g       .rodata	00000000 __rodata_end
-809c33f0 g     O .rodata	00000010 data_809C34F0
+809c3570 g       .rodata	00000000 __rodata_end
 809c3328 g     F .text	00000074 vec3s_toDeg
-809c3424 g     O .rodata	0000000c data_809C34C0
-809c34d8 g     O .rodata	00000006 vec3s_forward
-809c3470 g     O .rodata	00000024 data_809C345C
-809c33e0 g     O .rodata	00000010 data_809C3500
-809c34e8 g     O .rodata	00000006 vec3s_right
-809c33c0 g     O .rodata	00000008 data_809C3528
-809c35e8 g       .bss	00000000 __bss_end
-809c33cc g     O .rodata	00000004 data_809C3520
-809c3504 g     O .rodata	0000000c vec3f_down
-809c3400 g     O .rodata	00000010 data_809C34E0
-809c3410 g     O .rodata	00000010 data_809C34D0
-809c35e8 g       .bss	00000000 end
-809c3460 g     O .rodata	00000010 data_809C3480
-809c33d8 g     O .rodata	00000004 data_809C3514
-809c33a0 g       .rodata	00000000 __rodata_start
-809c34f0 g     O .rodata	00000006 vec3s_zero
-809c3430 g     O .rodata	0000000c data_809C34B4
-809c33a0 g       .data	00000000 __data_end
-809c33a0 g     O .rodata	00000020 init_vars
+809c347c g     O .rodata	00000006 vec3s_forward
+809c3444 g     O .rodata	00000018 bomb_body
+809c348c g     O .rodata	00000006 vec3s_right
+809c3588 g       .bss	00000000 __bss_end
+809c34a8 g     O .rodata	0000000c vec3f_down
+809c3400 g     O .rodata	0000000c ichain
+809c33b0 g     O .data	00000024 jntsph_list
+809c3588 g       .bss	00000000 end
+809c33e0 g       .rodata	00000000 __rodata_start
+809c3494 g     O .rodata	00000006 vec3s_zero
+809c33e0 g       .data	00000000 __data_end
+809c33e0 g     O .rodata	00000020 init_vars
 809c33a0 g       .text	00000000 __text_end
-809c3540 g     O .rodata	0000000c vec3f_zero
-809c3454 g     O .rodata	0000000c data_809C3490
-809c35e8 g       .bss	00000000 __bss_start
-809c33d4 g     O .rodata	00000004 data_809C3518
-809c34e0 g     O .rodata	00000006 vec3s_up
-809c343c g     O .rodata	0000000c data_809C34A8
-809c3448 g     O .rodata	0000000c data_809C349C
-809c3420 g     O .rodata	00000004 data_809C34CC
-809c33c8 g     O .rodata	00000004 data_809C3524
-809c34f8 g     O .rodata	0000000c vec3f_backward
-809c34d0 g     O .rodata	00000006 vec3s_left
-809c3534 g     O .rodata	0000000c vec3f_right
+809c34e4 g     O .rodata	0000000c vec3f_zero
+809c33a0 g     O .data	00000010 bomb_jntsph
+809c3588 g       .bss	00000000 __bss_start
+809c3484 g     O .rodata	00000006 vec3s_up
+809c345c g     O .rodata	00000006 bomb_base
+809c349c g     O .rodata	0000000c vec3f_backward
+809c3474 g     O .rodata	00000006 vec3s_left
+809c34d8 g     O .rodata	0000000c vec3f_right
 809c33a0 g       .data	00000000 __data_start
-809c34c8 g     O .rodata	00000006 vec3s_down
-809c3528 g     O .rodata	0000000c vec3f_up
+809c340c g     O .rodata	0000002c bomb_cylinder
+809c346c g     O .rodata	00000006 vec3s_down
+809c34cc g     O .rodata	0000000c vec3f_up
 809c26d0 g       *ABS*	00000000 ENTRY_POINT
 
 
