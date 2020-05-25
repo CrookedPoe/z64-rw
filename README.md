@@ -1,9 +1,9 @@
 # z64-rw
 
-5 / 24 / 2020
+5 / 25 / 2020
 
 * 8 - En_Light (Decorative Flame)
-    * Confirmed Working, Sound Effect Discrepency
+    * Confirmed Working
 
 * 87 - En_M_Thunder (Spin Attack Magic Effect)
     * Confirmed Working

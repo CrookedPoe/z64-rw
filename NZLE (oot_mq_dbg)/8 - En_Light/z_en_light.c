@@ -206,7 +206,7 @@ static void behavior(entity_t *en, z64_global_t *gl)
 	);
     billboard(en, gl);
 	if ((en->actor).variable >= 0)
-		z_actor_play_sfx2(&en->actor, NA_SE_EV_TORCH);
+		z_actor_play_sfx2(&en->actor, (NA_SE_EV_TORCH & 0xF0FF));
 }
 
 static void behavior_candle(entity_t *en, z64_global_t *gl)
@@ -265,7 +265,7 @@ static void behavior_candle(entity_t *en, z64_global_t *gl)
 	billboard(en, gl);
 
 	if ((en->actor).variable >= 0)
-		z_actor_play_sfx2(&en->actor, NA_SE_EV_TORCH);
+		z_actor_play_sfx2(&en->actor, (NA_SE_EV_TORCH & 0xF0FF));
 }
 
 z64_actor_init_t init_vars = {
