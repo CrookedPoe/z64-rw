@@ -6,7 +6,6 @@
 
 #include <z64ovl/oot/debug.h>
 #include "z_en_vase.h"
-#include "../object/map.h"
 
 typedef struct {
 	z64_actor_t actor;
@@ -36,7 +35,7 @@ static void dest(z_en_vase_t *en, z64_global_t *gl)
 
 static void draw(z_en_vase_t *en, z64_global_t *gl)
 {
-	z_cheap_proc_draw_opa(gl, dl_vase);
+	z_cheap_proc_draw_opa(gl, DL_VASE);
 }
 
 const z64_actor_init_t init_vars = {

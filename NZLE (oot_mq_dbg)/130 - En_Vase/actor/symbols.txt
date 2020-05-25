@@ -50,7 +50,7 @@ SYMBOL TABLE:
 80027704 l       *ABS*	00000000 external_func_80027704
 80027dd4 l       *ABS*	00000000 external_func_80027DD4
 80027f80 l       *ABS*	00000000 external_func_80027F80
-8002829c l       *ABS*	00000000 external_func_8002829C
+8002829c l       *ABS*	00000000 z_effect_spawn_dust_a
 8002836c l       *ABS*	00000000 external_func_8002836C
 800283d4 l       *ABS*	00000000 external_func_800283D4
 8002843c l       *ABS*	00000000 external_func_8002843C
@@ -66,7 +66,7 @@ SYMBOL TABLE:
 80028cec l       *ABS*	00000000 external_func_80028CEC
 80028e84 l       *ABS*	00000000 z_effect_spawn_bomb2
 80028f84 l       *ABS*	00000000 external_func_80028F84
-80029024 l       *ABS*	00000000 external_func_80029024
+80029024 l       *ABS*	00000000 z_effect_spawn_blast_ring
 80029184 l       *ABS*	00000000 z_effect_spawn_spark
 800293a0 l       *ABS*	00000000 z_effect_spawn_fire_breath
 800293e4 l       *ABS*	00000000 z_effect_spawn_water_bubble
@@ -167,10 +167,10 @@ SYMBOL TABLE:
 8002f368 l       *ABS*	00000000 actor_npc_trade_get
 8002f374 l       *ABS*	00000000 external_func_8002F374
 8002f410 l       *ABS*	00000000 z_actor_is_attached
-8002f434 l       *ABS*	00000000 actor_give_item
+8002f434 l       *ABS*	00000000 z_actor_give_item
 8002f554 l       *ABS*	00000000 z_actor_give_item_50_10
-8002f580 l       *ABS*	00000000 actor_give_item_gid0
-8002f5a0 l       *ABS*	00000000 external_func_8002F5A0
+8002f580 l       *ABS*	00000000 z_actor_give_id_0
+8002f5a0 l       *ABS*	00000000 z_actor_is_attached2
 8002f5c4 l       *ABS*	00000000 external_func_8002F5C4
 8002f5f0 l       *ABS*	00000000 external_func_8002F5F0
 8002f618 l       *ABS*	00000000 external_func_8002F618
@@ -299,7 +299,7 @@ SYMBOL TABLE:
 8005a970 l       *ABS*	00000000 external_func_8005A970
 8005a9cc l       *ABS*	00000000 external_func_8005A9CC
 8005a9f4 l       *ABS*	00000000 external_func_8005A9F4
-8005aa1c l       *ABS*	00000000 camera_earthquake
+8005aa1c l       *ABS*	00000000 z_camera_earthquake
 8005aa90 l       *ABS*	00000000 external_func_8005AA90
 8005ac60 l       *ABS*	00000000 external_func_8005AC60
 8005ac6c l       *ABS*	00000000 external_func_8005AC6C
@@ -311,11 +311,11 @@ SYMBOL TABLE:
 8005b198 l       *ABS*	00000000 external_func_8005B198
 8005b1a4 l       *ABS*	00000000 external_func_8005B1A4
 8005b200 l       *ABS*	00000000 actor_damage_chart_get
-8005bbf8 l       *ABS*	00000000 z_collider_cylinder_list_alloc
+8005bbf8 l       *ABS*	00000000 z_collider_jntsph_alloc
 8005bc28 l       *ABS*	00000000 external_func_8005BC28
-8005bcc8 l       *ABS*	00000000 z_collider_cylinder_list_free
+8005bcc8 l       *ABS*	00000000 z_collider_jntsph_free
 8005be50 l       *ABS*	00000000 external_func_8005BE50
-8005c050 l       *ABS*	00000000 z_collider_cylinder_list_init
+8005c050 l       *ABS*	00000000 z_collider_jntsph_init
 8005c364 l       *ABS*	00000000 z_collider_cylinder_alloc
 8005c3ac l       *ABS*	00000000 z_collider_cylinder_free
 8005c3f4 l       *ABS*	00000000 external_func_8005C3F4
@@ -406,8 +406,8 @@ SYMBOL TABLE:
 800788cc l       *ABS*	00000000 play_sound_global_once
 80078914 l       *ABS*	00000000 external_func_80078914
 80079d8c l       *ABS*	00000000 z_lights_init_pos_0
-80079df0 l       *ABS*	00000000 external_func_80079DF0
-80079e58 l       *ABS*	00000000 external_func_80079E58
+80079df0 l       *ABS*	00000000 z_lights_init_pos_2
+80079e58 l       *ABS*	00000000 z_lights_set_rgb_radius
 8007a764 l       *ABS*	00000000 z_lights_insert
 8007a7c4 l       *ABS*	00000000 z_lights_kill
 8007ae10 l       *ABS*	00000000 external_func_8007AE10
@@ -439,7 +439,7 @@ SYMBOL TABLE:
 80087330 l       *ABS*	00000000 external_func_80087330
 80087680 l       *ABS*	00000000 external_func_80087680
 800876c8 l       *ABS*	00000000 external_func_800876C8
-80087708 l       *ABS*	00000000 external_func_80087708
+80087708 l       *ABS*	00000000 z_parameter_subtract_magic
 80088aa0 l       *ABS*	00000000 external_func_80088AA0
 80088af0 l       *ABS*	00000000 external_func_80088AF0
 80088b34 l       *ABS*	00000000 external_func_80088B34

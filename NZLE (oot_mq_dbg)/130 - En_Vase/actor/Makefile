@@ -1,6 +1,6 @@
 PROGRAM = z_en_vase
 OVLOUT = $(PROGRAM).zovl
-ADDRESS = 0x80800000
+ADDRESS = 0x80B28EB0
 OBJDUMP = mips64-objdump
 PARTS = $(PROGRAM).o
 

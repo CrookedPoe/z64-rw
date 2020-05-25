@@ -6,7 +6,8 @@
     * Confirmed Working
 
 * 10 - En_Bom (Bomb)
-    * Confirmed Working; Delayed Douse in Water
+    * Confirmed Working
+    * TODO: Is there really a delayed douse when thrown into water?
 
 * 87 - En_M_Thunder (Spin Attack Magic Effect)
     * Confirmed Working
@@ -15,7 +16,8 @@
     * Confirmed Working
 
 * 273 - Obj_Tsubo (Liftable, Breakable Pot)
-    * Builds, Currently crashes on load. (PJ64)
+    * TODO: Fix Crash
 
 * 403 - En_Nutsball (Deku Scrub Projectile)
-    * Confirmed Working; Collider problem?
+    * Confirmed Working
+    * TODO: A new collider problem?
