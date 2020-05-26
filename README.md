@@ -12,6 +12,9 @@
 * 87 - En_M_Thunder (Spin Attack Magic Effect)
     * Confirmed Working
 
+* 96 - En_Dekunuts (Mad Scrub)
+    * Confirmed Working
+
 * 130 - En_Vase (Unused Orange Pot)
     * Confirmed Working
 
