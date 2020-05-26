@@ -15,6 +15,9 @@
 * 96 - En_Dekunuts (Mad Scrub)
     * Confirmed Working
 
+* 97 - Bg_Menkuri_Kaiten (Gerudo Training Grounds Rotating Ring)
+    * Confirmed Working
+
 * 130 - En_Vase (Unused Orange Pot)
     * Confirmed Working
 
